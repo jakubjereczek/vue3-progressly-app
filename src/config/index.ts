@@ -1,0 +1,1 @@
+export { router as defualt } from './router';
