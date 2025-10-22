@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient as SupabaseBaseClient } from '@supabase/supabase-js';
-import type { PostgrestResponse, User, Session } from '@supabase/supabase-js';
+import type { User, Session } from '@supabase/supabase-js';
 
 export default class SupabaseClient {
   private static instance: SupabaseBaseClient | null = null;
@@ -25,7 +25,7 @@ export default class SupabaseClient {
     if (error) {
       throw error;
     } else {
-      return data as T[];
+      return data ?? [];
     }
   }
 
@@ -34,7 +34,7 @@ export default class SupabaseClient {
     if (error) {
       throw error;
     } else {
-      return data as T[];
+      return data ?? [];
     }
   }
 
@@ -52,14 +52,11 @@ export default class SupabaseClient {
     if (error) {
       throw error;
     } else {
-      return data as T[];
+      return data ?? [];
     }
   }
 
-  public static async delete<T = unknown>(
-    table: string,
-    filter: Record<string, unknown>,
-  ): Promise<PostgrestResponse<T>> {
+  public static async delete<T = unknown>(table: string, filter: Record<string, unknown>): Promise<T[]> {
     let query = this.client.from(table).delete();
     for (const [key, value] of Object.entries(filter)) {
       query = query.eq(key, value);
@@ -69,12 +66,16 @@ export default class SupabaseClient {
     if (error) {
       throw error;
     } else {
-      return { data, error } as unknown as PostgrestResponse<T>;
+      return data ?? [];
     }
   }
 
   public static raw(): SupabaseBaseClient {
-    return this.client;
+    if (!this.instance) {
+      throw new Error('SupabaseClient not initialized');
+    } else {
+      return this.client;
+    }
   }
 
   public static async signUp(email: string, password: string): Promise<{ user: User | null; session: Session | null }> {
@@ -106,6 +107,11 @@ export default class SupabaseClient {
 
   public static async getUser(): Promise<{ user: User | null }> {
     const { data } = await this.client.auth.getUser();
+    return data;
+  }
+
+  public static async getSession(): Promise<{ session: Session | null }> {
+    const { data } = await this.client.auth.getSession();
     return data;
   }
 

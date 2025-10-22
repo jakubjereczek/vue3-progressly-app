@@ -1,17 +1,28 @@
-
-import type {  RouteRecordRaw } from 'vue-router';
-import App from '../App.vue';
+import type { RouteRecordRaw } from 'vue-router';
+import { DashboardPage, LoginPage, RegisterPage } from '../app/pages';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Home',
-    component: App,
+    redirect: '/dashboard',
   },
   {
-    path: '/about',
-    name: 'About',
-    component: App,
+    path: '/login',
+    name: 'Login',
+    component: LoginPage,
+    meta: { guest: true },
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegisterPage,
+    meta: { guest: true },
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: DashboardPage,
+    meta: { requiresAuth: true },
   },
 ];
 

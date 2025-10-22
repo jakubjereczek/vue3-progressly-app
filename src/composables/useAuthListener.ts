@@ -16,4 +16,6 @@ export function useAuthListener() {
   onUnmounted(() => {
     listener?.subscription.unsubscribe();
   });
+
+  userStore.restoreSession();
 }

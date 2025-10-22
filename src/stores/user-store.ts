@@ -22,22 +22,19 @@ export const useUserStore = defineStore('user', () => {
   async function register(email: string, password: string): Promise<User | null> {
     loading.value = true;
     error.value = null;
+
     try {
-      const { data, error } = await SupabaseClient.signUp(email, password);
-      if (error) {
-        throw error;
+      const { user: newUser } = await SupabaseClient.signUp(email, password);
+      if (newUser) {
+        setUser(newUser);
       } else {
-        if (data.user) {
-          setUser(data.user);
-        }
-        return data.user;
+        clearUser();
       }
+      return newUser;
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        error.value = err.message;
-      } else {
-        error.value = String(err);
-      }
+      console.log('err register', err);
+      error.value = err?.message ?? '';
+
       clearUser();
       return null;
     } finally {
@@ -48,22 +45,20 @@ export const useUserStore = defineStore('user', () => {
   async function login(email: string, password: string): Promise<User | null> {
     loading.value = true;
     error.value = null;
+
     try {
-      const { data, error } = await SupabaseClient.signIn(email, password);
-      if (error) {
-        throw error;
+      const { user: newUser } = await SupabaseClient.signIn(email, password);
+      if (newUser) {
+        setUser(newUser);
       } else {
-        if (data.user) {
-          setUser(data.user);
-        }
-        return data.user;
+        clearUser();
       }
+      return newUser;
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        error.value = err.message;
-      } else {
-        error.value = String(err);
-      }
+      console.log('err login', err);
+
+      error.value = err?.message ?? '';
+
       clearUser();
       return null;
     } finally {
@@ -74,22 +69,14 @@ export const useUserStore = defineStore('user', () => {
   async function logout(): Promise<void> {
     loading.value = true;
     error.value = null;
+
     try {
-      const { error } = await SupabaseClient.signOut();
-      if (error) {
-        throw error;
-      } else {
-        clearUser();
-        return;
-      }
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        error.value = err.message;
-      } else {
-        error.value = String(err);
-      }
+      await SupabaseClient.signOut();
       clearUser();
-      return;
+    } catch (err: unknown) {
+      error.value = err?.message ?? '';
+
+      clearUser();
     } finally {
       loading.value = false;
     }
@@ -98,29 +85,36 @@ export const useUserStore = defineStore('user', () => {
   async function fetchUser(): Promise<void> {
     loading.value = true;
     error.value = null;
+
     try {
-      const {
-        data: { user: currentUser },
-        error,
-      } = await SupabaseClient.getUser();
-      if (error) {
-        throw error;
+      const { user: currentUser } = await SupabaseClient.getUser();
+      if (currentUser) {
+        setUser(currentUser);
       } else {
-        if (currentUser) {
-          setUser(currentUser);
-        } else {
-          clearUser();
-        }
-        return;
+        clearUser();
       }
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        error.value = err.message;
-      } else {
-        error.value = String(err);
-      }
+      error.value = err?.message ?? '';
+
       clearUser();
-      return;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function restoreSession() {
+    loading.value = true;
+    try {
+      const { session } = await SupabaseClient.getSession();
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        clearUser();
+      }
+    } catch (err: unknown) {
+      error.value = err?.message ?? '';
+
+      clearUser();
     } finally {
       loading.value = false;
     }
@@ -137,5 +131,6 @@ export const useUserStore = defineStore('user', () => {
     login,
     logout,
     fetchUser,
+    restoreSession,
   };
 });
