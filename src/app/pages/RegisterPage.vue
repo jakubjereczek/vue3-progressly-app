@@ -1,65 +1,49 @@
 <template>
-  <div class="flex items-center justify-center min-h-screen bg-gray-50">
-    <div class="bg-white p-10 rounded-2xl shadow-lg w-full max-w-sm">
-      <h2 class="text-3xl font-semibold text-center mb-8 text-gray-900">Register</h2>
+  <div class="flex items-center justify-center min-h-screen">
+    <Card class="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle class="text-center text-2xl">Register</CardTitle>
+        <CardDescription class="text-center"> Create a new account to get started </CardDescription>
+      </CardHeader>
 
-      <form @submit.prevent="handleRegister" class="space-y-6">
-        <div class="relative">
-          <input
-            id="registerEmail"
-            v-model="registerEmail"
-            type="email"
-            required
-            placeholder="Email"
-            class="peer w-full border-b-2 border-gray-300 placeholder-transparent focus:border-green-600 outline-none py-2 text-gray-900"
-          />
-          <label
-            for="registerEmail"
-            class="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-gray-500 peer-focus:text-sm"
-          >
-            Email
-          </label>
-        </div>
+      <CardContent>
+        <form @submit.prevent="handleRegister" class="space-y-4">
+          <div class="space-y-2">
+            <Label for="registerEmail">Email</Label>
+            <Input id="registerEmail" v-model="registerEmail" type="email" placeholder="you@example.com" required />
+          </div>
 
-        <div class="relative">
-          <input
-            id="registerPassword"
-            v-model="registerPassword"
-            type="password"
-            required
-            placeholder="Password"
-            class="peer w-full border-b-2 border-gray-300 placeholder-transparent focus:border-green-600 outline-none py-2 text-gray-900"
-          />
-          <label
-            for="registerPassword"
-            class="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-3.5 peer-focus:text-gray-500 peer-focus:text-sm"
-          >
-            Password
-          </label>
-        </div>
+          <div class="space-y-2">
+            <Label for="registerPassword">Password</Label>
+            <Input id="registerPassword" v-model="registerPassword" type="password" placeholder="********" required />
+          </div>
 
-        <button
-          type="submit"
-          :disabled="loading"
-          class="w-full py-3 bg-green-600 text-white font-medium rounded-xl shadow-md hover:bg-green-700 disabled:bg-green-300 transition-colors"
-        >
-          {{ loading ? 'Registering...' : 'Register' }}
-        </button>
+          <Button type="submit" class="w-full" :disabled="loading">
+            <template v-if="loading">Registering...</template>
+            <template v-else>Register</template>
+          </Button>
 
-        <div v-if="error" class="text-red-500 text-sm text-center mt-2">
-          {{ error }}
-        </div>
-      </form>
+          <div v-if="error" class="text-destructive text-sm text-center">
+            {{ error }}
+          </div>
+        </form>
+      </CardContent>
 
-      <p class="text-center text-sm text-gray-500 mt-6">
-        Already have an account?
-        <router-link to="/login" class="text-green-600 hover:underline">Login here</router-link>
-      </p>
-    </div>
+      <CardFooter class="flex justify-center">
+        <p class="text-sm text-muted-foreground">
+          Already have an account?
+          <router-link to="/login" class="text-primary hover:underline"> Login here </router-link>
+        </p>
+      </CardFooter>
+    </Card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -75,15 +59,10 @@ const { register } = userStore;
 const { loading, error } = storeToRefs(userStore);
 
 async function handleRegister() {
-  let success = true;
-  try {
-    await register(registerEmail.value, registerPassword.value);
-  } catch {
-    success = false;
-  } finally {
-    if (success) {
-      router.push('/dashboard');
-    }
+  const user = await register(registerEmail.value, registerPassword.value);
+
+  if (user) {
+    router.push('/dashboard');
   }
 }
 </script>
