@@ -1,0 +1,22 @@
+{
+  "login.title": "Log In",
+  "login.description": "Access your account",
+  "login.emailLabel": "Email",
+  "login.emailPlaceholder": "you@example.com",
+  "login.passwordLabel": "Password",
+  "login.passwordPlaceholder": "******",
+  "login.button": "Log In",
+  "login.loading": "Logging in...",
+  "login.noAccount": "Don’t have an account?",
+  "login.register": "Register",
+  "register.title": "Register",
+  "register.description": "Create a new account to get started",
+  "register.emailLabel": "Email",
+  "register.emailPlaceholder": "you@example.com",
+  "register.passwordLabel": "Password",
+  "register.passwordPlaceholder": "******",
+  "register.button": "Register",
+  "register.loading": "Registering...",
+  "register.haveAccount": "Already have an account?",
+  "register.login": "Login here"
+}
