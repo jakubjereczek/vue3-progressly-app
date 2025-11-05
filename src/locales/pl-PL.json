@@ -14,5 +14,10 @@
   "register.button": "Zarejestruj się",
   "register.loading": "Rejestracja...",
   "register.haveAccount": "Masz już konto?",
-  "register.login": "Zaloguj się tutaj"
+  "register.login": "Zaloguj się tutaj",
+  "user.loggedAs": "Zalogowano jako",
+  "user.upgrade": "Ulepsz do wersji Pro",
+  "user.account": "Konto",
+  "user.logout": "Wyloguj się",
+  "user.label": "Użytkownik"
 }

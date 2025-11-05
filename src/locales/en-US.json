@@ -14,5 +14,10 @@
   "register.button": "Register",
   "register.loading": "Registering...",
   "register.haveAccount": "Already have an account?",
-  "register.login": "Login here"
+  "register.login": "Login here",
+  "user.loggedAs": "Logged as",
+  "user.upgrade": "Upgrade to Pro",
+  "user.account": "Account",
+  "user.logout": "Log out",
+  "user.label": "User"
 }

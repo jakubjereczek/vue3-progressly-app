@@ -1,60 +1,60 @@
 <template>
-  <div class="flex min-h-screen bg-gray-50">
-    <aside class="w-64 bg-white shadow-md p-6 flex flex-col">
-      <h1 class="text-2xl font-semibold mb-8 text-green-700">Dashboard</h1>
-      <nav class="flex flex-col space-y-4">
-        <router-link
-          to="/dashboard"
-          class="text-gray-700 hover:text-green-600 font-medium"
-        >
-          Home
-        </router-link>
-        <router-link
-          to="/dashboard/profile"
-          class="text-gray-700 hover:text-green-600 font-medium"
-        >
-          Profile
-        </router-link>
-        <router-link
-          to="/dashboard/settings"
-          class="text-gray-700 hover:text-green-600 font-medium"
-        >
-          Settings
-        </router-link>
-        <button
-          @click="logoutUser"
-          class="mt-auto py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          Logout
-        </button>
-      </nav>
-    </aside>
-    <main class="flex-1 p-8">
-      <div class="bg-white rounded-2xl shadow-md p-8 min-h-[80vh]">
-        <h2 class="text-3xl font-semibold text-gray-900 mb-6">Welcome, {{ userName }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          Hello world.
+  <SidebarProvider>
+    <AppSidebar />
+    <SidebarInset>
+      <header class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <div class="flex items-center gap-2 px-4">
+          <SidebarTrigger class="-ml-1" />
+          <Separator orientation="vertical" class="mr-2 h-4" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem class="hidden md:block">
+                <BreadcrumbLink href="#">
+                  Dashboard
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator class="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Overview</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
+      </header>
+      <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+          <div class="aspect-video rounded-xl bg-muted/50" />
+          <div class="aspect-video rounded-xl bg-muted/50" />
+          <div class="aspect-video rounded-xl bg-muted/50" />
+        </div>
+        <div class="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
       </div>
-    </main>
-  </div>
+    </SidebarInset>
+  </SidebarProvider>
 </template>
 
+
+<script lang="ts">
+export const description
+  = "A sidebar that collapses to icons."
+export const iframeHeight = "800px"
+export const containerClass = "w-full h-full"
+</script>
+
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useUserStore } from '../../stores';
-import { useRouter } from 'vue-router';
-import { computed } from 'vue';
-
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-const router = useRouter();
-
-const userName = computed(() => user.value?.email);
-
-function logoutUser() {
-  userStore.logout().then(() => {
-    router.push('/login');
-  });
-}
+import AppSidebar from "@/components/AppSidebar.vue"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb/"
+import { Separator } from "@/components/ui/separator"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 </script>
