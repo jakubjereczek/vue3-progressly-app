@@ -2,25 +2,37 @@
   <div class="flex items-center justify-center min-h-screen">
     <Card class="w-full max-w-sm">
       <CardHeader>
-        <CardTitle class="text-center text-2xl">Register</CardTitle>
-        <CardDescription class="text-center"> Create a new account to get started </CardDescription>
+        <CardTitle class="text-center text-2xl">{{ t('register.title') }}</CardTitle>
+        <CardDescription class="text-center">{{ t('register.description') }}</CardDescription>
       </CardHeader>
 
       <CardContent>
         <form @submit.prevent="handleRegister" class="space-y-4">
           <div class="space-y-2">
-            <Label for="registerEmail">Email</Label>
-            <Input id="registerEmail" v-model="registerEmail" type="email" placeholder="you@example.com" required />
+            <Label for="registerEmail">{{ t('register.emailLabel') }}</Label>
+            <Input
+              id="registerEmail"
+              v-model="registerEmail"
+              type="email"
+              :placeholder="'name@mail.com'"
+              required
+            />
           </div>
 
           <div class="space-y-2">
-            <Label for="registerPassword">Password</Label>
-            <Input id="registerPassword" v-model="registerPassword" type="password" placeholder="********" required />
+            <Label for="registerPassword">{{ t('register.passwordLabel') }}</Label>
+            <Input
+              id="registerPassword"
+              v-model="registerPassword"
+              type="password"
+              :placeholder="'******'"
+              required
+            />
           </div>
 
           <Button type="submit" class="w-full" :disabled="loading">
-            <template v-if="loading">Registering...</template>
-            <template v-else>Register</template>
+            <template v-if="loading">{{ t('register.loading') }}</template>
+            <template v-else>{{ t('register.button') }}</template>
           </Button>
 
           <div v-if="error" class="text-destructive text-sm text-center">
@@ -31,8 +43,10 @@
 
       <CardFooter class="flex justify-center">
         <p class="text-sm text-muted-foreground">
-          Already have an account?
-          <router-link to="/login" class="text-primary hover:underline"> Login here </router-link>
+          {{ t('register.haveAccount') }}
+          <router-link to="/login" class="text-primary hover:underline">
+            {{ t('register.login') }}
+          </router-link>
         </p>
       </CardFooter>
     </Card>
@@ -47,7 +61,10 @@ import { Button } from '@/components/ui/button';
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '../../stores';
+import { useUserStore } from '@/stores';
+import { useTranslation } from '@/composables/useTranslation';
+
+const { t } = useTranslation();
 
 const userStore = useUserStore();
 const router = useRouter();
