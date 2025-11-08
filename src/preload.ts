@@ -5,7 +5,7 @@ function preload() {
   const key = import.meta.env.VITE_APP_SUPABASE_API_KEY;
 
   SupabaseClient.init(url, key);
-  console.log('Subabase client initialized.')
+  console.log('Supabase client initialized')
 }
 
 export default preload;

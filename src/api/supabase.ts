@@ -1,18 +1,24 @@
 import { createClient, SupabaseClient as SupabaseBaseClient } from '@supabase/supabase-js';
 import type { User, Session } from '@supabase/supabase-js';
+import type { Database } from './db-types';
+
+export type PublicTables = keyof Database['public']['Tables'];
+export type TableRow<T extends PublicTables> = Database['public']['Tables'][T]['Row'];
+export type TableInsert<T extends PublicTables> = Database['public']['Tables'][T]['Insert'];
+export type TableUpdate<T extends PublicTables> = Database['public']['Tables'][T]['Update'];
 
 export default class SupabaseClient {
-  private static instance: SupabaseBaseClient | null = null;
+  private static instance: SupabaseBaseClient<Database> | null = null;
 
   public static init(url: string, anonKey: string) {
     if (this.instance) {
       return;
     } else {
-      this.instance = createClient(url, anonKey);
+      this.instance = createClient<Database>(url, anonKey);
     }
   }
 
-  private static get client(): SupabaseBaseClient {
+  private static get client(): SupabaseBaseClient<Database> {
     if (!this.instance) {
       throw new Error('SupabaseClient not initialized');
     } else {
@@ -20,57 +26,71 @@ export default class SupabaseClient {
     }
   }
 
-  public static async get<T = unknown>(table: string, columns = '*'): Promise<T[]> {
-    const { data, error } = await this.client.from(table).select(columns);
-    if (error) {
-      throw error;
+  public static async get<T extends PublicTables>(
+    table: T,
+    filter?: Partial<TableRow<T>>,
+    single: boolean = false,
+  ): Promise<TableRow<T>[] | TableRow<T> | null> {
+    let query = this.client.from(table).select('*');
+    if (filter) {
+      Object.entries(filter).forEach(([key, value]) => {
+        query = query.eq(key, value);
+      });
+    }
+    if (single) {
+      const { data, error } = await query.single();
+      if (error) {
+        throw error;
+      }
+      return data as unknown as TableRow<T> | null;
     } else {
-      return data ?? [];
+      const { data, error } = await query;
+      if (error) {
+        throw error;
+      }
+      return data as unknown as TableRow<T>[];
     }
   }
 
-  public static async insert<T = unknown>(table: string, payload: Partial<T> | Partial<T>[]): Promise<T[]> {
-    const { data, error } = await this.client.from(table).insert(payload).select();
+  public static async insert<T extends PublicTables>(table: T, row: TableInsert<T>): Promise<TableRow<T>> {
+    // @ts-expect-error Supabase typings do not fully capture TableInsert<T>
+    const { data, error } = await this.client.from(table).insert(row).select().single();
     if (error) {
       throw error;
-    } else {
-      return data ?? [];
     }
+    return data as unknown as TableRow<T>;
   }
 
-  public static async update<T = unknown>(
-    table: string,
-    payload: Partial<T>,
-    filter: Record<string, unknown>,
-  ): Promise<T[]> {
-    let query = this.client.from(table).update(payload);
-    for (const [key, value] of Object.entries(filter)) {
+  public static async update<T extends PublicTables>(
+    table: T,
+    updates: TableUpdate<T>,
+    filter: Partial<TableRow<T>>,
+  ): Promise<TableRow<T>> {
+    // @ts-expect-error Supabase typings do not fully capture TableUpdate<T>
+    let query = this.client.from(table).update(updates).select();
+    Object.entries(filter).forEach(([key, value]) => {
       query = query.eq(key, value);
-    }
-
-    const { data, error } = await query.select();
+    });
+    const { data, error } = await query.single();
     if (error) {
       throw error;
-    } else {
-      return data ?? [];
     }
+    return data as unknown as TableRow<T>;
   }
 
-  public static async delete<T = unknown>(table: string, filter: Record<string, unknown>): Promise<T[]> {
-    let query = this.client.from(table).delete();
-    for (const [key, value] of Object.entries(filter)) {
+  public static async delete<T extends PublicTables>(table: T, filter: Partial<TableRow<T>>): Promise<TableRow<T>> {
+    let query = this.client.from(table).delete().select();
+    Object.entries(filter).forEach(([key, value]) => {
       query = query.eq(key, value);
-    }
-
-    const { data, error } = await query;
+    });
+    const { data, error } = await query.single();
     if (error) {
       throw error;
-    } else {
-      return data ?? [];
     }
+    return data as unknown as TableRow<T>;
   }
 
-  public static raw(): SupabaseBaseClient {
+  public static raw(): SupabaseBaseClient<Database> {
     if (!this.instance) {
       throw new Error('SupabaseClient not initialized');
     } else {
