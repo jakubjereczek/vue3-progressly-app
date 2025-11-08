@@ -11,7 +11,9 @@
     "lint": "run-p lint:prettier lint:eslint lint:css",
     "lint:eslint": "eslint . --fix",
     "lint:prettier": "prettier . --write",
-    "lint:css": "stylelint \"src/**/*.{css,scss,vue}\" --fix"
+    "lint:css": "stylelint \"src/**/*.{css,scss,vue}\" --fix",
+    "gen:db-types": "npx supabase gen types typescript > src/types/db-types.ts"
+
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.76.1",
@@ -43,6 +45,7 @@
     "stylelint": "^16.25.0",
     "stylelint-config-standard": "^39.0.1",
     "stylelint-order": "^7.0.0",
+    "supabase": "^2.54.11",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.2",
     "vite": "npm:rolldown-vite@7.1.14",
