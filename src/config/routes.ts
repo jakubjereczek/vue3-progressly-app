@@ -1,5 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { DashboardPage, LoginPage, RegisterPage } from '../app/pages';
+import { LoginPage, RegisterPage, DashboardPage } from '../app/pages';
+import DashboardLayout from '@/components/DashboardLayout.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -21,8 +22,18 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: DashboardPage,
-    meta: { requiresAuth: true },
+    component: DashboardLayout,
+    meta: { requiresAuth: true, breadcrumb: 'Dashboard' },
+    children: [
+      {
+        path: '',
+        name: 'Dashboard_Overview',
+        component: DashboardPage,
+        meta: {
+          breadcrumb: ''
+        },
+      },
+    ],
   },
 ];
 
