@@ -1,54 +1,27 @@
+import type { TablesInsert, TablesUpdate } from '../db-types';
 import SupabaseClient from '../supabase';
-import type { TableRow, TableInsert, TableUpdate } from '../supabase';
+import type { TableRow } from '../supabase';
 
 export default class ActivitiesService {
   public static async get(
     filter?: Partial<TableRow<'activities'>>,
-    single: boolean = false
+    single: boolean = false,
   ): Promise<TableRow<'activities'> | TableRow<'activities'>[] | undefined> {
-    try {
-      const activity = await SupabaseClient.get('activities', filter, single);
-      if (activity) {
-        return activity;
-      }
-      return undefined;
-    } catch (error) {
-      console.error('Error fetching activities:', error);
-      return undefined;
-    }
+    return (await SupabaseClient.get('activities', filter, single)) ?? undefined;
   }
 
-  public static async insert(
-    activity: TableInsert<'activities'>
-  ): Promise<TableRow<'activities'> | undefined> {
-    try {
-      return await SupabaseClient.insert('activities', activity);
-    } catch (error) {
-      console.error('Error inserting activity:', error);
-      return undefined;
-    }
+  public static async insert(activity: TablesInsert<'activities'>): Promise<TableRow<'activities'> | undefined> {
+    return await SupabaseClient.insert('activities', activity);
   }
 
   public static async update(
-    updates: TableUpdate<'activities'>,
-    filter: Partial<TableRow<'activities'>>
+    updates: TablesUpdate<'activities'>,
+    filter: Partial<TableRow<'activities'>>,
   ): Promise<TableRow<'activities'> | undefined> {
-    try {
-      return await SupabaseClient.update('activities', updates, filter);
-    } catch (error) {
-      console.error('Error updating activity:', error);
-      return undefined;
-    }
+    return await SupabaseClient.update('activities', updates, filter);
   }
 
-  public static async delete(
-    filter: Partial<TableRow<'activities'>>
-  ): Promise<TableRow<'activities'> | undefined> {
-    try {
-      return await SupabaseClient.delete('activities', filter);
-    } catch (error) {
-      console.error('Error deleting activity:', error);
-      return undefined;
-    }
+  public static async delete(filter: Partial<TableRow<'activities'>>): Promise<TableRow<'activities'> | undefined> {
+    return await SupabaseClient.delete('activities', filter);
   }
 }

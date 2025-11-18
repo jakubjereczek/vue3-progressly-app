@@ -1,11 +1,9 @@
 import { createClient, SupabaseClient as SupabaseBaseClient } from '@supabase/supabase-js';
 import type { User, Session } from '@supabase/supabase-js';
-import type { Database } from './db-types';
+import type { Database, TablesInsert, TablesUpdate } from './db-types';
 
 export type PublicTables = keyof Database['public']['Tables'];
 export type TableRow<T extends PublicTables> = Database['public']['Tables'][T]['Row'];
-export type TableInsert<T extends PublicTables> = Database['public']['Tables'][T]['Insert'];
-export type TableUpdate<T extends PublicTables> = Database['public']['Tables'][T]['Update'];
 
 export default class SupabaseClient {
   private static instance: SupabaseBaseClient<Database> | null = null;
@@ -34,7 +32,11 @@ export default class SupabaseClient {
     let query = this.client.from(table).select('*');
     if (filter) {
       Object.entries(filter).forEach(([key, value]) => {
-        query = query.eq(key, value);
+        if (value === null) {
+          query = query.is(key, null);
+        } else {
+          query = query.eq(key, value);
+        }
       });
     }
     if (single) {
@@ -52,7 +54,7 @@ export default class SupabaseClient {
     }
   }
 
-  public static async insert<T extends PublicTables>(table: T, row: TableInsert<T>): Promise<TableRow<T>> {
+  public static async insert<T extends PublicTables>(table: T, row: TablesInsert<T>): Promise<TableRow<T>> {
     // @ts-expect-error Supabase typings do not fully capture TableInsert<T>
     const { data, error } = await this.client.from(table).insert(row).select().single();
     if (error) {
@@ -63,13 +65,17 @@ export default class SupabaseClient {
 
   public static async update<T extends PublicTables>(
     table: T,
-    updates: TableUpdate<T>,
+    updates: TablesUpdate<T>,
     filter: Partial<TableRow<T>>,
   ): Promise<TableRow<T>> {
     // @ts-expect-error Supabase typings do not fully capture TableUpdate<T>
     let query = this.client.from(table).update(updates).select();
     Object.entries(filter).forEach(([key, value]) => {
-      query = query.eq(key, value);
+      if (value === null) {
+        query = query.is(key, null);
+      } else {
+        query = query.eq(key, value);
+      }
     });
     const { data, error } = await query.single();
     if (error) {
