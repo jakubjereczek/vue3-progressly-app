@@ -59,7 +59,7 @@ import { Button } from '@/components/ui/button';
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '../../stores';
+import { useUserStore } from '../../../stores';
 import { useTranslation } from '@/composables/useTranslation';
 
 const { t } = useTranslation();

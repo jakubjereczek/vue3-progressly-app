@@ -56,6 +56,10 @@ const data = {
           title: "Timer",
           url: "/timer",
         },
+         {
+          title: "Activities history",
+          url: "/dashboard/activities",
+        },
         // {
         //   title: "Manual Entry",
         //   url: "/manual-entry",

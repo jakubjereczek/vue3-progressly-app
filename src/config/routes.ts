@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
 import { LoginPage, RegisterPage, DashboardPage } from '../app/pages';
 import DashboardLayout from '@/components/DashboardLayout.vue';
+import ActivitiesPage from '@/app/pages/dashboard/ActivitiesPage.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -31,6 +32,14 @@ const routes: RouteRecordRaw[] = [
         component: DashboardPage,
         meta: {
           breadcrumb: ''
+        },
+      },
+      {
+        path: 'activities',
+        name: 'Dashboard_Activities',
+        component: ActivitiesPage,
+        meta: {
+          breadcrumb: 'Activities'
         },
       },
     ],

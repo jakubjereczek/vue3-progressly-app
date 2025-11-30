@@ -10,6 +10,7 @@ export const useActivitiesStore = defineStore('activities', () => {
   const userStore = useUserStore();
 
   const currentActivity = ref<TableRow<'activities'> | undefined>();
+  const activities = ref<TableRow<'activities'>[]>([])
   const loading = ref(false);
   const error = ref<string | undefined>();
 
@@ -116,12 +117,34 @@ export const useActivitiesStore = defineStore('activities', () => {
     }
   }
 
+  async function getActivities(): Promise<TableRow<'activities'>[] | undefined> {
+    if (!userStore.user) {
+      return undefined;
+    }
+    loading.value = true;
+    error.value = undefined;
+
+    try {
+      const userId = userStore.user.id;
+      const userActivities = await ActivitiesService.get({ user_id: userId })  as TableRow<'activities'>[];
+      activities.value = userActivities;
+      return userActivities
+    } catch (err: unknown) {
+      error.value = getFriendlyErrorTranslationLabel(err);
+      return undefined;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     currentActivity,
+    activities,
     loading,
     error,
     loadPendingActivity,
     startRecordingActivity,
     finishRecordingActivity,
+    getActivities,
   };
 });

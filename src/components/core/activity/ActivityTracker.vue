@@ -132,23 +132,21 @@ function toggleTimer() {
 </script>
 
 <template>
-  <div>
-    <Card class="p-8 flex flex-col gap-10 md:flex-row md:gap-10 rounded-2xl border border-border/40">
-      <div class="md:flex-grow">
-        <h2 class="text-xl font-semibold mb-4">{{ t('activityTracker.title') }}</h2>
-        <ActivityTrackerForm
-          v-model:description="description"
-          v-model:category="category"
-          v-model:tagsInput="tagsInput"
-          :state="state"
-          :elapsedSeconds="elapsedSeconds"
-          @submitForm="handleSubmit"
-        />
-      </div>
+  <Card class="p-8 flex flex-col gap-10 md:flex-row md:gap-10 rounded-2xl border border-border/40 h-full">
+    <div class="md:flex-grow">
+      <h2 class="text-xl font-semibold mb-4">{{ t('activityTracker.title') }}</h2>
+      <ActivityTrackerForm
+        v-model:description="description"
+        v-model:category="category"
+        v-model:tagsInput="tagsInput"
+        :state="state"
+        :elapsedSeconds="elapsedSeconds"
+        @submitForm="handleSubmit"
+      />
+    </div>
 
-      <div class="flex flex-col items-center space-y-6 md:w-[220px] xl:w-[280px] md:flex-shrink-0">
-        <ActivityTrackerTime :totalSeconds="elapsedSeconds" :state="state" @toggleTimer="toggleTimer" />
-      </div>
-    </Card>
-  </div>
+    <div class="flex flex-col items-center space-y-6 md:w-[220px] xl:w-[280px] md:flex-shrink-0">
+      <ActivityTrackerTime :totalSeconds="elapsedSeconds" :state="state" @toggleTimer="toggleTimer" />
+    </div>
+  </Card>
 </template>

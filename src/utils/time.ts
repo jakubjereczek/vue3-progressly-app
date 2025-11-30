@@ -12,3 +12,17 @@ export function formatTime(totalSeconds: number): string {
   }
 }
 
+export function formatDuration(startedAt: string, finishedAt: string | null): string {
+ const start = new Date(startedAt).getTime();
+  const end = finishedAt ? new Date(finishedAt).getTime() : new Date().getTime();
+  const durationMs = end - start;
+
+  const seconds = Math.floor(durationMs / 1000);
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+
+  const pad = (num: number) => num.toString().padStart(2, '0');
+
+  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+}
