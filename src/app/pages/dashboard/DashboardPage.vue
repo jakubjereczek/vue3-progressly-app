@@ -4,7 +4,6 @@
       <ActivityTracker />
     </div>
     <div class="rounded-xl bg-muted xl:col-span-2">
-      <!-- <TimelineOverview /> -->
        <TodayTimeSummary/>
     </div>
   </div>
@@ -12,6 +11,5 @@
 
 <script setup lang="ts">
 import ActivityTracker from '@/components/core/activity/ActivityTracker.vue';
-import TimelineOverview from '@/components/core/timeline/TimelineOverview.vue';
 import TodayTimeSummary from '@/components/core/today-time-summary/TodayTimeSummary.vue';
 </script>
