@@ -16,7 +16,7 @@
                   <BreadcrumbPage v-if="index === breadcrumbs.length - 1" class="font-semibold text-primary">
                     {{ crumb.name }}
                   </BreadcrumbPage>
-                  <BreadcrumbLink v-else :href="crumb.path">
+                  <BreadcrumbLink v-else :to="crumb.path">
                     {{ crumb.name }}
                   </BreadcrumbLink>
                 </BreadcrumbItem>
