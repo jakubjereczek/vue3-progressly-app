@@ -27,20 +27,24 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, breadcrumb: 'Dashboard' },
     children: [
       {
-        path: '',
+        path: 'overview',
         name: 'Dashboard_Overview',
         component: DashboardPage,
         meta: {
-          breadcrumb: ''
+          breadcrumb: 'Overview',
         },
       },
       {
-        path: 'activities',
-        name: 'Dashboard_Activities',
+        path: 'timesheet',
+        name: 'Dashboard_Timesheet',
         component: ActivitiesPage,
         meta: {
-          breadcrumb: 'Activities'
+          breadcrumb: 'Timesheet',
         },
+      },
+      {
+        path: '/dashboard',
+        redirect: '/dashboard/overview',
       },
     ],
   },

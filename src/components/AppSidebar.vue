@@ -1,45 +1,41 @@
 <script setup lang="ts">
-import type { SidebarProps } from '@/components/ui/sidebar'
+import type { SidebarProps } from '@/components/ui/sidebar';
 
-import {
-  BookOpen,
-  Bot,
-  Settings2,
-  SquareTerminal,
-} from "lucide-vue-next"
-import NavMain from '@/components/NavMain.vue'
-import NavUser from '@/components/NavUser.vue'
-import NavHeader from '@/components/NavHeader.vue'
+import { Bot, SquareTerminal } from 'lucide-vue-next';
+import NavMain from '@/components/NavMain.vue';
+import NavUser from '@/components/NavUser.vue';
+import NavHeader from '@/components/NavHeader.vue';
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from '@/components/ui/sidebar'
-import { useUserStore } from '@/stores'
-import { storeToRefs } from 'pinia'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
+import { useUserStore } from '@/stores';
+import { storeToRefs } from 'pinia';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
-  collapsible: "icon",
-})
+  collapsible: 'icon',
+});
 
-const userStore = useUserStore()
-const { user } = storeToRefs(userStore)
-
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 
 const data = {
   navMain: [
     {
-      title: "Dashboard",
-      url: "/",
+      title: 'Dashboard',
+      url: '/',
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "Overview",
-          url: "/dashboard",
+          title: 'Time tracking',
+          url: '/dashboard/overview',
+        },
+        {
+          title: 'Timesheet',
+          url: '/dashboard/timesheet',
+        },
+        {
+          title: 'Timegantt',
+          url: '/dashboard/gantt',
         },
         // {
         //   title: "Statistics",
@@ -47,29 +43,29 @@ const data = {
         // },
       ],
     },
-    {
-      title: "Tracking",
-      url: "/",
-      icon: Bot,
-      items: [
-        {
-          title: "Timer",
-          url: "/timer",
-        },
-         {
-          title: "Activities history",
-          url: "/dashboard/activities",
-        },
-        // {
-        //   title: "Manual Entry",
-        //   url: "/manual-entry",
-        // },
-        // {
-        //   title: "History",
-        //   url: "/history",
-        // },
-      ],
-    },
+    // {
+    //   title: "Tracking",
+    //   url: "/",
+    //   icon: Bot,
+    //   items: [
+    //     {
+    //       title: "Timer",
+    //       url: "/timer",
+    //     },
+    //      {
+    //       title: "Activities history",
+    //       url: "/dashboard/activities",
+    //     },
+    // {
+    //   title: "Manual Entry",
+    //   url: "/manual-entry",
+    // },
+    // {
+    //   title: "History",
+    //   url: "/history",
+    // },
+    // ],
+    // },
     // {
     //   title: "Activities",
     //   url: "/",
@@ -92,14 +88,14 @@ const data = {
     //     },
     //   ],
     // },
-  ]
-}
+  ],
+};
 </script>
 
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <NavHeader  />
+      <NavHeader />
     </SidebarHeader>
     <SidebarContent>
       <NavMain :items="data.navMain" />

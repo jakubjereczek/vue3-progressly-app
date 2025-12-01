@@ -69,5 +69,9 @@
   "activitiesTable.openMenu": "Otwórz menu",
   "activitiesTable.edit": "Edytuj",
   "activitiesTable.viewDetails": "Wyświetl szczegóły",
-  "activitiesTable.delete": "Usuń"
+  "activitiesTable.delete": "Usuń",
+  "dashboard.todaySummaryTitle": "Podsumowanie dnia",
+  "dashboard.noTimeTrackedToday": "Dzisiaj nie zarejestrowano żadnej aktywności.",
+  "dashboard.totalTimeToday": "Całkowity czas dzisiaj:",
+  "dashboard.timeDistribution": "Rozkład czasu według kategorii"
 }

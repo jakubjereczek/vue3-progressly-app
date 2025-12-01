@@ -132,7 +132,7 @@ function toggleTimer() {
 </script>
 
 <template>
-  <Card class="p-8 flex flex-col gap-10 md:flex-row md:gap-10 rounded-2xl border border-border/40 h-full">
+  <Card class="p-8 flex flex-col gap-6 md:flex-row md:gap-10 rounded-2xl border border-border/40 h-full">
     <div class="md:flex-grow">
       <h2 class="text-xl font-semibold mb-4">{{ t('activityTracker.title') }}</h2>
       <ActivityTrackerForm

@@ -69,5 +69,9 @@
   "activitiesTable.openMenu": "Open Menu",
   "activitiesTable.edit": "Edit",
   "activitiesTable.viewDetails": "View Details",
-  "activitiesTable.delete": "Delete"
+  "activitiesTable.delete": "Delete",
+  "dashboard.todaySummaryTitle": "Today's Summary",
+  "dashboard.noTimeTrackedToday": "No activity tracked today.",
+  "dashboard.totalTimeToday": "Total time today:",
+  "dashboard.timeDistribution": "Time distribution by category"
 }

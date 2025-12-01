@@ -147,7 +147,7 @@ const sortedActivities = computed(() => {
 });
 
 function handleActivityAction(activityId: string, action: 'delete' | 'edit' | 'view') {
-  console.log(`Akcja: ${action} na aktywności ID: ${activityId}`);
+  // todo: handle activity action
 }
 
 onMounted(async () => {
@@ -158,9 +158,8 @@ onMounted(async () => {
 <template>
   <Card class="p-8 flex flex-col gap-10 rounded-2xl border border-border/40 h-full">
     <div class="w-full">
-      <div class="flex items-center justify-between mb-4 flex-wrap gap-4">
-        <h2 class="flex items-center gap-2 text-xl font-semibold">
-          <Clock3 class="w-6 h-6 text-primary" />
+      <div class="flex justify-between mb-4 flex-wrap gap-4">
+        <h2 class="text-xl font-semibold">
           {{ t('activitiesTable.activityHistory') }}
         </h2>
 
