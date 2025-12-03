@@ -31,8 +31,12 @@ import { computed } from "vue"
 import type { User } from "@supabase/supabase-js"
 import defaultAvatar from '@/assets/default-avatar.svg'
 import { useTranslation } from '@/composables/useTranslation' 
+import { useUserStore } from '@/stores'
+import { useRouter } from "vue-router"
 
 const { t } = useTranslation()
+const userStore = useUserStore();
+const router = useRouter();
 
 const props = defineProps<{
   user: User
@@ -43,6 +47,12 @@ const { isMobile } = useSidebar()
 const avatarUrl = computed(() => props.user.user_metadata?.avatar_url ?? defaultAvatar)
 const email = computed(() => props.user.email)
 const displayName = computed(() => props.user.user_metadata?.full_name ?? "User")
+
+async function onLogoutClick() {
+  await userStore.logout();
+  router.push('/login');
+}
+
 </script>
 
 <template>
@@ -110,7 +120,7 @@ const displayName = computed(() => props.user.user_metadata?.full_name ?? "User"
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem>
+          <DropdownMenuItem @click="onLogoutClick">
             <LogOut />
             {{ t('user.logout') }}
           </DropdownMenuItem>
