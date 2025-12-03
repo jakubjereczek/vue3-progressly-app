@@ -3,7 +3,7 @@ import routes from "./routes";
 import { useUserStore } from "../stores";
 
 export const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory('/vue3-progressly-app/'),
   routes,
 });
 
