@@ -26,7 +26,7 @@ function getMockCategory(categoryId: string | null) {
 // todo: fetch current today activities per request
 const todayActivities = computed(() => {
   const today = getTodayDateString();
-  const activitiesList = (activities.value || []) as ActivityType<'activities'>[];
+  const activitiesList = (activities.value || []) as unknown as ActivityType<'activities'>[];
 
   return activitiesList.filter((activity) => {
     return activity.started_at && activity.started_at.startsWith(today);

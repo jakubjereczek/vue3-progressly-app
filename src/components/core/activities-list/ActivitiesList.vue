@@ -146,7 +146,7 @@ const sortedActivities = computed(() => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function handleActivityAction(activityId: string, action: 'delete' | 'edit' | 'view') {
+function handleActivityAction(_activityId: string, _action: 'delete' | 'edit' | 'view') {
   // todo: handle activity action
 }
 
