@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SidebarProps } from '@/components/ui/sidebar';
 
-import { Bot, SquareTerminal } from 'lucide-vue-next';
+import { SquareTerminal } from 'lucide-vue-next';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import NavHeader from '@/components/NavHeader.vue';

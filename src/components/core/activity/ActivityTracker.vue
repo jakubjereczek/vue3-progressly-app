@@ -32,7 +32,7 @@ const getStartedAtTimestamp = () => {
 const synchronizeFormOnActivityChange = () => {
   if (currentActivity.value) {
     description.value = currentActivity.value.description || '';
-    tagsInput.value = currentActivity.value.tags?.join(', ') || '';
+    tagsInput.value = (currentActivity.value.tags as string[])?.join(', ') || '';
     category.value = ''; // todo: find category by its id
   } else {
     description.value = '';

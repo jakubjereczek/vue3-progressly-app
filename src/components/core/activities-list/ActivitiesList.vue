@@ -12,7 +12,6 @@ import {
   Loader2,
   Tag,
   Box,
-  Clock3,
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
@@ -96,7 +95,7 @@ function formatMonthDisplay(dateString: string): string {
   const parts = dateString.split('-');
   const year = parts[0];
   const month = parts[1];
-  const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+  const date = new Date(parseInt(year!), parseInt(month!) - 1, 1);
   return date.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long' });
 }
 
@@ -130,7 +129,7 @@ function formatDateTime(dateString: string | null): string {
 }
 
 const filteredActivities = computed(() => {
-  const activitiesList = (activities.value || []) as ActivityType<'activities'>[];
+  const activitiesList = (activities.value || []) as unknown as ActivityType<'activities'>[];
   const filterMonth = currentMonth.value;
 
   const filtered = activitiesList.filter((activity: ActivityType<'activities'>) => {
@@ -146,6 +145,7 @@ const sortedActivities = computed(() => {
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function handleActivityAction(activityId: string, action: 'delete' | 'edit' | 'view') {
   // todo: handle activity action
 }
@@ -278,7 +278,7 @@ onMounted(async () => {
 
                 <TableCell v-else-if="column.id === 'tags'">
                   <div class="flex flex-wrap gap-1">
-                    <template v-if="activity.tags && activity.tags.length > 0">
+                    <template v-if="activity?.tags && (activity.tags as string[])?.length > 0">
                       <Badge
                         v-for="(tag, index) in activity.tags"
                         :key="index"

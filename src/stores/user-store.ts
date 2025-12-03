@@ -33,7 +33,7 @@ export const useUserStore = defineStore('user', () => {
       return newUser;
     } catch (err: unknown) {
       console.log('err register', err);
-      error.value = err?.message ?? '';
+      error.value = (err as Error)?.message ?? '';
 
       clearUser();
       return null;
@@ -55,9 +55,7 @@ export const useUserStore = defineStore('user', () => {
       }
       return newUser;
     } catch (err: unknown) {
-      console.log('err login', err);
-
-      error.value = err?.message ?? '';
+      error.value = (err as Error)?.message ?? '';
 
       clearUser();
       return null;
@@ -74,7 +72,7 @@ export const useUserStore = defineStore('user', () => {
       await SupabaseClient.signOut();
       clearUser();
     } catch (err: unknown) {
-      error.value = err?.message ?? '';
+      error.value = (err as Error)?.message ?? '';
 
       clearUser();
     } finally {
@@ -94,7 +92,7 @@ export const useUserStore = defineStore('user', () => {
         clearUser();
       }
     } catch (err: unknown) {
-      error.value = err?.message ?? '';
+      error.value = (err as Error)?.message ?? '';
 
       clearUser();
     } finally {
@@ -112,7 +110,7 @@ export const useUserStore = defineStore('user', () => {
         clearUser();
       }
     } catch (err: unknown) {
-      error.value = err?.message ?? '';
+      error.value = (err as Error)?.message ?? '';
 
       clearUser();
     } finally {

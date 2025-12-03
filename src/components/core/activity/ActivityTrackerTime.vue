@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatTime } from '@/utils/time';
 import { computed } from 'vue';
-import type { TimerState } from '@/components/core/activity/ActivityTracker.vue';
+import type { TimerState } from '@/components/core/activity/ActivityTrackerForm.vue';
 
 interface ActivityTrackerTimeProps {
   totalSeconds: number;
