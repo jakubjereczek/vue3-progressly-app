@@ -6,6 +6,9 @@ import type { Json, TablesInsert } from '@/api/db-types';
 import { getFriendlyErrorTranslationLabel } from '@/api/supabaseErrors';
 import { useUserStore } from '@/stores';
 
+// todo: use vue cache (like react cache)
+// todo: fix global loading issue 
+
 export const useActivitiesStore = defineStore('activities', () => {
   const userStore = useUserStore();
 
@@ -137,6 +140,31 @@ export const useActivitiesStore = defineStore('activities', () => {
     }
   }
 
+  async function deleteActivityById(activityId: string): Promise<boolean> {
+    if (!userStore.user) {
+      return false;
+    }
+
+    error.value = undefined;
+
+    try {
+      const filter = {
+        id: activityId,
+        user_id: userStore.user.id,
+      };
+      await ActivitiesService.delete(filter);
+      activities.value = activities.value.filter((activity) => activity.id !== activityId);
+
+      if (currentActivity.value?.id === activityId) {
+        currentActivity.value = undefined;
+      }
+
+      return true; 
+    } catch {
+      return false;
+    }
+  }
+
   return {
     currentActivity,
     activities,
@@ -146,5 +174,6 @@ export const useActivitiesStore = defineStore('activities', () => {
     startRecordingActivity,
     finishRecordingActivity,
     getActivities,
+    deleteActivityById,
   };
 });

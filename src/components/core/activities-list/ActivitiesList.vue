@@ -29,16 +29,53 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { toast } from 'vue-sonner';
 
 // todo: do not load all user activities, load data only per month
 // todo: add categories support
-// todo: add action support (view, delete, edit)
+// todo: add action support (view, edit)
 
 const { t } = useTranslation();
 const activitiesStore = useActivitiesStore();
 const { loading, activities } = storeToRefs(activitiesStore);
 
 const currentMonth = ref(new Date().toISOString().substring(0, 7)); // YYYY-MM
+
+const isDeleteDialogOpen = ref(false);
+const activityToDeleteId = ref<string | null>(null);
+
+function openDeleteDialog(activityId: string) {
+  activityToDeleteId.value = activityId;
+  isDeleteDialogOpen.value = true;
+}
+
+function closeDeleteDialog() {
+  activityToDeleteId.value = null;
+  isDeleteDialogOpen.value = false;
+}
+
+async function confirmDeleteActivity() {
+  if (activityToDeleteId.value) {
+    const success = await activitiesStore.deleteActivityById(activityToDeleteId.value);
+
+    if (success) {
+      toast.success(t('toast.activityDeletedSuccess'));
+    } else {
+      toast.error(t('toast.activityDeleteError'));
+    }
+  }
+  closeDeleteDialog();
+}
 
 const columnDefinitions = [
   { id: 'status', label: t('activitiesTable.status'), visible: true, class: 'w-[120px]', isToggleable: false },
@@ -145,9 +182,10 @@ const sortedActivities = computed(() => {
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function handleActivityAction(_activityId: string, _action: 'delete' | 'edit' | 'view') {
-  // todo: handle activity action
+function handleActivityAction(activityId: string, action: 'delete' | 'edit' | 'view') {
+  if (action === 'delete') {
+    openDeleteDialog(activityId);
+  }
 }
 
 onMounted(async () => {
@@ -346,4 +384,21 @@ onMounted(async () => {
       </div>
     </div>
   </Card>
+
+  <AlertDialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{{ t('deleteActivityDialog.title') }}</AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ t('deleteActivityDialog.description') }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="closeDeleteDialog">{{ t('deleteActivityDialog.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction @click="confirmDeleteActivity" class="bg-red-600 hover:bg-red-700 focus:ring-red-500">
+          {{ t('deleteActivityDialog.delete') }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
