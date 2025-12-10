@@ -5,7 +5,7 @@ import { toast } from 'vue-sonner';
 import { Card } from '@/components/ui/card';
 import { useActivitiesStore } from '@/stores';
 import { useTranslation } from '@/composables';
-import { Table, TableBody, TableCell, TableHead, TableHeader } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +19,7 @@ import {
   MoreHorizontal,
   ChevronDown,
 } from 'lucide-vue-next';
-import type { TableRow } from '@/api/supabase';
+import type { TableRow as ITableRow } from '@/api/supabase';
 import { formatDuration } from '@/utils/time';
 import {
   DropdownMenu,
@@ -65,7 +65,7 @@ const currentMonth = ref(new Date().toISOString().substring(0, 7)); // YYYY-MM
 const isDeleteDialogOpen = ref(false);
 const activityToDeleteId = ref<string | null>(null);
 const isSheetOpen = ref(false);
-const currentActivity = ref<TableRow<'activities'> | undefined>();
+const currentActivity = ref<ITableRow<'activities'> | undefined>();
 const sheetMode = ref<'view' | 'edit'>('view');
 
 const editableActivity = ref<
@@ -106,7 +106,7 @@ async function confirmDeleteActivity() {
   closeDeleteDialog();
 }
 
-function openSheet(activity: TableRow<'activities'>, mode: 'view' | 'edit') {
+function openSheet(activity: ITableRow<'activities'>, mode: 'view' | 'edit') {
   currentActivity.value = activity;
   sheetMode.value = mode;
   editableActivity.value = {
@@ -230,10 +230,10 @@ function formatDateTime(dateString: string | null): string {
 }
 
 const filteredActivities = computed(() => {
-  const activitiesList = (activities.value || []) as unknown as TableRow<'activities'>[];
+  const activitiesList = (activities.value || []) as unknown as ITableRow<'activities'>[];
   const filterMonth = currentMonth.value;
 
-  const filtered = activitiesList.filter((activity: TableRow<'activities'>) => {
+  const filtered = activitiesList.filter((activity: ITableRow<'activities'>) => {
     return activity.started_at && activity.started_at.startsWith(filterMonth);
   });
 
@@ -246,7 +246,7 @@ const sortedActivities = computed(() => {
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 
-function handleActivityAction(activity: TableRow<'activities'>, action: 'delete' | 'edit' | 'view') {
+function handleActivityAction(activity: ITableRow<'activities'>, action: 'delete' | 'edit' | 'view') {
   if (activity) {
     if (action === 'delete') {
       openDeleteDialog(activity.id);

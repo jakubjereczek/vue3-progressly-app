@@ -81,5 +81,11 @@
   "dashboard.todaySummaryTitle": "Today's Summary",
   "dashboard.noTimeTrackedToday": "No activity tracked today.",
   "dashboard.totalTimeToday": "Total time today:",
-  "dashboard.timeDistribution": "Time distribution by category"
+  "dashboard.timeDistribution": "Time distribution by category",
+  "activitySheet.editTitle": "Edit Activity",
+  "activitySheet.viewTitle": "View Activity",
+  "activitySheet.editDescription": "Make changes to the details of this activity.",
+  "activitySheet.viewDescription": "View all details regarding the selected activity.",
+  "activitySheet.cancel": "Cancel",
+  "activitySheet.saveChanges": "Save Changes"
 }

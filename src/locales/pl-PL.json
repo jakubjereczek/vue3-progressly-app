@@ -81,5 +81,11 @@
   "dashboard.todaySummaryTitle": "Podsumowanie dnia",
   "dashboard.noTimeTrackedToday": "Dzisiaj nie zarejestrowano żadnej aktywności.",
   "dashboard.totalTimeToday": "Całkowity czas dzisiaj:",
-  "dashboard.timeDistribution": "Rozkład czasu według kategorii"
+  "dashboard.timeDistribution": "Rozkład czasu według kategorii",
+  "activitySheet.editTitle": "Edytuj aktywność",
+  "activitySheet.viewTitle": "Wyświetl aktywność",
+  "activitySheet.editDescription": "Wprowadź zmiany w szczegółach tej aktywności.",
+  "activitySheet.viewDescription": "Przeglądaj wszystkie szczegóły dotyczące wybranej aktywności.",
+  "activitySheet.cancel": "Anuluj",
+  "activitySheet.saveChanges": "Zapisz zmiany"
 }
