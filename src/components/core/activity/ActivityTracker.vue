@@ -13,26 +13,26 @@ import { useTranslation } from '@/composables';
 const { t } = useTranslation();
 const activitiesStore = useActivitiesStore();
 
-const { currentActivity, loading, error } = storeToRefs(activitiesStore);
+const { trackingActivity, loading, error } = storeToRefs(activitiesStore);
 const { loadPendingActivity, startRecordingActivity, finishRecordingActivity } = activitiesStore;
 
 const description = ref('');
 const category = ref('');
 const tagsInput = ref('');
 
-const isRunning = computed(() => !!currentActivity.value);
+const isRunning = computed(() => !!trackingActivity.value);
 
 const getStartedAtTimestamp = () => {
-  if (currentActivity.value) {
-    return new Date(currentActivity.value.started_at).getTime();
+  if (trackingActivity.value) {
+    return new Date(trackingActivity.value.started_at).getTime();
   }
   return null;
 };
 
 const synchronizeFormOnActivityChange = () => {
-  if (currentActivity.value) {
-    description.value = currentActivity.value.description || '';
-    tagsInput.value = (currentActivity.value.tags as string[])?.join(', ') || '';
+  if (trackingActivity.value) {
+    description.value = trackingActivity.value.description || '';
+    tagsInput.value = (trackingActivity.value.tags as string[])?.join(', ') || '';
     category.value = ''; // todo: find category by its id
   } else {
     description.value = '';
@@ -98,10 +98,10 @@ async function handleSubmit() {
 }
 
 async function handleFinish() {
-  if (!currentActivity.value || state.value !== 'playing') {
+  if (!trackingActivity.value || state.value !== 'playing') {
     return;
   }
-  const activityId = currentActivity.value.id;
+  const activityId = trackingActivity.value.id;
   const descriptionUpdate = description.value.trim();
   const tagsArray = splitAndTrim(tagsInput.value);
 

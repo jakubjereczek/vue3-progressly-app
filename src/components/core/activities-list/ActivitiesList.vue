@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import { toast } from 'vue-sonner';
 import { Card } from '@/components/ui/card';
 import { useActivitiesStore } from '@/stores';
 import { useTranslation } from '@/composables';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,8 +19,7 @@ import {
   MoreHorizontal,
   ChevronDown,
 } from 'lucide-vue-next';
-import type { TableRow as ActivityType } from '@/api/supabase';
-import { storeToRefs } from 'pinia';
+import type { TableRow } from '@/api/supabase';
 import { formatDuration } from '@/utils/time';
 import {
   DropdownMenu,
@@ -39,20 +40,48 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { toast } from 'vue-sonner';
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { arrayToString, splitAndTrim } from '@/utils/string';
 
-// todo: do not load all user activities, load data only per month
-// todo: add categories support
-// todo: add action support (view, edit)
+// todo: data select for started at
+// todo; data select for finished at
 
 const { t } = useTranslation();
 const activitiesStore = useActivitiesStore();
 const { loading, activities } = storeToRefs(activitiesStore);
 
 const currentMonth = ref(new Date().toISOString().substring(0, 7)); // YYYY-MM
-
 const isDeleteDialogOpen = ref(false);
 const activityToDeleteId = ref<string | null>(null);
+const isSheetOpen = ref(false);
+const currentActivity = ref<TableRow<'activities'> | undefined>();
+const sheetMode = ref<'view' | 'edit'>('view');
+
+const editableActivity = ref<
+  | {
+      description: string;
+      tags: string;
+      category_id: string | undefined;
+    }
+  | undefined
+>();
+
+const formattedStartedAt = computed(() => formatDateTime(currentActivity.value?.started_at || null));
+const formattedFinishedAt = computed(() => formatDateTime(currentActivity.value?.finished_at || null));
+const formattedDuration = computed(() =>
+  formatDuration(currentActivity.value!.started_at, currentActivity.value?.finished_at || null),
+);
 
 function openDeleteDialog(activityId: string) {
   activityToDeleteId.value = activityId;
@@ -66,7 +95,7 @@ function closeDeleteDialog() {
 
 async function confirmDeleteActivity() {
   if (activityToDeleteId.value) {
-    const success = await activitiesStore.deleteActivityById(activityToDeleteId.value);
+    const { success } = await activitiesStore.deleteActivityById(activityToDeleteId.value);
 
     if (success) {
       toast.success(t('toast.activityDeletedSuccess'));
@@ -75,6 +104,41 @@ async function confirmDeleteActivity() {
     }
   }
   closeDeleteDialog();
+}
+
+function openSheet(activity: TableRow<'activities'>, mode: 'view' | 'edit') {
+  currentActivity.value = activity;
+  sheetMode.value = mode;
+  editableActivity.value = {
+    description: activity.description,
+    tags: arrayToString(activity.tags),
+    category_id: activity.category_id ?? undefined,
+  };
+
+  isSheetOpen.value = true;
+}
+
+async function saveActivityChanges() {
+  if (!currentActivity.value || !editableActivity.value) {
+    return;
+  }
+
+  const updatedTagsArray = splitAndTrim(editableActivity.value.tags);
+  const updatePayload = {
+    ...currentActivity.value,
+    description: editableActivity.value.description,
+    tags: updatedTagsArray,
+    category_id: editableActivity.value.category_id,
+  };
+  const { success } = await activitiesStore.updateActivityById(currentActivity.value.id, updatePayload);
+
+  if (success) {
+    toast.success(t('toast.activityUpdateSuccess'));
+  } else {
+    toast.error(t('activityUpdateError'));
+  }
+
+  isSheetOpen.value = false;
 }
 
 const columnDefinitions = [
@@ -166,10 +230,10 @@ function formatDateTime(dateString: string | null): string {
 }
 
 const filteredActivities = computed(() => {
-  const activitiesList = (activities.value || []) as unknown as ActivityType<'activities'>[];
+  const activitiesList = (activities.value || []) as unknown as TableRow<'activities'>[];
   const filterMonth = currentMonth.value;
 
-  const filtered = activitiesList.filter((activity: ActivityType<'activities'>) => {
+  const filtered = activitiesList.filter((activity: TableRow<'activities'>) => {
     return activity.started_at && activity.started_at.startsWith(filterMonth);
   });
 
@@ -182,9 +246,15 @@ const sortedActivities = computed(() => {
     .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 });
 
-function handleActivityAction(activityId: string, action: 'delete' | 'edit' | 'view') {
-  if (action === 'delete') {
-    openDeleteDialog(activityId);
+function handleActivityAction(activity: TableRow<'activities'>, action: 'delete' | 'edit' | 'view') {
+  if (activity) {
+    if (action === 'delete') {
+      openDeleteDialog(activity.id);
+    } else if (action === 'edit') {
+      openSheet(activity, 'edit');
+    } else if (action === 'view') {
+      openSheet(activity, 'view');
+    }
   }
 }
 
@@ -318,7 +388,7 @@ onMounted(async () => {
                   <div class="flex flex-wrap gap-1">
                     <template v-if="activity?.tags && (activity.tags as string[])?.length > 0">
                       <Badge
-                        v-for="(tag, index) in activity.tags"
+                        v-for="(tag, index) in activity.tags as string[]"
                         :key="index"
                         variant="outline"
                         class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
@@ -361,15 +431,15 @@ onMounted(async () => {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>{{ t('activitiesTable.actions') }}</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem @click="handleActivityAction(activity.id, 'edit')">
+                      <DropdownMenuItem @click="handleActivityAction(activity, 'edit')">
                         {{ t('activitiesTable.edit') }}
                       </DropdownMenuItem>
-                      <DropdownMenuItem @click="handleActivityAction(activity.id, 'view')">
+                      <DropdownMenuItem @click="handleActivityAction(activity, 'view')">
                         {{ t('activitiesTable.viewDetails') }}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        @click="handleActivityAction(activity.id, 'delete')"
+                        @click="handleActivityAction(activity, 'delete')"
                         class="text-red-600 focus:bg-red-50"
                       >
                         {{ t('activitiesTable.delete') }}
@@ -384,7 +454,93 @@ onMounted(async () => {
       </div>
     </div>
   </Card>
+  <!-- todo: make this sheet globally visible (in dashboard layout) -->
+  <Sheet :open="isSheetOpen" @update:open="isSheetOpen = $event">
+    <SheetContent class="flex flex-col">
+      <SheetHeader>
+        <SheetTitle>
+          {{ sheetMode === 'edit' ? t('activitySheet.editTitle') : t('activitySheet.viewTitle') }}
+        </SheetTitle>
+        <SheetDescription>
+          {{ sheetMode === 'edit' ? t('activitySheet.editDescription') : t('activitySheet.viewDescription') }}
+        </SheetDescription>
+      </SheetHeader>
 
+      <div v-if="currentActivity && editableActivity" class="grid flex-1 auto-rows-min gap-6 px-4">
+        <div class="grid grid-cols-4 items-start gap-4">
+          <Label for="description" class="text-right mt-2">
+            {{ t('activitiesTable.description') }}
+          </Label>
+          <Textarea
+            id="description"
+            :placeholder="t('activitiesTable.noDescription')"
+            class="col-span-3 min-h-[80px]"
+            :disabled="sheetMode === 'view'"
+            v-model="editableActivity.description"
+          />
+        </div>
+
+        <div class="grid grid-cols-4 items-start gap-4">
+          <Label for="tags" class="text-right mt-2">
+            {{ t('activitiesTable.tags') }}
+          </Label>
+          <div class="col-span-3">
+            <!-- todo: No tags text if empty -->
+            <Textarea
+              id="tags"
+              placeholder="tag1, tag2, tag3"
+              class="min-h-[80px]"
+              :disabled="sheetMode === 'view'"
+              v-model="editableActivity.tags"
+            />
+            <p class="text-xs text-muted-foreground mt-1" v-if="sheetMode === 'edit'">
+              {{ t('activityTracker.tagsHint') }}
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 items-center gap-4">
+          <!-- todo: categories are not implemented yet -->
+          <Label for="category_id" class="text-right">
+            {{ t('activitiesTable.category') }}
+          </Label>
+          <Input
+            id="category_id"
+            :placeholder="t('activitiesTable.uncategorized')"
+            :disabled="sheetMode === 'view'"
+            v-model="editableActivity.category_id"
+            class="col-span-3"
+          />
+        </div>
+
+        <div class="grid grid-cols-4 items-center gap-4">
+          <Label class="text-right">{{ t('activitiesTable.startedAt') }}</Label>
+          <Input v-model="formattedStartedAt" class="col-span-3" disabled />
+        </div>
+
+        <div class="grid grid-cols-4 items-center gap-4">
+          <Label class="text-right">{{ t('activitiesTable.finishedAt') }}</Label>
+          <Input v-model="formattedFinishedAt" class="col-span-3" disabled />
+        </div>
+
+        <div class="grid grid-cols-4 items-center gap-4">
+          <Label class="text-right">{{ t('activitiesTable.duration') }}</Label>
+          <Input v-model="formattedDuration" class="col-span-3" disabled />
+        </div>
+      </div>
+
+      <SheetFooter class="mt-4">
+        <SheetClose as-child>
+          <Button variant="outline">
+            {{ t('activitySheet.cancel') }}
+          </Button>
+        </SheetClose>
+        <Button v-if="sheetMode === 'edit'" @click="saveActivityChanges" type="submit">
+          {{ t('activitySheet.saveChanges') }}
+        </Button>
+      </SheetFooter>
+    </SheetContent>
+  </Sheet>
   <AlertDialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
     <AlertDialogContent>
       <AlertDialogHeader>

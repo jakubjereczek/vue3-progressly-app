@@ -4,3 +4,7 @@ export function splitAndTrim(input: string): string[] {
     .map((t) => t.trim())
     .filter(Boolean);
 }
+
+export function arrayToString(arr: unknown) {
+  return Array.isArray(arr) ? arr.join(', ') : '';
+}

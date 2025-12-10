@@ -7,13 +7,13 @@ import { getFriendlyErrorTranslationLabel } from '@/api/supabaseErrors';
 import { useUserStore } from '@/stores';
 
 // todo: use vue cache (like react cache)
-// todo: fix global loading issue 
+// todo: fix global loading issue
 
 export const useActivitiesStore = defineStore('activities', () => {
   const userStore = useUserStore();
 
-  const currentActivity = ref<TableRow<'activities'> | undefined>();
-  const activities = ref<TableRow<'activities'>[]>([])
+  const trackingActivity = ref<TableRow<'activities'> | undefined>();
+  const activities = ref<TableRow<'activities'>[]>([]);
   const loading = ref(false);
   const error = ref<string | undefined>();
 
@@ -31,7 +31,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     try {
       const userId = userStore.user.id;
       const activity = await getPendingActivity(userId);
-      currentActivity.value = activity ?? undefined;
+      trackingActivity.value = activity ?? undefined;
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
     } finally {
@@ -66,7 +66,7 @@ export const useActivitiesStore = defineStore('activities', () => {
 
         const newActivity = await ActivitiesService.insert(newActivityData);
         if (newActivity) {
-          currentActivity.value = newActivity;
+          trackingActivity.value = newActivity;
           return newActivity;
         }
       }
@@ -106,8 +106,8 @@ export const useActivitiesStore = defineStore('activities', () => {
 
       const updatedActivity = await ActivitiesService.update(updateData, filter);
       if (updatedActivity) {
-        if (currentActivity.value?.id === activityId) {
-          currentActivity.value = undefined;
+        if (trackingActivity.value?.id === activityId) {
+          trackingActivity.value = undefined;
         }
         return updatedActivity;
       }
@@ -129,9 +129,9 @@ export const useActivitiesStore = defineStore('activities', () => {
 
     try {
       const userId = userStore.user.id;
-      const userActivities = await ActivitiesService.get({ user_id: userId })  as TableRow<'activities'>[];
+      const userActivities = (await ActivitiesService.get({ user_id: userId })) as TableRow<'activities'>[];
       activities.value = userActivities;
-      return userActivities
+      return userActivities;
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
       return undefined;
@@ -140,9 +140,9 @@ export const useActivitiesStore = defineStore('activities', () => {
     }
   }
 
-  async function deleteActivityById(activityId: string): Promise<boolean> {
+  async function deleteActivityById(activityId: string): Promise<{ success: boolean }> {
     if (!userStore.user) {
-      return false;
+      return { success: false };
     }
 
     error.value = undefined;
@@ -153,20 +153,55 @@ export const useActivitiesStore = defineStore('activities', () => {
         user_id: userStore.user.id,
       };
       await ActivitiesService.delete(filter);
-      activities.value = activities.value.filter((activity) => activity.id !== activityId);
 
-      if (currentActivity.value?.id === activityId) {
-        currentActivity.value = undefined;
+      activities.value = activities.value.filter(
+        (activity: { id: string }) => activity.id !== activityId,
+      ) as unknown as TableRow<'activities'>[];
+
+      if (trackingActivity.value?.id === activityId) {
+        trackingActivity.value = undefined;
       }
 
-      return true; 
+      return { success: true };
     } catch {
-      return false;
+      return { success: false };
+    }
+  }
+
+  async function updateActivityById(
+    activityId: string,
+    updatedFields: Partial<Omit<TableRow<'activities'>, 'id' | 'user_id' | 'created_at' | 'finished_at'>>,
+  ): Promise<{ success: boolean }> {
+    if (!userStore.user) {
+      return { success: false };
+    }
+
+    try {
+      const filter = {
+        id: activityId,
+        user_id: userStore.user.id,
+      };
+
+      const activity = await ActivitiesService.update(updatedFields, filter);
+      const index = activities.value.findIndex((activity: { id: string }) => activity.id === activityId);
+
+      if (activity && index !== -1) {
+        // @ts-expect-error Type instantiation is excessively deep and possibly infinite.
+        activities.value[index] = activity;
+
+        if (trackingActivity.value?.id === activityId) {
+          trackingActivity.value = activity;
+        }
+      }
+
+      return { success: true };
+    } catch {
+      return { success: false };
     }
   }
 
   return {
-    currentActivity,
+    trackingActivity,
     activities,
     loading,
     error,
@@ -175,5 +210,6 @@ export const useActivitiesStore = defineStore('activities', () => {
     finishRecordingActivity,
     getActivities,
     deleteActivityById,
+    updateActivityById,
   };
 });
