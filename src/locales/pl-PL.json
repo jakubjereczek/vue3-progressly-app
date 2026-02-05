@@ -74,6 +74,7 @@
   "activitiesTable.edit": "Edytuj",
   "activitiesTable.viewDetails": "Wyświetl szczegóły",
   "activitiesTable.delete": "Usuń",
+  "activitiesTable.alwaysVisible": "Zawsze widoczne",
   "deleteActivityDialog.title": "Potwierdź usunięcie aktywności",
   "deleteActivityDialog.description": "Czy na pewno chcesz usunąć tę aktywności? Tej operacji nie można cofnąć. Spowoduje to trwałe usunięcie rekordu.",
   "deleteActivityDialog.cancel": "Anuluj",

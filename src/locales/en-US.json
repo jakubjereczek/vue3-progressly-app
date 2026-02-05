@@ -74,6 +74,7 @@
   "activitiesTable.edit": "Edit",
   "activitiesTable.viewDetails": "View Details",
   "activitiesTable.delete": "Delete",
+  "activitiesTable.alwaysVisible": "Always visible",
   "deleteActivityDialog.title": "Confirm activity deletion",
   "deleteActivityDialog.description": "Are you sure you want to delete this activity? This operation cannot be undone. This will permanently delete the record.",
   "deleteActivityDialog.cancel": "Cancel",
