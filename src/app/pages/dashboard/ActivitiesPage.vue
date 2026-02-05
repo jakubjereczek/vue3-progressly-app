@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import ActivitiesList from '@/components/core/activities-list/ActivitiesList.vue';
-
+import ActivitiesHistoryList from '@/components/core/activities-history-list/ActivitiesHistoryList.vue';
+import DashboardContent from '@/components/DashboardContent.vue';
 </script>
 
 <template>
-  <div class="bg-muted w-full h-full rounded-xl ">
-    <ActivitiesList />
-  </div>
+  <DashboardContent>
+    <ActivitiesHistoryList />
+  </DashboardContent>
 </template>
