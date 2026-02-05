@@ -19,6 +19,7 @@ import DropdownMenuLabel from '@/components/ui/dropdown-menu/DropdownMenuLabel.v
 import DropdownMenuSeparator from '@/components/ui/dropdown-menu/DropdownMenuSeparator.vue';
 import DropdownMenuItem from '@/components/ui/dropdown-menu/DropdownMenuItem.vue';
 import TableBody from '@/components/ui/table/TableBody.vue';
+import ErrorMessage from '@/components/error-message/ErrorMessage.vue';
 
 interface Props {
   visibleColumns: Column[];
@@ -56,16 +57,10 @@ function formatDateTime(dateString: string | null): string {
   <div v-if="loading" class="flex justify-center items-center h-full">
     <Loader2 class="w-8 h-8 animate-spin text-primary" />
   </div>
-  <div
-    v-else-if="activities.length === 0"
-    class="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border border-dashed"
-  >
-    <Box class="w-10 h-10 mx-auto mb-3 text-gray-400" />
-    <p class="text-lg font-medium">{{ t('activitiesTable.noActivitiesFoundForMonth') }}</p>
-  </div>
+  <ErrorMessage v-else-if="activities.length === 0" :title="t('activitiesTable.noActivitiesFoundForMonth')" :icon="Box"  />
   <ScrollArea v-else class="h-full w-full border rounded-xl">
     <Table>
-      <TableHeader class="sticky top-0 z-20 bg-white dark:bg-gray-900 border-b">
+      <TableHeader class="sticky top-0 z-0 bg-white dark:bg-gray-900 border-b">
         <TableRow>
           <TableHead
             v-for="column in visibleColumns"
@@ -118,7 +113,7 @@ function formatDateTime(dateString: string | null): string {
             </template>
 
             <template v-else-if="column.id === 'tags'">
-              <div class="flex flex-wrap gap-1">
+              <div class="flex gap-1">
                 <template v-if="activity?.tags && (activity.tags as string[])?.length > 0">
                   <Badge
                     v-for="(tag, index) in activity.tags as string[]"

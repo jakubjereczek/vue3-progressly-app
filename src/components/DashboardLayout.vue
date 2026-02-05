@@ -28,7 +28,7 @@
         </div>
       </header>
 
-      <main class="flex flex-1 flex-col gap-4 p-4 overflow-auto bg-indigo-400">
+      <main class="flex flex-1 flex-col gap-4 p-4 overflow-hidden bg-gray-50">
         <RouterView />
       </main>
     </SidebarInset>

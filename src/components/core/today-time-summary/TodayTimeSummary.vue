@@ -7,6 +7,7 @@ import { storeToRefs } from 'pinia';
 import { Clock3, Loader2 } from 'lucide-vue-next';
 import type { TableRow as ActivityType } from '@/api/supabase';
 import { formatDuration, getDuration, getTodayDateString } from '@/utils/time';
+import ErrorMessage from '@/components/error-message/ErrorMessage.vue';
 
 const { t } = useTranslation();
 const activitiesStore = useActivitiesStore();
@@ -85,19 +86,15 @@ onMounted(async () => {
   <Card class="p-8 rounded-2xl border border-border/40 h-full">
     <h2 class="text-xl font-semibold mb-4">{{ t('dashboard.todaySummaryTitle') }}</h2>
 
-    <div v-if="loading" class="flex justify-center items-center h-40">
+    <div v-if="loading" class="flex justify-center items-center h-full">
       <Loader2 class="w-8 h-8 animate-spin text-primary" />
     </div>
 
-    <div
+    <ErrorMessage
       v-else-if="categorySummary.totalDurationSeconds === 0"
-      class="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border border-dashed"
-    >
-      <Clock3 class="w-10 h-10 mx-auto text-gray-400" />
-      <p class="text-lg font-medium">
-        {{ t('dashboard.noTimeTrackedToday') }}
-      </p>
-    </div>
+      :icon="Clock3"
+      :title="t('dashboard.noTimeTrackedToday')"
+    />
 
     <div v-else>
       <div class="mb-6">
