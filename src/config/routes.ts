@@ -1,8 +1,6 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { LoginPage, RegisterPage, DashboardPage } from '../app/pages';
+import { LoginPage, RegisterPage, OverviewPage, TimesheetPage } from '@/app/pages';
 import DashboardLayout from '@/components/DashboardLayout.vue';
-import ActivitiesPage from '@/app/pages/dashboard/ActivitiesPage.vue';
-
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -29,7 +27,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'overview',
         name: 'Dashboard_Overview',
-        component: DashboardPage,
+        component: OverviewPage,
         meta: {
           breadcrumb: 'Overview',
         },
@@ -37,7 +35,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'timesheet',
         name: 'Dashboard_Timesheet',
-        component: ActivitiesPage,
+        component: TimesheetPage,
         meta: {
           breadcrumb: 'Timesheet',
         },

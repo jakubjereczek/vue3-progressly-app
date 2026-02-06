@@ -4,6 +4,7 @@ import { Box, CheckCircle, Hourglass, Loader2, MoreHorizontal, Tag } from 'lucid
 import { useLocale, useTranslation } from '@/composables';
 import { type Column } from '@/components/core/activities-history-list/config';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
+import ScrollBar from '@/components/ui/scroll-area/ScrollBar.vue'; // Upewnij się, że importujesz ScrollBar
 import Table from '@/components/ui/table/Table.vue';
 import TableHeader from '@/components/ui/table/TableHeader.vue';
 import TableRow from '@/components/ui/table/TableRow.vue';
@@ -57,132 +58,132 @@ function formatDateTime(dateString: string | null): string {
   <div v-if="loading" class="flex justify-center items-center h-full">
     <Loader2 class="w-8 h-8 animate-spin text-primary" />
   </div>
-  <ErrorMessage v-else-if="activities.length === 0" :title="t('activitiesTable.noActivitiesFoundForMonth')" :icon="Box"  />
-  <ScrollArea v-else class="h-full w-full border rounded-xl">
-    <Table>
-      <TableHeader class="sticky top-0 z-0 bg-white dark:bg-gray-900 border-b">
-        <TableRow>
-          <TableHead
-            v-for="column in visibleColumns"
-            :key="column.id"
-            :class="[column.class, 'font-semibold text-gray-700']"
-          >
-            {{ column.label }}
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        <TableRow v-for="activity in activities" :key="activity.id" class="hover:bg-blue-50/50 transition-colors">
-          <TableCell v-for="column in visibleColumns" :key="column.id" :class="column.class">
-            <template v-if="column.id === 'status'">
-              <Badge
-                :variant="activity.finished_at ? 'success' : 'info'"
-                class="text-xs py-1 px-2 flex items-center justify-center gap-1"
-              >
-                <template v-if="activity.finished_at">
-                  <CheckCircle class="w-3 h-3" />
-                  {{ t('activitiesTable.finished') }}
-                </template>
-
-                <template v-else>
-                  <Hourglass lass="w-3 h-3 animate-pulse" />
-                  {{ t('activitiesTable.inProgress') }}
-                </template>
-              </Badge>
-            </template>
-
-            <template v-else-if="column.id === 'description'">
-              <span
-                class="text-sm text-gray-700 max-w-[200px] truncate block"
-                :title="activity.description || t('activitiesTable.noDescription')"
-              >
-                {{ activity.description || t('activitiesTable.noDescription') }}
-              </span>
-            </template>
-
-            <template v-else-if="column.id === 'category'">
-              <Badge
-                v-if="activity.category_id"
-                variant="outline"
-                class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
-              >
-                <Tag class="w-3 h-3 mr-1" />
-                {{ t('activitiesTable.categoryName') }}
-              </Badge>
-              <span v-else class="italic text-gray-400">{{ t('activitiesTable.uncategorized') }}</span>
-            </template>
-
-            <template v-else-if="column.id === 'tags'">
-              <div class="flex gap-1">
-                <template v-if="activity?.tags && (activity.tags as string[])?.length > 0">
-                  <Badge
-                    v-for="(tag, index) in activity.tags as string[]"
-                    :key="index"
-                    variant="outline"
-                    class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
-                  >
-                    {{ tag }}
-                  </Badge>
-                </template>
-
-                <span v-else class="italic text-gray-400">{{ t('activitiesTable.noTags') }}</span>
-              </div>
-            </template>
-
-            <template v-else-if="column.id === 'duration'">
-              <span class="text-sm text-gray-700">
-                {{ formatDuration(activity.started_at, activity.finished_at) }}
-              </span>
-            </template>
-
-            <template v-else-if="column.id === 'finishedAt'">
-              <span
-                class="text-right text-sm text-gray-700 block"
-                :class="{ 'italic text-gray-400': !activity.finished_at }"
-              >
-                {{ formatDateTime(activity.finished_at) }}
-              </span>
-            </template>
-
-            <template v-else-if="column.id === 'startedAt'">
-              <span class="text-right text-sm text-gray-700 block">
-                {{ formatDateTime(activity.started_at) }}
-              </span>
-            </template>
-
-            <template v-else-if="column.id === 'actions'">
-              <div class="flex justify-end">
-                <DropdownMenu>
-                  <DropdownMenuTrigger as-child>
-                    <Button variant="ghost" class="h-8 w-8 p-0">
-                      <MoreHorizontal class="w-4 h-4" />
-                      <span class="sr-only">{{ t('activitiesTable.actions') }}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>{{ t('activitiesTable.actions') }}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-
-                    <DropdownMenuItem @click="emit('edit', activity)">
-                      {{ t('activitiesTable.edit') }}
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem @click="emit('view', activity)">
-                      {{ t('activitiesTable.viewDetails') }}
-                    </DropdownMenuItem>
-
-                    <DropdownMenuSeparator />
-
-                    <DropdownMenuItem @click="emit('delete', activity)" class="text-red-600 focus:bg-red-50">
-                      {{ t('activitiesTable.delete') }}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </template>
-          </TableCell>
-        </TableRow>
-      </TableBody>
-    </Table>
+  <ErrorMessage
+    v-else-if="activities.length === 0"
+    :title="t('activitiesTable.noActivitiesFoundForMonth')"
+    :icon="Box"
+  />
+  <ScrollArea v-else class="h-full w-full border rounded-xl overflow-hidden">
+    <div class="min-w-full w-max">
+      <Table>
+        <TableHeader class="sticky top-0 z-0 bg-gray-50 border-b">
+          <TableRow>
+            <TableHead
+              v-for="column in visibleColumns"
+              :key="column.id"
+              :class="[column.class, 'font-semibold text-gray-700 whitespace-nowrap']"
+            >
+              {{ column.label }}
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow v-for="activity in activities" :key="activity.id" class="hover:bg-blue-50/50 transition-colors">
+            <TableCell v-for="column in visibleColumns" :key="column.id" :class="[column.class, 'whitespace-nowrap']">
+              <template v-if="column.id === 'status'">
+                <Badge
+                  :variant="activity.finished_at ? 'success' : 'info'"
+                  class="text-xs py-1 px-2 flex items-center justify-center gap-1"
+                >
+                  <template v-if="activity.finished_at">
+                    <CheckCircle class="w-3 h-3" />
+                    {{ t('activitiesTable.finished') }}
+                  </template>
+                  <template v-else>
+                    <Hourglass class="w-3 h-3 animate-pulse" />
+                    {{ t('activitiesTable.inProgress') }}
+                  </template>
+                </Badge>
+              </template>
+              <template v-else-if="column.id === 'description'">
+                <span
+                  class="text-sm text-gray-700 max-w-[200px] truncate block"
+                  :title="activity.description || t('activitiesTable.noDescription')"
+                >
+                  {{ activity.description || t('activitiesTable.noDescription') }}
+                </span>
+              </template>
+              <template v-else-if="column.id === 'category'">
+                <Badge
+                  v-if="activity.category_id"
+                  variant="outline"
+                  class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
+                >
+                  <Tag class="w-3 h-3 mr-1" />
+                  {{ t('activitiesTable.categoryName') }}
+                </Badge>
+                <span v-else class="italic text-gray-400">{{ t('activitiesTable.uncategorized') }}</span>
+              </template>
+              <template v-else-if="column.id === 'tags'">
+                <div class="flex gap-1">
+                  <template v-if="activity?.tags && (activity.tags as string[]).length > 0">
+                    <Badge
+                      v-for="(tag, index) in (activity.tags as string[]).slice(0, 3)"
+                      :key="index"
+                      variant="outline"
+                      class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
+                    >
+                      {{ tag }}
+                    </Badge>
+                    <Badge
+                      v-if="(activity.tags as string[]).length > 3"
+                      variant="outline"
+                      class="text-xs text-gray-600 bg-gray-100"
+                    >
+                      +{{ (activity.tags as string[]).length - 3 }}
+                    </Badge>
+                  </template>
+                  <span v-else class="italic text-gray-400">{{ t('activitiesTable.noTags') }}</span>
+                </div>
+              </template>
+              <template v-else-if="column.id === 'duration'">
+                <span class="text-sm text-gray-700">
+                  {{ formatDuration(activity.started_at, activity.finished_at) }}
+                </span>
+              </template>
+              <template v-else-if="column.id === 'finishedAt'">
+                <span
+                  class="text-sm text-gray-700 block px-2"
+                  :class="{ 'italic text-gray-400': !activity.finished_at }"
+                >
+                  {{ formatDateTime(activity.finished_at) }}
+                </span>
+              </template>
+              <template v-else-if="column.id === 'startedAt'">
+                <span class="text-sm text-gray-700 block px-2">
+                  {{ formatDateTime(activity.started_at) }}
+                </span>
+              </template>
+              <template v-else-if="column.id === 'actions'">
+                <div class="flex justify-end px-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger as-child>
+                      <Button variant="ghost" class="h-8 w-8 p-0">
+                        <MoreHorizontal class="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>{{ t('activitiesTable.actions') }}</DropdownMenuLabel>
+                      <DropdownMenuItem @click="emit('edit', activity)">{{
+                        t('activitiesTable.edit')
+                      }}</DropdownMenuItem>
+                      <DropdownMenuItem @click="emit('view', activity)">{{
+                        t('activitiesTable.viewDetails')
+                      }}</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem @click="emit('delete', activity)" class="text-red-600">{{
+                        t('activitiesTable.delete')
+                      }}</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </template>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </div>
+    <ScrollBar orientation="horizontal" />
+    <ScrollBar orientation="vertical" />
   </ScrollArea>
 </template>

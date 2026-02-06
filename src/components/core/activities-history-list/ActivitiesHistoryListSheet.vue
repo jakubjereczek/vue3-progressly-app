@@ -31,17 +31,17 @@ const emit = defineEmits<{
 
 const { t } = useTranslation();
 const { locale } = useLocale();
-const activityDescription = ref<string>('');
-const activityTags = ref<string>('');
-const activityCategoryId = ref<string | undefined>();
+const activityDescription = ref(props.activity?.description ?? '');
+const activityTags = ref(arrayToString(props.activity?.tags));
+const activityCategoryId = ref(props.activity?.category_id ?? undefined);
 
-const formattedStartedAt = computed(() => formatDateTime(props.activity?.started_at || null));
-const formattedFinishedAt = computed(() => formatDateTime(props.activity?.finished_at || null));
+const formattedStartedAt = computed(() => formatDateTime(props.activity?.started_at));
+const formattedFinishedAt = computed(() => formatDateTime(props.activity?.finished_at ?? undefined));
 const formattedDuration = computed(() =>
-  formatDuration(props.activity?.started_at, props.activity?.finished_at || null),
+  props.activity ? formatDuration(props.activity?.started_at, props.activity?.finished_at || null) : '',
 );
 
-function formatDateTime(dateString: string | null): string {
+function formatDateTime(dateString: string | undefined): string {
   if (!dateString) {
     return t('activitiesTable.inProgress');
   }
@@ -65,11 +65,12 @@ watch(
     }
   },
 );
+
 </script>
 
 <template>
   <Sheet :open="isSheetOpen" @update:open="(open) => emit('toggleOpen', open)">
-    <SheetContent class="flex flex-col">
+    <SheetContent class="flex flex-col w-full sm:max-w-lg overflow-y-auto">
       <SheetHeader>
         <SheetTitle>
           {{ sheetMode === 'edit' ? t('activitySheet.editTitle') : t('activitySheet.viewTitle') }}
@@ -78,21 +79,21 @@ watch(
           {{ sheetMode === 'edit' ? t('activitySheet.editDescription') : t('activitySheet.viewDescription') }}
         </SheetDescription>
       </SheetHeader>
-
-      <div v-if="activity" class="grid flex-1 auto-rows-min gap-6 px-4">
-        <div class="grid grid-cols-4 items-start gap-4">
-          <Label class="text-right mt-2">
+      <div v-if="activity" class="flex-1 flex flex-col gap-6 p-4">
+        <div class="grid grid-cols-1 sm:grid-cols-4 items-start gap-2 sm:gap-4">
+          <Label class="sm:text-right sm:mt-2 text-sm font-semibold">
             {{ t('activitiesTable.description') }}
           </Label>
-          <Textarea class="col-span-3 min-h-[80px]" :disabled="sheetMode === 'view'" v-model="activityDescription" />
+          <Textarea class="sm:col-span-3 min-h-[80px]" :disabled="sheetMode === 'view'" v-model="activityDescription" />
         </div>
-
-        <div class="grid grid-cols-4 items-start gap-4">
-          <Label class="text-right mt-2">{{ t('activitiesTable.tags') }}</Label>
-          <div class="col-span-3">
+        <div class="grid grid-cols-1 sm:grid-cols-4 items-start gap-2 sm:gap-4">
+          <Label class="sm:text-right sm:mt-2 text-sm font-semibold">
+            {{ t('activitiesTable.tags') }}
+          </Label>
+          <div class="sm:col-span-3">
             <Textarea
               placeholder="tag1, tag2, tag3"
-              class="min-h-[80px]"
+              class="min-h-[80px] w-full"
               :disabled="sheetMode === 'view'"
               v-model="activityTags"
             />
@@ -101,38 +102,32 @@ watch(
             </p>
           </div>
         </div>
-
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label class="text-right">{{ t('activitiesTable.category') }}</Label>
+        <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.category') }}</Label>
           <Input
             :placeholder="t('activitiesTable.uncategorized')"
             :disabled="sheetMode === 'view'"
             v-model="activityCategoryId"
-            class="col-span-3"
+            class="sm:col-span-3"
           />
         </div>
-
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label class="text-right">{{ t('activitiesTable.startedAt') }}</Label>
-          <Input v-model="formattedStartedAt" class="col-span-3" disabled />
+        <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.startedAt') }}</Label>
+          <Input v-model="formattedStartedAt" class="sm:col-span-3" disabled />
         </div>
-
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label class="text-right">{{ t('activitiesTable.finishedAt') }}</Label>
-          <Input v-model="formattedFinishedAt" class="col-span-3" disabled />
+        <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.finishedAt') }}</Label>
+          <Input v-model="formattedFinishedAt" class="sm:col-span-3" disabled />
         </div>
-
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label class="text-right">{{ t('activitiesTable.duration') }}</Label>
-          <Input v-model="formattedDuration" class="col-span-3" disabled />
+        <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
+          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.duration') }}</Label>
+          <Input v-model="formattedDuration" class="sm:col-span-3" disabled />
         </div>
       </div>
-
       <SheetFooter class="mt-4">
         <SheetClose as-child>
           <Button variant="outline">{{ t('activitySheet.cancel') }}</Button>
         </SheetClose>
-
         <Button
           v-if="sheetMode === 'edit'"
           @click="() => emit('save', activityDescription, activityTags, activityCategoryId)"
