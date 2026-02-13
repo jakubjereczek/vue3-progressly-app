@@ -2,14 +2,14 @@
   <div class="flex items-center justify-center min-h-screen">
     <Card class="w-full max-w-sm">
       <CardHeader>
-        <CardTitle class="text-center text-2xl">{{ t('register.title') }}</CardTitle>
-        <CardDescription class="text-center">{{ t('register.description') }}</CardDescription>
+        <CardTitle class="text-center text-2xl">{{ t('app.core.register.title') }}</CardTitle>
+        <CardDescription class="text-center">{{ t('app.core.register.description') }}</CardDescription>
       </CardHeader>
 
       <CardContent>
         <form @submit.prevent="handleRegister" class="space-y-4">
           <div class="space-y-2">
-            <Label for="registerEmail">{{ t('register.emailLabel') }}</Label>
+            <Label for="registerEmail">{{ t('app.core.register.email_label') }}</Label>
             <Input
               id="registerEmail"
               v-model="registerEmail"
@@ -20,7 +20,7 @@
           </div>
 
           <div class="space-y-2">
-            <Label for="registerPassword">{{ t('register.passwordLabel') }}</Label>
+            <Label for="registerPassword">{{ t('app.core.register.password_label') }}</Label>
             <Input
               id="registerPassword"
               v-model="registerPassword"
@@ -31,8 +31,8 @@
           </div>
 
           <Button type="submit" class="w-full" :disabled="loading">
-            <template v-if="loading">{{ t('register.loading') }}</template>
-            <template v-else>{{ t('register.button') }}</template>
+            <template v-if="loading">{{ t('app.core.register.loading') }}</template>
+            <template v-else>{{ t('app.core.register.button') }}</template>
           </Button>
 
           <div v-if="error" class="text-destructive text-sm text-center">
@@ -43,9 +43,9 @@
 
       <CardFooter class="flex justify-center">
         <p class="text-sm text-muted-foreground">
-          {{ t('register.haveAccount') }}
+          {{ t('app.core.register.have_account_question') }}
           <router-link to="/login" class="text-primary hover:underline">
-            {{ t('register.login') }}
+            {{ t('app.core.register.switch_to_login') }}
           </router-link>
         </p>
       </CardFooter>

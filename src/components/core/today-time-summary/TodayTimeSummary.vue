@@ -84,7 +84,7 @@ onMounted(async () => {
 
 <template>
   <Card class="p-8 rounded-2xl border border-border/40 h-full">
-    <h2 class="text-xl font-semibold mb-4">{{ t('dashboard.todaySummaryTitle') }}</h2>
+    <h2 class="text-xl font-semibold mb-4">{{ t('app.module.overview.time_summary.title') }}</h2>
 
     <div v-if="loading" class="flex justify-center items-center h-full">
       <Loader2 class="w-8 h-8 animate-spin text-primary" />
@@ -93,13 +93,13 @@ onMounted(async () => {
     <ErrorMessage
       v-else-if="categorySummary.totalDurationSeconds === 0"
       :icon="Clock3"
-      :title="t('dashboard.noTimeTrackedToday')"
+      :title="t('app.module.overview.time_summary.no_time_tracked_today')"
     />
 
     <div v-else>
       <div class="mb-6">
         <p class="text-md font-semibold">
-          {{ t('dashboard.totalTimeToday') }}
+          {{ t('app.module.overview.time_summary.total_time_today') }}
         </p>
         <p class="text-3xl font-medium text-indigo-400">
           {{ categorySummary.totalDuration }}
@@ -108,7 +108,7 @@ onMounted(async () => {
 
       <div class="mb-6">
         <h3 class="text-md font-semibold mb-3">
-          {{ t('dashboard.timeDistribution') }}
+          {{ t('app.module.overview.time_summary.time_distribution') }}
         </h3>
 
         <div class="space-y-3">

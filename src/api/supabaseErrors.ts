@@ -33,7 +33,7 @@ export function getFriendlyErrorTranslationLabel(error: unknown): string {
   if (!isApiError(error)) {
     console.error('Not a PostgREST error occurred', error);
 
-    return 'apiError.networkFailure';
+    return 'app.api_error.network_failure';
   }
 
   if (isCustomApiError(error)) {
@@ -41,9 +41,9 @@ export function getFriendlyErrorTranslationLabel(error: unknown): string {
 
     switch (error.code) {
       case CustomPostgreSqlErrorCode.DAILY_ACTIVITIES_LIMIT:
-        return 'apiError.dailyLimitReached';
+        return 'app.api_error.daily_limit_reached';
       case CustomPostgreSqlErrorCode.CATEGORIES_LIMIT:
-        return 'apiError.categoriesLimitReached';
+        return 'app.api_error.categories_limit_reached';
     }
   }
 
@@ -51,21 +51,21 @@ export function getFriendlyErrorTranslationLabel(error: unknown): string {
     case PostgreSqlErrorCode.UNIQUE_VIOLATION:
       console.error('PostgREST error occurred (UNIQUE_VIOLATION)', error);
 
-      return 'apiError.uniqueViolation';
+      return 'app.api_error.unique_violation';
     case PostgreSqlErrorCode.NOT_NULL_VIOLATION:
       console.error('PostgREST error occurred (NOT_NULL_VIOLATION)', error);
 
-      return 'apiError.notNullViolation';
+      return 'app.api_error.not_null_violation';
     case PostgreSqlErrorCode.FOREIGN_KEY_VIOLATION:
       console.error('PostgREST error occurred (FOREIGN_KEY_VIOLATION)', error);
 
-      return 'apiError.foreignKeyViolation';
+      return 'app.api_error.foreign_key_violation';
     case PostgreSqlErrorCode.CHECK_VIOLATION:
       console.error('PostgREST error occurred (CHECK_VIOLATION)', error);
 
-      return 'apiError.checkViolation';
+      return 'app.api_error.check_violation';
     default:
       console.error('Unexpected error occurred', error);
-      return 'apiError.unexpected';
+      return 'app.api_error.unexpected';
   }
 }

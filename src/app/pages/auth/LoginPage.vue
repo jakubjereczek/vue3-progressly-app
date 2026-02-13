@@ -2,14 +2,14 @@
   <div class="flex items-center justify-center min-h-screen">
     <Card class="w-full max-w-sm">
       <CardHeader>
-        <CardTitle class="text-center text-2xl">{{ t('login.title') }}</CardTitle>
-        <CardDescription class="text-center">{{ t('login.description') }}</CardDescription>
+        <CardTitle class="text-center text-2xl">{{ t('app.core.login.title') }}</CardTitle>
+        <CardDescription class="text-center">{{ t('app.core.login.description') }}</CardDescription>
       </CardHeader>
 
       <CardContent>
         <form @submit.prevent="handleLogin" class="space-y-4">
           <div class="space-y-2">
-            <Label for="loginEmail">{{ t('login.emailLabel') }}</Label>
+            <Label for="loginEmail">{{ t('app.core.login.email_label') }}</Label>
             <Input
               id="loginEmail"
               v-model="loginEmail"
@@ -20,7 +20,7 @@
           </div>
 
           <div class="space-y-2">
-            <Label for="loginPassword">{{ t('login.passwordLabel') }}</Label>
+            <Label for="loginPassword">{{ t('app.core.login.password_label') }}</Label>
             <Input
               id="loginPassword"
               v-model="loginPassword"
@@ -31,8 +31,8 @@
           </div>
 
           <Button type="submit" class="w-full" :disabled="loading">
-            <template v-if="loading">{{ t('login.loading') }}</template>
-            <template v-else>{{ t('login.button') }}</template>
+            <template v-if="loading">{{ t('app.core.login.loading') }}</template>
+            <template v-else>{{ t('app.core.login.button') }}</template>
           </Button>
 
           <div v-if="error" class="text-destructive text-sm text-center">
@@ -43,8 +43,8 @@
 
       <CardFooter class="flex justify-center">
         <p class="text-sm text-muted-foreground">
-          {{ t('login.noAccount') }}
-          <router-link to="/register" class="text-primary hover:underline"> {{ t('login.register') }} </router-link>
+          {{ t('app.core.login.no_account') }}
+          <router-link to="/register" class="text-primary hover:underline"> {{ t('app.core.login.switch_to_register') }} </router-link>
         </p>
       </CardFooter>
     </Card>

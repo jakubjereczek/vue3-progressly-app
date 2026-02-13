@@ -47,9 +47,9 @@ async function confirmDeleteActivity() {
     const { success } = await activitiesStore.deleteActivityById(activityToDeleteId.value);
 
     if (success) {
-      toast.success(t('toast.activityDeletedSuccess'));
+      toast.success(t('app.toast_notification.activity.deleted_success'));
     } else {
-      toast.error(t('toast.activityDeleteError'));
+      toast.error(t('app.toast_notification.activity.delete_error'));
     }
   }
   closeDeleteDialog();
@@ -74,7 +74,7 @@ async function saveActivityChanges(description: string, tags: string, categoryId
     category_id: categoryId,
   });
   if (success) {
-    toast.success(t('toast.activityUpdateSuccess'));
+    toast.success(t('app.toast_notification.activity.updated_success'));
   } else {
     toast.error(t('activityUpdateError'));
   }

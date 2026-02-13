@@ -52,32 +52,32 @@ function handleSubmit() {
 <template>
   <form @submit.prevent="handleSubmit" class="space-y-5" id="activityForm">
     <FormField name="activityDescription">
-      <FormLabel>{{ t('activityTracker.descriptionLabel') }}</FormLabel>
+      <FormLabel>{{ t('app.module.overview.activity_tracker.description_label') }}</FormLabel>
       <FormControl>
         <Textarea
           v-model="localDescription"
-          :placeholder="t('activityTracker.startPlaceholder')"
+          :placeholder="t('app.module.overview.activity_tracker.start_placeholder')"
           rows="4"
           :disabled="isDisabled"
         />
       </FormControl>
-      <FormDescription>{{ t('activityTracker.descriptionHint') }}</FormDescription>
+      <FormDescription>{{ t('app.module.overview.activity_tracker.description_hint') }}</FormDescription>
     </FormField>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <FormField name="activityCategory">
-        <FormLabel>{{ t('activityTracker.categoryLabel') }}</FormLabel>
+        <FormLabel>{{ t('app.module.overview.activity_tracker.category_label') }}</FormLabel>
         <FormControl>
           <Select v-model="localCategory" :disabled="isDisabled">
             <SelectTrigger class="w-full">
-              <SelectValue :placeholder="t('activityTracker.categoryPlaceholder')" />
+              <SelectValue :placeholder="t('app.module.overview.activity_tracker.category_placeholder')" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
-                <SelectItem value="Praca">{{ t('activityTracker.categoryWork') }}</SelectItem>
-                <SelectItem value="Nauka">{{ t('activityTracker.categoryStudy') }}</SelectItem>
-                <SelectItem value="Ćwiczenia">{{ t('activityTracker.categoryExercise') }}</SelectItem>
-                <SelectItem value="Inne">{{ t('activityTracker.categoryOther') }}</SelectItem>
+                <SelectItem value="Praca">{{ t('app.module.overview.activity_tracker.category.work') }}</SelectItem>
+                <SelectItem value="Nauka">{{ t('app.module.overview.activity_tracker.category.study') }}</SelectItem>
+                <SelectItem value="Ćwiczenia">{{ t('app.module.overview.activity_tracker.category.exercise') }}</SelectItem>
+                <SelectItem value="Inne">{{ t('app.module.overview.activity_tracker.category.other') }}</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -85,15 +85,15 @@ function handleSubmit() {
       </FormField>
 
       <FormField name="activityTags">
-        <FormLabel>{{ t('activityTracker.tagsLabel') }}</FormLabel>
+        <FormLabel>{{ t('app.module.overview.activity_tracker.tags_label') }}</FormLabel>
         <FormControl>
           <Input 
             v-model="localTagsInput" 
-            :placeholder="t('activityTracker.tagsLabel')" 
+            :placeholder="t('app.module.overview.activity_tracker.tags_label')" 
             :disabled="isDisabled" 
           />
         </FormControl>
-        <FormDescription class="col-span-2">{{ t('activityTracker.tagsHint') }}</FormDescription>
+        <FormDescription class="col-span-2">{{ t('app.module.overview.activity_tracker.tags_hint') }}</FormDescription>
       </FormField>
     </div>
   </form>
