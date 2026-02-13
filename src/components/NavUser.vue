@@ -71,7 +71,7 @@ async function onLogoutClick() {
               </AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium">{{ t('user.loggedAs') }}</span>
+              <span class="truncate font-medium">{{ t('app.core.common.logged_as') }}</span>
               <span class="truncate text-xs">{{ email }}</span>
             </div>
             <ChevronsUpDown class="ml-auto size-4" />
@@ -94,7 +94,7 @@ async function onLogoutClick() {
                 </AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">{{ t('user.label') }}</span>
+                <span class="truncate font-semibold">{{ t('app.core.common.label') }}</span>
                 <span class="truncate text-xs">{{ email }}</span>
               </div>
             </div>
@@ -105,7 +105,7 @@ async function onLogoutClick() {
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <Sparkles />
-              {{ t('user.upgrade') }}
+              {{ t('app.core.common.upgrade') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
 
@@ -114,7 +114,7 @@ async function onLogoutClick() {
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <BadgeCheck />
-              {{ t('user.account') }}
+              {{ t('app.core.common.account') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
 
@@ -122,7 +122,7 @@ async function onLogoutClick() {
 
           <DropdownMenuItem @click="onLogoutClick">
             <LogOut />
-            {{ t('user.logout') }}
+            {{ t('app.core.common.logout') }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

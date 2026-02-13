@@ -112,7 +112,7 @@ export const useActivitiesStore = defineStore('activities', () => {
         return updatedActivity;
       }
 
-      error.value = 'toast.activityFinishError';
+      error.value = 'app.toast_notification.activity.finish_error';
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
     } finally {

@@ -41,7 +41,7 @@ const { locale } = useLocale();
 
 function formatDateTime(dateString: string | null): string {
   if (!dateString) {
-    return t('activitiesTable.inProgress');
+    return t('app.status.in_progress');
   }
   return new Date(dateString).toLocaleString(locale.value, {
     year: 'numeric',
@@ -60,7 +60,7 @@ function formatDateTime(dateString: string | null): string {
   </div>
   <ErrorMessage
     v-else-if="activities.length === 0"
-    :title="t('activitiesTable.noActivitiesFoundForMonth')"
+    :title="t('app.module.activities_history.no_activities_found_for_month')"
     :icon="Box"
   />
   <ScrollArea v-else class="h-full w-full border rounded-xl overflow-hidden">
@@ -87,20 +87,20 @@ function formatDateTime(dateString: string | null): string {
                 >
                   <template v-if="activity.finished_at">
                     <CheckCircle class="w-3 h-3" />
-                    {{ t('activitiesTable.finished') }}
+                    {{ t('app.status.finished') }}
                   </template>
                   <template v-else>
                     <Hourglass class="w-3 h-3 animate-pulse" />
-                    {{ t('activitiesTable.inProgress') }}
+                    {{ t('app.status.in_progress') }}
                   </template>
                 </Badge>
               </template>
               <template v-else-if="column.id === 'description'">
                 <span
                   class="text-sm text-gray-700 max-w-[200px] truncate block"
-                  :title="activity.description || t('activitiesTable.noDescription')"
+                  :title="activity.description || t('app.module.activities_history.no_description')"
                 >
-                  {{ activity.description || t('activitiesTable.noDescription') }}
+                  {{ activity.description || t('app.module.activities_history.no_description') }}
                 </span>
               </template>
               <template v-else-if="column.id === 'category'">
@@ -110,9 +110,9 @@ function formatDateTime(dateString: string | null): string {
                   class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
                 >
                   <Tag class="w-3 h-3 mr-1" />
-                  {{ t('activitiesTable.categoryName') }}
+                  {{ t('app.module.activities_history.category_name') }}
                 </Badge>
-                <span v-else class="italic text-gray-400">{{ t('activitiesTable.uncategorized') }}</span>
+                <span v-else class="italic text-gray-400">{{ t('app.module.activities_history.uncategorized') }}</span>
               </template>
               <template v-else-if="column.id === 'tags'">
                 <div class="flex gap-1">
@@ -133,7 +133,7 @@ function formatDateTime(dateString: string | null): string {
                       +{{ (activity.tags as string[]).length - 3 }}
                     </Badge>
                   </template>
-                  <span v-else class="italic text-gray-400">{{ t('activitiesTable.noTags') }}</span>
+                  <span v-else class="italic text-gray-400">{{ t('app.module.activities_history.no_tags') }}</span>
                 </div>
               </template>
               <template v-else-if="column.id === 'duration'">
@@ -163,16 +163,16 @@ function formatDateTime(dateString: string | null): string {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>{{ t('activitiesTable.actions') }}</DropdownMenuLabel>
+                      <DropdownMenuLabel>{{ t('app.module.activities_history.actions') }}</DropdownMenuLabel>
                       <DropdownMenuItem @click="emit('edit', activity)">{{
-                        t('activitiesTable.edit')
+                        t('app.action.edit')
                       }}</DropdownMenuItem>
                       <DropdownMenuItem @click="emit('view', activity)">{{
-                        t('activitiesTable.viewDetails')
+                        t('app.module.activities_history.view_details')
                       }}</DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem @click="emit('delete', activity)" class="text-red-600">{{
-                        t('activitiesTable.delete')
+                        t('app.action.delete')
                       }}</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

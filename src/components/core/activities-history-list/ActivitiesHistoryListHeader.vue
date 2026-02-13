@@ -41,16 +41,16 @@ function formatMonthDisplay(dateString: string): string {
 
 <template>
   <div class="flex flex-wrap items-start justify-between gap-4">
-    <h2 class="text-xl font-semibold">{{ t('activitiesTable.activityHistory') }}</h2>
+    <h2 class="text-xl font-semibold">{{ t('app.module.activities_history.title') }}</h2>
     <div class="flex items-center space-x-4">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="outline" class="ml-auto">
-            {{ t('activitiesTable.columns') }} <ChevronDown class="w-4 h-4 ml-2" />
+            {{ t('app.module.activities_history.columns') }} <ChevronDown class="w-4 h-4 ml-2" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>{{ t('activitiesTable.toggleColumns') }}</DropdownMenuLabel>
+          <DropdownMenuLabel>{{ t('app.module.activities_history.toggle_columns') }}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <template v-for="column in columns" :key="column.id">
             <DropdownMenuCheckboxItem
@@ -62,7 +62,7 @@ function formatMonthDisplay(dateString: string): string {
               {{ column.label }}
             </DropdownMenuCheckboxItem>
             <DropdownMenuLabel v-else disabled class="capitalize opacity-60 cursor-default">
-              {{ column.label }} ({{ t('activitiesTable.alwaysVisible') }})
+              {{ column.label }} ({{ t('app.module.activities_history.always_visible') }})
             </DropdownMenuLabel>
           </template>
         </DropdownMenuContent>

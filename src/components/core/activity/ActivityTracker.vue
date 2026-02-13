@@ -89,11 +89,11 @@ async function handleSubmit() {
   );
 
   if (newActivity) {
-    toast.success(t('toast.activityStartedSuccess'));
+    toast.success(t('app.toast_notification.activity.started_success'));
   } else if (error.value) {
     toast.error(t(error.value));
   } else {
-    toast.error(t('toast.activityStartError'));
+    toast.error(t('app.toast_notification.activity.start_error'));
   }
 }
 
@@ -111,7 +111,7 @@ async function handleFinish() {
   });
 
   if (finished) {
-    toast.success(t('toast.activityFinishedSuccess'));
+    toast.success(t('app.toast_notification.activity.finished_success'));
     synchronizeFormOnActivityChange();
   } else if (error.value) {
     toast.error(t(error.value));
@@ -134,7 +134,7 @@ function toggleTimer() {
 <template>
   <Card class="p-8 flex flex-col gap-6 md:flex-row md:gap-10 rounded-2xl border border-border/40 h-full">
     <div class="md:flex-grow">
-      <h2 class="text-xl font-semibold mb-4">{{ t('activityTracker.title') }}</h2>
+      <h2 class="text-xl font-semibold mb-4">{{ t('app.module.overview.activity_tracker.title') }}</h2>
       <ActivityTrackerForm
         v-model:description="description"
         v-model:category="category"

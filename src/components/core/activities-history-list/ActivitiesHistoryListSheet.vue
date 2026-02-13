@@ -43,7 +43,7 @@ const formattedDuration = computed(() =>
 
 function formatDateTime(dateString: string | undefined): string {
   if (!dateString) {
-    return t('activitiesTable.inProgress');
+    return t('app.status.in_progress');
   }
   return new Date(dateString).toLocaleString(locale.value, {
     year: 'numeric',
@@ -73,22 +73,22 @@ watch(
     <SheetContent class="flex flex-col w-full sm:max-w-lg overflow-y-auto">
       <SheetHeader>
         <SheetTitle>
-          {{ sheetMode === 'edit' ? t('activitySheet.editTitle') : t('activitySheet.viewTitle') }}
+          {{ sheetMode === 'edit' ? t('app.module.activities_history.details_sheet.edit_title') : t('app.module.activities_history.details_sheet.view_title') }}
         </SheetTitle>
         <SheetDescription>
-          {{ sheetMode === 'edit' ? t('activitySheet.editDescription') : t('activitySheet.viewDescription') }}
+          {{ sheetMode === 'edit' ? t('app.module.activities_history.details_sheet.edit_description') : t('app.module.activities_history.details_sheet.view_description') }}
         </SheetDescription>
       </SheetHeader>
       <div v-if="activity" class="flex-1 flex flex-col gap-6 p-4">
         <div class="grid grid-cols-1 sm:grid-cols-4 items-start gap-2 sm:gap-4">
           <Label class="sm:text-right sm:mt-2 text-sm font-semibold">
-            {{ t('activitiesTable.description') }}
+            {{ t('app.module.activities_history.category.description') }}
           </Label>
           <Textarea class="sm:col-span-3 min-h-[80px]" :disabled="sheetMode === 'view'" v-model="activityDescription" />
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-4 items-start gap-2 sm:gap-4">
           <Label class="sm:text-right sm:mt-2 text-sm font-semibold">
-            {{ t('activitiesTable.tags') }}
+            {{ t('app.module.activities_history.category.tags') }}
           </Label>
           <div class="sm:col-span-3">
             <Textarea
@@ -98,42 +98,42 @@ watch(
               v-model="activityTags"
             />
             <p class="text-xs text-muted-foreground mt-1" v-if="sheetMode === 'edit'">
-              {{ t('activityTracker.tagsHint') }}
+              {{ t('app.module.overview.activity_tracker.tags_hint') }}
             </p>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
-          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.category') }}</Label>
+          <Label class="sm:text-right text-sm font-semibold">{{ t('app.module.activities_history.category.category') }}</Label>
           <Input
-            :placeholder="t('activitiesTable.uncategorized')"
+            :placeholder="t('app.module.activities_history.uncategorized')"
             :disabled="sheetMode === 'view'"
             v-model="activityCategoryId"
             class="sm:col-span-3"
           />
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
-          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.startedAt') }}</Label>
+          <Label class="sm:text-right text-sm font-semibold">{{ t('app.module.activities_history.category.started_at') }}</Label>
           <Input v-model="formattedStartedAt" class="sm:col-span-3" disabled />
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
-          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.finishedAt') }}</Label>
+          <Label class="sm:text-right text-sm font-semibold">{{ t('app.module.activities_history.category.finished_at') }}</Label>
           <Input v-model="formattedFinishedAt" class="sm:col-span-3" disabled />
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-4 items-center gap-2 sm:gap-4">
-          <Label class="sm:text-right text-sm font-semibold">{{ t('activitiesTable.duration') }}</Label>
+          <Label class="sm:text-right text-sm font-semibold">{{ t('app.module.activities_history.category.duration') }}</Label>
           <Input v-model="formattedDuration" class="sm:col-span-3" disabled />
         </div>
       </div>
       <SheetFooter class="mt-4">
         <SheetClose as-child>
-          <Button variant="outline">{{ t('activitySheet.cancel') }}</Button>
+          <Button variant="outline">{{ t('app.action.cancel') }}</Button>
         </SheetClose>
         <Button
           v-if="sheetMode === 'edit'"
           @click="() => emit('save', activityDescription, activityTags, activityCategoryId)"
           type="submit"
         >
-          {{ t('activitySheet.saveChanges') }}
+          {{ t('app.action.save_changes') }}
         </Button>
       </SheetFooter>
     </SheetContent>

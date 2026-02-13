@@ -28,14 +28,14 @@ const { t } = useTranslation();
   <AlertDialog :open="isDialogOpen" @update:open="(open) => emit('toggleOpen', open)">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>{{ t('deleteActivityDialog.title') }}</AlertDialogTitle>
-        <AlertDialogDescription>{{ t('deleteActivityDialog.description') }}</AlertDialogDescription>
+        <AlertDialogTitle>{{ t('app.module.activities_history.delete_dialog.title') }}</AlertDialogTitle>
+        <AlertDialogDescription>{{ t('app.module.activities_history.delete_dialog.description') }}</AlertDialogDescription>
       </AlertDialogHeader>
 
       <AlertDialogFooter>
-        <AlertDialogCancel @click="emit('close')">{{ t('deleteActivityDialog.cancel') }}</AlertDialogCancel>
+        <AlertDialogCancel @click="emit('close')">{{ t('app.action.cancel') }}</AlertDialogCancel>
         <AlertDialogAction @click="emit('confirm')" class="bg-red-600 hover:bg-red-700">
-          {{ t('deleteActivityDialog.delete') }}
+          {{ t('app.action.delete') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
