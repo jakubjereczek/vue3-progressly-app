@@ -1,0 +1,98 @@
+# Cursor Rules
+
+## Technical Stack
+- **Framework**: Vue 3 (Composition API with `<script setup>`)
+- **Language**: TypeScript (Strict mode)
+- **Styling**: Tailwind CSS 4, Lucide Icons
+- **State**: Pinia (Setup Stores only)
+- **Backend/Auth**: Supabase
+- **Validation**: Zod + Vee-Validate
+- **Components**: Reka UI (Radix Vue), TanStack Table v8
+- **Build**: Vite (Rolldown). **Linting**: ESLint 9+ (Flat config), Stylelint. Fix lint errors before finishing.
+
+---
+
+## 1. Modularity — `src/components/core`
+
+Every new feature in `src/components/core` must be placed in its **own folder** (kebab-case) and follow the same pattern:
+
+- **Folder**: kebab-case name, e.g., `activities-history-list`, `today-time-summary`, `activity`, `activities-gantt`.
+- **Vue Components**: PascalCase with a **prefix matching the module name** (folder name in PascalCase), e.g., `ActivitiesHistoryList.vue`, `ActivitiesHistoryListTable.vue`, `ActivitiesHistoryListHeader.vue`, `ActivitiesHistoryListSheet.vue`.
+- **Logic**: `use*.ts` files (camelCase, `use` prefix), e.g., `useActivitiesTable.ts`, `useActivitiesTableColumns.ts`, `useMonthNavigation.ts`. Logic shared by module components lives in these files, not in the components.
+- **Configuration**: A `config.ts` file within the module folder when the module requires configuration (e.g., table column definitions, mappings, constants). Example: `config.ts` with `getColumnDefinitions(t)` in `activities-history-list`.
+
+For simple modules (e.g., a single screen/component), a structure with only Vue components is acceptable, but as they grow, extract `use*.ts` and optionally `config.ts`.
+
+**Rule:** New features in `core` = new kebab-case folder + prefixed components + logic in `use*.ts` + `config.ts` if needed.
+
+---
+
+## 2. Naming Conventions
+
+- **Vue components**: PascalCase. In `core`: prefix = folder name in PascalCase (e.g., `ActivitiesHistoryList*`, `ActivityTracker*`, `TodayTimeSummary*`).
+- **Folders**: kebab-case (e.g., `activities-history-list`, `today-time-summary`).
+- **Composables** (`src/composables`): `useCamelCase.ts` files, e.g., `useTimer.ts`, `useTranslation.ts`, `useAuthListener.ts`. Export in `composables/index.ts`.
+- **Stores**: camelCase name + `Store` suffix in `defineStore` (e.g., `defineStore('activities', () => ...)` in `activitiesStore.ts`). Export in `stores/index.ts`.
+- **Pages** (`src/app/pages`): `*Page.vue` (e.g., `LoginPage.vue`, `OverviewPage.vue`, `TimesheetPage.vue`). Export in `app/pages/index.ts` and use in `config/routes.ts`.
+
+---
+
+## 3. State Management — Pinia Setup Store
+
+Use **exclusively** the Setup Store pattern (function with `defineStore`):
+
+- `defineStore('id', () => { ... return { state, actions } })`
+- Inside: use `ref`, `computed`, and functions. Explicitly return everything intended to be public.
+- Do **not** use Option Stores (`state`, `getters`, `actions` as objects).
+
+Project-compliant examples: `activitiesStore.ts`, `user-store.ts`.
+
+---
+
+## 4. Tools and Utils
+
+- **Tailwind Classes (dynamic)**: Always use `cn()` from `@/lib/utils` (clsx + tailwind-merge). Do not concatenate classes manually; use `cn(...)` for conditional classes and prop merging.
+- **Domain Helpers**: Use `src/utils/` (e.g., `@/utils/time`: `formatTime`, `formatDuration`, `getTodayDateString`; `@/utils/string`: `splitAndTrim`, `arrayToString`). Before adding new string/time logic, check if an existing helper can be reused.
+- Do not duplicate logic already implemented in `src/lib/utils.ts` or `src/utils/`.
+
+---
+
+## 5. Internationalization (i18n)
+
+- **Source**: `vue-i18n`, files in `src/locales/` (`en-US.json`, `pl-PL.json`), typed via `src/locales/schema.ts` (`MessageSchema`).
+- In templates and JS: **zero hardcoded strings** in the UI — use `$t('key')` or `useTranslation()` and `t('key')`.
+- **Key Convention**: `app.core.*`, `app.module.<module>.*`, `app.toast_notification.*`, `app.api_error.*`.
+- **Obligation**: For every new UI text, add the key to **both** files: `src/locales/en-US.json` and `src/locales/pl-PL.json`. Maintain a consistent structure.
+
+---
+
+## 6. Supabase and Database Types
+
+- **Types**: All table and database types originate from `src/api/db-types.ts` (`Database`, `TablesInsert`, `TablesUpdate`, `Json`, etc.). Services and the client use `TableRow<T>`, `TablesInsert<T>`, `TablesUpdate<T>` from `@/api/db-types` or `../db-types`.
+- **Rule for AI & Developer**: Before writing or modifying database queries, API services, or stores using Supabase, **always** check `src/api/db-types.ts` for table names, columns, and Row/Insert/Update types. Align filters, inserts, and updates with these types.
+- Use Supabase JS client v2 and the existing wrapper in `src/api/supabase.ts` (e.g., `SupabaseClient.get/insert/update/delete`). Services in `src/api/services/` should accept/return types from `db-types`.
+- **Forms**: Zod validation via Vee-Validate.
+
+---
+
+## 7. Git Workflow & Branch Naming (MANDATORY)
+When creating a new branch or starting a task, use the following naming convention:
+
+- **Features**: `feat-name-of-what-you-did` (e.g., `feat-login-system`)
+- **Bugfixes**: `fix-name-of-what-you-did` (e.g., `fix-timer-error`)
+- **Maintenance**: `chore-name-of-what-you-did` (e.g., `chore-refactor-utils`)
+
+**AI Instruction**: Before starting a task, propose the branch name following this convention.
+
+---
+
+## 8. Code Style (Summary)
+
+- Always use `<script setup lang="ts">`.
+- Components: PascalCase; Directories: kebab-case.
+- Use `ref` for simple state, `reactive` for complex objects when justified.
+- Follow **shadcn/ui** patterns: separate logic from presentation; use `cn()` for class variants (and `class-variance-authority` where already present in the project).
+
+---
+
+This file is the **source of truth** for the consistent style and architecture of the Progressly project.
