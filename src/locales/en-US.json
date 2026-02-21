@@ -61,6 +61,7 @@
   "app.module.activities_history.details_sheet.view_title": "View Activity",
   "app.module.activities_history.details_sheet.edit_description": "Make changes to the details of this activity.",
   "app.module.activities_history.details_sheet.view_description": "View all details regarding the selected activity.",
+  "app.module.activities_history.summary.line": "Sum: {count} activities | Total time: {duration}",
   "app.toast_notification.activity.started_success": "Activity successfully started.",
   "app.toast_notification.activity.finished_success": "Activity successfully finished.",
   "app.toast_notification.activity.start_error": "Could not start activity. Please try again.",

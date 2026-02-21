@@ -61,6 +61,7 @@
   "app.module.activities_history.details_sheet.view_title": "Szczegóły aktywności",
   "app.module.activities_history.details_sheet.edit_description": "Wprowadź zmiany w szczegółach tej aktywności.",
   "app.module.activities_history.details_sheet.view_description": "Przejrzyj wszystkie szczegóły dotyczące wybranej aktywności.",
+  "app.module.activities_history.summary.line": "Suma: {count} aktywności | Łączny czas: {duration}",
   "app.toast_notification.activity.started_success": "Pomyślnie rozpoczęto aktywność.",
   "app.toast_notification.activity.finished_success": "Pomyślnie zakończono aktywność.",
   "app.toast_notification.activity.start_error": "Nie udało się rozpocząć aktywności. Spróbuj ponownie.",
