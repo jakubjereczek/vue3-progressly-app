@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import type { TableRow as ITableRow } from '@/api/supabase';
 import { Box, CheckCircle, Hourglass, Loader2, MoreHorizontal, Tag } from 'lucide-vue-next';
 import { useLocale, useTranslation } from '@/composables';
 import { type Column } from '@/components/core/activities-history-list/config';
 import ScrollArea from '@/components/ui/scroll-area/ScrollArea.vue';
-import ScrollBar from '@/components/ui/scroll-area/ScrollBar.vue'; // Upewnij się, że importujesz ScrollBar
+import ScrollBar from '@/components/ui/scroll-area/ScrollBar.vue';
 import Table from '@/components/ui/table/Table.vue';
 import TableHeader from '@/components/ui/table/TableHeader.vue';
 import TableRow from '@/components/ui/table/TableRow.vue';
@@ -23,6 +23,7 @@ import DropdownMenuItem from '@/components/ui/dropdown-menu/DropdownMenuItem.vue
 import TableBody from '@/components/ui/table/TableBody.vue';
 import TableFooter from '@/components/ui/table/TableFooter.vue';
 import ErrorMessage from '@/components/error-message/ErrorMessage.vue';
+import { useActivitiesTableSpacer } from '@/components/core/activities-history-list/useActivitiesTableSpacer';
 
 interface Props {
   visibleColumns: Column[];
@@ -31,17 +32,15 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const activitiesRef = toRef(props, 'activities');
+
+const { spacerHeight, isReady } = useActivitiesTableSpacer(activitiesRef);
 
 const totalCount = computed(() => props.activities.length);
 const totalDurationSeconds = computed(() =>
-  props.activities.reduce(
-    (sum, a) => sum + getDuration(a.started_at, a.finished_at) / 1000,
-    0,
-  ),
+  props.activities.reduce((sum, a) => sum + getDuration(a.started_at, a.finished_at) / 1000, 0),
 );
-const formattedTotalDuration = computed(() =>
-  formatTotalDuration(totalDurationSeconds.value),
-);
+const formattedTotalDuration = computed(() => formatTotalDuration(totalDurationSeconds.value));
 
 const emit = defineEmits<{
   edit: [ITableRow<'activities'>];
@@ -77,9 +76,13 @@ function formatDateTime(dateString: string | null): string {
     :icon="Box"
   />
   <div v-else class="flex flex-col h-full min-h-0">
-    <ScrollArea class="flex-1 min-h-0 w-full border rounded-xl overflow-hidden">
+    <ScrollArea
+      ref="scroll-area"
+      class="flex-1 min-h-0 w-full border rounded-xl overflow-hidden"
+      :class="{ 'opacity-0': !isReady, 'opacity-100': isReady }"
+    >
       <div class="min-w-full w-max">
-        <Table>
+        <Table ref="table">
           <TableHeader class="sticky top-0 z-0 bg-gray-50 border-b">
             <TableRow>
               <TableHead
@@ -126,7 +129,9 @@ function formatDateTime(dateString: string | null): string {
                     <Tag class="w-3 h-3 mr-1" />
                     {{ t('app.module.activities_history.category_name') }}
                   </Badge>
-                  <span v-else class="italic text-gray-400">{{ t('app.module.activities_history.uncategorized') }}</span>
+                  <span v-else class="italic text-gray-400">{{
+                    t('app.module.activities_history.uncategorized')
+                  }}</span>
                 </template>
                 <template v-else-if="column.id === 'tags'">
                   <div class="flex gap-1">
@@ -178,9 +183,7 @@ function formatDateTime(dateString: string | null): string {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>{{ t('app.module.activities_history.actions') }}</DropdownMenuLabel>
-                        <DropdownMenuItem @click="emit('edit', activity)">{{
-                          t('app.action.edit')
-                        }}</DropdownMenuItem>
+                        <DropdownMenuItem @click="emit('edit', activity)">{{ t('app.action.edit') }}</DropdownMenuItem>
                         <DropdownMenuItem @click="emit('view', activity)">{{
                           t('app.module.activities_history.view_details')
                         }}</DropdownMenuItem>
@@ -194,6 +197,9 @@ function formatDateTime(dateString: string | null): string {
                 </template>
               </TableCell>
             </TableRow>
+            <tr v-if="spacerHeight > 0" :style="{ height: `${spacerHeight}px` }" aria-hidden="true">
+              <td :colspan="visibleColumns.length" class="p-0 border-none"></td>
+            </tr>
           </TableBody>
           <TableFooter v-if="activities.length > 0" class="border-t border-border/40">
             <TableRow>
@@ -201,7 +207,12 @@ function formatDateTime(dateString: string | null): string {
                 :colspan="visibleColumns.length"
                 class="sticky bottom-0 z-10 whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 border-t border-border/40 shadow-[0_-1px_0_0_hsl(var(--border))]"
               >
-                {{ t('app.module.activities_history.summary.line', { count: totalCount, duration: formattedTotalDuration }) }}
+                {{
+                  t('app.module.activities_history.summary.line', {
+                    count: totalCount,
+                    duration: formattedTotalDuration,
+                  })
+                }}
               </TableCell>
             </TableRow>
           </TableFooter>
