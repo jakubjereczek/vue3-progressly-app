@@ -1,0 +1,22 @@
+---
+description: Enforces folder-per-feature architecture in src/components/core with prefixed components and composables.
+globs:
+  - "src/components/core/**"
+alwaysApply: true
+---
+
+# Core Modularity Rules
+
+Every feature must:
+
+- Live in its own kebab-case folder
+- Components must use PascalCase prefix matching folder
+- Shared logic must live in `use*.ts`
+- Optional `config.ts` for definitions
+
+Example:
+activities-history-list/
+  ActivitiesHistoryList.vue
+  ActivitiesHistoryListTable.vue
+  useActivitiesTable.ts
+  config.ts

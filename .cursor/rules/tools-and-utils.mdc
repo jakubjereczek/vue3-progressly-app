@@ -1,0 +1,19 @@
+---
+description: Enforces usage of cn() for Tailwind merging and reuse of existing utility helpers.
+globs:
+  - "src/components/**/*.vue"
+  - "src/**/*.ts"
+alwaysApply: false
+---
+
+# Tools & Utils Rules
+
+Dynamic Tailwind classes → always use `cn()` from `@/lib/utils`.
+
+Before adding new helpers:
+- Check `src/utils/`
+- Do not duplicate logic from `src/lib/utils.ts`
+
+Reuse:
+@/utils/time  
+@/utils/string

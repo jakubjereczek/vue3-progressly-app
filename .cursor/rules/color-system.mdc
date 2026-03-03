@@ -1,0 +1,35 @@
+---
+description: Enforces design token usage, semantic colors, status colors, and prohibits hardcoded colors.
+globs:
+  - "src/components/**/*.vue"
+  - "src/components/**/*.ts"
+  - "src/app/**/*.vue"
+alwaysApply: true
+---
+
+# Color System Rules
+
+Source of truth: `src/style.css` — variables in `@theme inline`, `:root`, `.dark`. Colors use oklch.
+
+## Hard Rule
+
+- Never use hardcoded colors (hex, rgb, hsl, oklch).
+- Use semantic Tailwind tokens only.
+- Inline styles must use `var(--token)`.
+
+## Semantic Tokens
+
+background, foreground, card, primary, secondary, muted, accent, destructive, border, input, ring  
++ `*-foreground` variants  
++ sidebar tokens  
++ success, warning
+
+## Status Mapping (Mandatory)
+
+Success → `bg-success`  
+Warning → `bg-warning`  
+Error → `bg-destructive`  
+In progress → `bg-chart-3`  
+Finished → success
+
+No `gray-*`, `blue-*`, `red-*`, `green-*`, etc.

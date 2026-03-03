@@ -1,0 +1,19 @@
+---
+description: Enforces Pinia Setup Store pattern only. Option Stores are forbidden.
+globs:
+  - "src/stores/**/*.ts"
+alwaysApply: true
+---
+
+# State Management Rules
+
+Use only:
+
+defineStore('id', () => {
+  const state = ref(...)
+  const computedValue = computed(...)
+  function action() {}
+  return { state, computedValue, action }
+})
+
+Do not use Option Stores.

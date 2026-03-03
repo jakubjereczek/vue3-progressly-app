@@ -1,0 +1,19 @@
+---
+description: Defines correct token usage per UI context (tables, sidebar, cards, buttons, overlays).
+globs:
+  - "src/components/**/*.vue"
+alwaysApply: true
+---
+
+# UI Context Color Usage
+
+Page layout → `bg-background text-foreground`  
+Cards → `bg-card text-card-foreground`  
+Descriptions → `text-muted-foreground`  
+Table header → `bg-muted text-foreground`  
+Primary button → `bg-primary text-primary-foreground`  
+Destructive → `variant="destructive"`  
+Sidebar → always `bg-sidebar` tokens  
+Modal overlay → `bg-black/80` allowed  
+
+Contrast must always follow semantic foreground pairing.

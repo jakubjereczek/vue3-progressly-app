@@ -1,0 +1,19 @@
+---
+description: Enforces naming conventions across components, stores, composables, and pages.
+globs:
+  - "src/**/*"
+alwaysApply: true
+---
+
+# Naming Conventions
+
+Components → PascalCase  
+Core components → prefixed by folder name  
+Folders → kebab-case  
+Composables → useCamelCase.ts  
+Stores → camelCase + Store  
+Pages → *Page.vue  
+
+Exports must be centralized in index files.---
+alwaysApply: true
+---

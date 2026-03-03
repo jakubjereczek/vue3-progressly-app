@@ -1,0 +1,28 @@
+---
+description: Enforces vue-i18n usage and prohibits hardcoded UI strings.
+globs:
+  - "src/components/**/*.vue"
+  - "src/app/**/*.vue"
+alwaysApply: true
+---
+
+# i18n Rules
+
+No hardcoded UI strings.
+
+Use:
+$t('key')
+or
+t('key')
+
+Key format:
+app.core.*
+app.module.<module>.*
+app.toast_notification.*
+app.api_error.*
+
+Every new key must exist in:
+- en-US.json
+- pl-PL.json---
+alwaysApply: true
+---

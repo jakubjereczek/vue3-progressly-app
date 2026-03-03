@@ -1,0 +1,76 @@
+---
+description: Enforces branch naming convention and Conventional Commits standard.
+alwaysApply: true
+---
+
+# Git Rules
+
+## Branch Naming (Mandatory)
+
+Feature → feat-name-of-what-you-did  
+Fix → fix-name-of-what-you-did  
+Chore → chore-name-of-what-you-did  
+
+Rules:
+- Use kebab-case.
+- No uppercase letters.
+- No spaces.
+- Name must clearly describe the change.
+- AI must suggest the branch name before starting any task.
+
+Example:
+feat-login-system  
+fix-timer-memory-leak  
+chore-refactor-utils  
+
+---
+
+## Commit Messages — Conventional Commits (Mandatory)
+
+All commits must follow:
+
+type(scope): short-description
+
+Example:
+feat(auth): add login validation  
+fix(timer): resolve interval duplication  
+chore(utils): refactor date helpers  
+...
+---
+
+### Allowed Types
+
+feat      → new feature  
+fix       → bug fix  
+chore     → maintenance  
+refactor  → internal restructuring  
+docs      → documentation only  
+style     → formatting only (no logic changes)  
+test      → tests added/updated  
+perf      → performance improvements  
+build     → build/dependency changes  
+ci        → CI configuration changes  
+
+---
+
+### Rules
+
+- Subject must be lowercase.
+- Use imperative mood (add, fix, update — not added, fixed).
+- No trailing period.
+- Keep subject under 72 characters.
+- One logical change per commit.
+
+---
+
+### Breaking Changes
+
+If introducing breaking changes:
+
+feat(auth)!: change login response format
+
+OR
+
+feat(auth): change login response format
+
+BREAKING CHANGE: login now returns user object instead of token
