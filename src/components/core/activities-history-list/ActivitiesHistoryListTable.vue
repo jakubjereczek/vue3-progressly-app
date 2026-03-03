@@ -83,7 +83,7 @@ function formatDateTime(dateString: string | null): string {
     >
       <div class="min-w-full w-max">
         <Table ref="table">
-          <TableHeader class="sticky top-0 z-0 bg-gray-50 border-b">
+          <TableHeader class="sticky top-0 z-10 bg-gray-50 border-b">
             <TableRow>
               <TableHead
                 v-for="column in visibleColumns"
@@ -114,7 +114,7 @@ function formatDateTime(dateString: string | null): string {
                 </template>
                 <template v-else-if="column.id === 'description'">
                   <span
-                    class="text-sm text-gray-700 max-w-[200px] truncate block"
+                    class="text-sm text-gray-700 max-w-[360px] truncate block"
                     :title="activity.description || t('app.module.activities_history.no_description')"
                   >
                     {{ activity.description || t('app.module.activities_history.no_description') }}
@@ -161,15 +161,12 @@ function formatDateTime(dateString: string | null): string {
                   </span>
                 </template>
                 <template v-else-if="column.id === 'finishedAt'">
-                  <span
-                    class="text-sm text-gray-700 block px-2"
-                    :class="{ 'italic text-gray-400': !activity.finished_at }"
-                  >
+                  <span class="text-sm text-gray-700" :class="{ 'italic text-gray-400': !activity.finished_at }">
                     {{ formatDateTime(activity.finished_at) }}
                   </span>
                 </template>
                 <template v-else-if="column.id === 'startedAt'">
-                  <span class="text-sm text-gray-700 block px-2">
+                  <span class="text-sm text-gray-700">
                     {{ formatDateTime(activity.started_at) }}
                   </span>
                 </template>
