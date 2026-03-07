@@ -101,7 +101,7 @@ onMounted(async () => {
         <p class="text-md font-semibold">
           {{ t('app.module.overview.time_summary.total_time_today') }}
         </p>
-        <p class="text-3xl font-medium text-indigo-400">
+        <p class="text-3xl font-medium text-primary">
           {{ categorySummary.totalDuration }}
         </p>
       </div>
@@ -118,11 +118,11 @@ onMounted(async () => {
                 <div :style="{ backgroundColor: item.color }" class="w-3 h-3 rounded-full"></div>
                 {{ item.name }}
               </span>
-              <span class="text-sm font-semibold text-gray-700">
+              <span class="text-sm font-semibold text-foreground">
                 {{ item.formattedDuration }} ({{ item.percentage.toFixed(1) }}%)
               </span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2.5">
+            <div class="w-full bg-muted rounded-full h-2.5">
               <div
                 class="h-2.5 rounded-full transition-all duration-500"
                 :style="{ width: item.percentage + '%', backgroundColor: item.color }"

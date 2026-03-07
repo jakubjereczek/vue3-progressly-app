@@ -42,12 +42,12 @@ function toggleTimer() {
     <svg id="timer-svg" class="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
       <defs>
         <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="hsl(240 80% 50%)" />
-          <stop offset="100%" stop-color="hsl(240 80% 70%)" />
+          <stop offset="0%" stop-color="var(--color-primary)" />
+          <stop offset="100%" stop-color="var(--color-primary)" stop-opacity="0.6" />
         </linearGradient>
       </defs>
 
-      <circle cx="50" cy="50" r="45" stroke="currentColor" class="text-gray-300" stroke-width="4" fill="none" />
+      <circle cx="50" cy="50" r="45" stroke="currentColor" class="text-border" stroke-width="4" fill="none" />
 
       <circle
         v-if="state === 'playing'"
@@ -71,21 +71,21 @@ function toggleTimer() {
       :form="state !== 'playing' ? 'activityForm' : ''"
       class="absolute inset-0 flex items-center justify-center rounded-full w-full h-full cursor-pointer transition-all duration-200 group"
       :class="{
-        'hover:bg-red-500/10 active:bg-red-500/20': state === 'playing',
-        'hover:bg-green-500/10 active:bg-green-500/20': state === 'ready',
+        'hover:bg-destructive/10 active:bg-destructive/20': state === 'playing',
+        'hover:bg-success/10 active:bg-success/20': state === 'ready',
         'cursor-not-allowed opacity-70': state === 'disabled',
       }"
     >
       <div v-if="state === 'playing'" class="flex items-center justify-center space-x-2">
         <svg
-          class="w-8 h-8 md:w-6 md:h-6 xl:w-7 xl:w-7 text-red-600 transition-colors duration-300 group-hover:text-red-800 group-hover:scale-125"
+          class="w-8 h-8 md:w-6 md:h-6 xl:w-7 xl:w-7 text-destructive transition-colors duration-300 group-hover:text-destructive/70 group-hover:scale-125"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
           <circle cx="12" cy="12" r="8" />
         </svg>
         <div
-          class="text-5xl md:text-3xl xl:text-4xl font-extralight font-mono text-gray-900 tracking-tight select-none"
+          class="text-5xl md:text-3xl xl:text-4xl font-extralight font-mono text-foreground tracking-tight select-none"
         >
           {{ formattedTime }}
         </div>
@@ -96,7 +96,7 @@ function toggleTimer() {
         class="transition-transform duration-300 transform opacity-50 group-hover:opacity-100"
       >
         <svg
-          class="w-40 h-40 md:w-32 md:h-32 xl:w-36 xl:h-36 text-gray-500"
+          class="w-40 h-40 md:w-32 md:h-32 xl:w-36 xl:h-36 text-muted-foreground"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
           viewBox="0 0 24 24"
@@ -113,7 +113,7 @@ function toggleTimer() {
       >
         <svg
           v-if="state === 'ready'"
-          class="w-40 h-40 md:w-32 md:h-32 xl:w-36 xl:h-36 text-green-500"
+          class="w-40 h-40 md:w-32 md:h-32 xl:w-36 xl:h-36 text-success"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
@@ -121,7 +121,7 @@ function toggleTimer() {
         </svg>
         <svg
           v-else
-          class="w-40 h-40 md:w-32 md:h-32 xl:w-36 xl:h-36 text-gray-500"
+          class="w-40 h-40 md:w-32 md:h-32 xl:w-36 xl:h-36 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

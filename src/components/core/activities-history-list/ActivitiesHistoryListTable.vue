@@ -83,19 +83,19 @@ function formatDateTime(dateString: string | null): string {
     >
       <div class="min-w-full w-max">
         <Table ref="table">
-          <TableHeader class="sticky top-0 z-10 bg-gray-50 border-b">
+          <TableHeader class="sticky top-0 z-10 bg-muted border-b">
             <TableRow>
               <TableHead
                 v-for="column in visibleColumns"
                 :key="column.id"
-                :class="[column.class, 'font-semibold text-gray-700 whitespace-nowrap']"
+                :class="[column.class, 'font-semibold text-foreground whitespace-nowrap']"
               >
                 {{ column.label }}
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow v-for="activity in activities" :key="activity.id" class="hover:bg-blue-50/50 transition-colors">
+            <TableRow v-for="activity in activities" :key="activity.id" class="hover:bg-accent/50 transition-colors">
               <TableCell v-for="column in visibleColumns" :key="column.id" :class="[column.class, 'whitespace-nowrap']">
                 <template v-if="column.id === 'status'">
                   <Badge
@@ -114,7 +114,7 @@ function formatDateTime(dateString: string | null): string {
                 </template>
                 <template v-else-if="column.id === 'description'">
                   <span
-                    class="text-sm text-gray-700 max-w-[360px] truncate block"
+                    class="text-sm text-foreground max-w-[360px] truncate block"
                     :title="activity.description || t('app.module.activities_history.no_description')"
                   >
                     {{ activity.description || t('app.module.activities_history.no_description') }}
@@ -124,12 +124,12 @@ function formatDateTime(dateString: string | null): string {
                   <Badge
                     v-if="activity.category_id"
                     variant="outline"
-                    class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
+                    class="text-xs text-muted-foreground bg-muted hover:bg-muted/80 cursor-default"
                   >
                     <Tag class="w-3 h-3 mr-1" />
                     {{ t('app.module.activities_history.category_name') }}
                   </Badge>
-                  <span v-else class="italic text-gray-400">{{
+                  <span v-else class="italic text-muted-foreground">{{
                     t('app.module.activities_history.uncategorized')
                   }}</span>
                 </template>
@@ -140,33 +140,33 @@ function formatDateTime(dateString: string | null): string {
                         v-for="(tag, index) in (activity.tags as string[]).slice(0, 3)"
                         :key="index"
                         variant="outline"
-                        class="text-xs text-gray-600 bg-gray-100 hover:bg-gray-200 cursor-default"
+                        class="text-xs text-muted-foreground bg-muted hover:bg-muted/80 cursor-default"
                       >
                         {{ tag }}
                       </Badge>
                       <Badge
                         v-if="(activity.tags as string[]).length > 3"
                         variant="outline"
-                        class="text-xs text-gray-600 bg-gray-100"
+                        class="text-xs text-muted-foreground bg-muted"
                       >
                         +{{ (activity.tags as string[]).length - 3 }}
                       </Badge>
                     </template>
-                    <span v-else class="italic text-gray-400">{{ t('app.module.activities_history.no_tags') }}</span>
+                    <span v-else class="italic text-muted-foreground">{{ t('app.module.activities_history.no_tags') }}</span>
                   </div>
                 </template>
                 <template v-else-if="column.id === 'duration'">
-                  <span class="text-sm text-gray-700">
+                  <span class="text-sm text-foreground">
                     {{ formatDuration(activity.started_at, activity.finished_at) }}
                   </span>
                 </template>
                 <template v-else-if="column.id === 'finishedAt'">
-                  <span class="text-sm text-gray-700" :class="{ 'italic text-gray-400': !activity.finished_at }">
+                  <span class="text-sm text-foreground" :class="{ 'italic text-muted-foreground': !activity.finished_at }">
                     {{ formatDateTime(activity.finished_at) }}
                   </span>
                 </template>
                 <template v-else-if="column.id === 'startedAt'">
-                  <span class="text-sm text-gray-700">
+                  <span class="text-sm text-foreground">
                     {{ formatDateTime(activity.started_at) }}
                   </span>
                 </template>
@@ -185,7 +185,7 @@ function formatDateTime(dateString: string | null): string {
                           t('app.module.activities_history.view_details')
                         }}</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem @click="emit('delete', activity)" class="text-red-600">{{
+                        <DropdownMenuItem @click="emit('delete', activity)" class="text-destructive">{{
                           t('app.action.delete')
                         }}</DropdownMenuItem>
                       </DropdownMenuContent>
@@ -202,7 +202,7 @@ function formatDateTime(dateString: string | null): string {
             <TableRow>
               <TableCell
                 :colspan="visibleColumns.length"
-                class="sticky bottom-0 z-10 whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 border-t border-border/40 shadow-[0_-1px_0_0_hsl(var(--border))]"
+                class="sticky bottom-0 z-10 whitespace-nowrap px-4 py-3 text-sm font-medium text-foreground bg-muted border-t border-border/40"
               >
                 {{
                   t('app.module.activities_history.summary.line', {

@@ -34,7 +34,7 @@ const { t } = useTranslation();
 
       <AlertDialogFooter>
         <AlertDialogCancel @click="emit('close')">{{ t('app.action.cancel') }}</AlertDialogCancel>
-        <AlertDialogAction @click="emit('confirm')" class="bg-red-600 hover:bg-red-700">
+        <AlertDialogAction @click="emit('confirm')" class="bg-destructive text-white hover:bg-destructive/90">
           {{ t('app.action.delete') }}
         </AlertDialogAction>
       </AlertDialogFooter>
