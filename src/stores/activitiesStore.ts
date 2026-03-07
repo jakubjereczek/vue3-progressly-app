@@ -15,6 +15,7 @@ export const useActivitiesStore = defineStore('activities', () => {
   const trackingActivity = ref<TableRow<'activities'> | undefined>();
   const activities = ref<TableRow<'activities'>[]>([]);
   const loading = ref(false);
+  const actionLoading = ref(false);
   const error = ref<string | undefined>();
 
   async function getPendingActivity(userId: string): Promise<TableRow<'activities'> | null> {
@@ -25,7 +26,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     if (!userStore.user) {
       return undefined;
     }
-    loading.value = true;
+    actionLoading.value = true;
     error.value = undefined;
 
     try {
@@ -35,7 +36,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
     } finally {
-      loading.value = false;
+      actionLoading.value = false;
     }
   }
 
@@ -47,7 +48,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     if (!userStore.user) {
       return undefined;
     }
-    loading.value = true;
+    actionLoading.value = true;
     error.value = undefined;
 
     try {
@@ -73,7 +74,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
     } finally {
-      loading.value = false;
+      actionLoading.value = false;
     }
   }
 
@@ -89,7 +90,7 @@ export const useActivitiesStore = defineStore('activities', () => {
       return undefined;
     }
 
-    loading.value = true;
+    actionLoading.value = true;
     error.value = undefined;
 
     try {
@@ -109,6 +110,10 @@ export const useActivitiesStore = defineStore('activities', () => {
         if (trackingActivity.value?.id === activityId) {
           trackingActivity.value = undefined;
         }
+        const index = activities.value.findIndex((a: { id: string }) => a.id === activityId);
+        if (index !== -1) {
+          activities.value[index] = updatedActivity;
+        }
         return updatedActivity;
       }
 
@@ -116,7 +121,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
     } finally {
-      loading.value = false;
+      actionLoading.value = false;
     }
   }
 
@@ -204,6 +209,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     trackingActivity,
     activities,
     loading,
+    actionLoading,
     error,
     loadPendingActivity,
     startRecordingActivity,

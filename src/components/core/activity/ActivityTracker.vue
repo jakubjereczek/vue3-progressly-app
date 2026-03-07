@@ -13,7 +13,7 @@ import { useTranslation } from '@/composables';
 const { t } = useTranslation();
 const activitiesStore = useActivitiesStore();
 
-const { trackingActivity, loading, error } = storeToRefs(activitiesStore);
+const { trackingActivity, actionLoading, error } = storeToRefs(activitiesStore);
 const { loadPendingActivity, startRecordingActivity, finishRecordingActivity } = activitiesStore;
 
 const description = ref('');
@@ -59,7 +59,7 @@ watch(
 const canStarts = computed(() => description.value.trim().length > 0);
 
 const state = computed<TimerState>(() => {
-  if (loading.value) {
+  if (actionLoading.value) {
     return 'loading';
   }
   if (isRunning.value) {
@@ -132,9 +132,9 @@ function toggleTimer() {
 </script>
 
 <template>
-  <Card class="p-8 flex flex-col gap-6 md:flex-row md:gap-10 rounded-2xl border border-border/40 h-full">
-    <div class="md:flex-grow">
-      <h2 class="text-xl font-semibold mb-4">{{ t('app.module.overview.activity_tracker.title') }}</h2>
+  <Card class="p-8 flex flex-col gap-6 md:flex-row md:gap-0 rounded-2xl border border-border/40 h-full">
+    <div class="md:flex-grow md:pr-8">
+      <h2 class="text-xl font-semibold mb-6">{{ t('app.module.overview.activity_tracker.title') }}</h2>
       <ActivityTrackerForm
         v-model:description="description"
         v-model:category="category"
@@ -145,7 +145,7 @@ function toggleTimer() {
       />
     </div>
 
-    <div class="flex flex-col items-center space-y-6 md:w-[220px] xl:w-[280px] md:flex-shrink-0">
+    <div class="flex items-center justify-center w-[160px] mx-auto md:mx-0 md:pl-8 md:w-[200px] xl:w-[240px] md:flex-shrink-0">
       <ActivityTrackerTime :totalSeconds="elapsedSeconds" :state="state" @toggleTimer="toggleTimer" />
     </div>
   </Card>

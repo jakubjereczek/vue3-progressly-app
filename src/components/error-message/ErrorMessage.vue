@@ -11,12 +11,12 @@ defineProps<Props>();
 </script>
 
 <template>
-  <div class="text-center py-12 bg-gray-50 rounded-lg border border-border/40">
-    <component :is="icon" class="w-10 h-10 mx-auto mb-3 text-gray-400" />
-    <p class="text-lg font-medium text-gray-600">
+  <div class="text-center py-12 bg-muted/50 rounded-lg border border-border/40">
+    <component :is="icon" class="w-10 h-10 mx-auto mb-3 text-muted-foreground" />
+    <p class="text-lg font-medium text-foreground">
       {{ title }}
     </p>
-    <p v-if="description" class="mt-1 text-sm text-gray-400">
+    <p v-if="description" class="mt-1 text-sm text-muted-foreground">
       {{ description }}
     </p>
   </div>
