@@ -112,6 +112,7 @@ export const useActivitiesStore = defineStore('activities', () => {
         }
         const index = activities.value.findIndex((a: { id: string }) => a.id === activityId);
         if (index !== -1) {
+          // @ts-expect-error Type instantiation is excessively deep and possibly infinite.
           activities.value[index] = updatedActivity;
         }
         return updatedActivity;
@@ -191,7 +192,6 @@ export const useActivitiesStore = defineStore('activities', () => {
       const index = activities.value.findIndex((activity: { id: string }) => activity.id === activityId);
 
       if (activity && index !== -1) {
-        // @ts-expect-error Type instantiation is excessively deep and possibly infinite.
         activities.value[index] = activity;
 
         if (trackingActivity.value?.id === activityId) {
