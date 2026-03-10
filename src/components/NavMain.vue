@@ -2,6 +2,7 @@
 import type { LucideIcon } from 'lucide-vue-next';
 import { ChevronRight } from 'lucide-vue-next';
 import { RouterLink } from 'vue-router';
+import { useTranslation } from '@/composables';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
@@ -14,6 +15,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+
+const { t } = useTranslation();
 
 defineProps<{
   items: {
@@ -31,7 +34,7 @@ defineProps<{
 
 <template>
   <SidebarGroup>
-    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroupLabel>{{ t('app.core.navbar.platform') }}</SidebarGroupLabel>
     <SidebarMenu>
       <Collapsible
         v-for="item in items"

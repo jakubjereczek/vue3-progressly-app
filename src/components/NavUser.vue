@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/sidebar'
 
 import { computed } from "vue"
+import { storeToRefs } from 'pinia'
 import type { User } from "@supabase/supabase-js"
 import defaultAvatar from '@/assets/default-avatar.svg'
 import { useTranslation } from '@/composables/useTranslation' 
@@ -43,6 +44,7 @@ const props = defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
+const { isPremium } = storeToRefs(userStore)
 
 const avatarUrl = computed(() => props.user.user_metadata?.avatar_url ?? defaultAvatar)
 const email = computed(() => props.user.email)
@@ -94,27 +96,32 @@ async function onLogoutClick() {
                 </AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">{{ t('app.core.common.label') }}</span>
+                <span class="truncate font-semibold">{{ displayName }}</span>
                 <span class="truncate text-xs">{{ email }}</span>
               </div>
             </div>
           </DropdownMenuLabel>
 
+          <template v-if="!isPremium">
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem as-child>
+                <RouterLink to="/dashboard/upgrade" class="flex items-center gap-2 w-full">
+                  <Sparkles />
+                  {{ t('app.core.common.upgrade') }}
+                </RouterLink>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </template>
+
           <DropdownMenuSeparator />
 
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <Sparkles />
-              {{ t('app.core.common.upgrade') }}
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-
-          <DropdownMenuSeparator />
-
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <BadgeCheck />
-              {{ t('app.core.common.account') }}
+            <DropdownMenuItem as-child>
+              <RouterLink to="/dashboard/account" class="flex items-center gap-2 w-full">
+                <BadgeCheck />
+                {{ t('app.core.common.account') }}
+              </RouterLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>
 

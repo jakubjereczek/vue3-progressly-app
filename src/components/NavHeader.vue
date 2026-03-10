@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import {  Clock } from 'lucide-vue-next';
+import { useUserStore } from '@/stores';
+import { storeToRefs } from 'pinia';
 
-import { SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
+const userStore = useUserStore();
+const { planName } = storeToRefs(userStore);
 </script>
 
 <template>
@@ -14,7 +16,7 @@ import { SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
       </div>
       <div class="grid flex-1 text-left text-sm leading-tight">
         <span class="truncate font-medium"> Progressly </span>
-        <span class="truncate text-xs">Demo plan</span>
+        <span class="truncate text-xs">{{ planName ?? '—' }}</span>
       </div>
     </SidebarMenuItem>
   </SidebarMenu>

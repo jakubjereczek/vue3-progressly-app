@@ -84,16 +84,15 @@ export default class SupabaseClient {
     return data as unknown as TableRow<T>;
   }
 
-  public static async delete<T extends PublicTables>(table: T, filter: Partial<TableRow<T>>): Promise<TableRow<T>> {
-    let query = this.client.from(table).delete().select();
+  public static async delete<T extends PublicTables>(table: T, filter: Partial<TableRow<T>>): Promise<void> {
+    let query = this.client.from(table).delete();
     Object.entries(filter).forEach(([key, value]) => {
       query = query.eq(key, value);
     });
-    const { data, error } = await query.single();
+    const { error } = await query;
     if (error) {
       throw error;
     }
-    return data as unknown as TableRow<T>;
   }
 
   public static raw(): SupabaseBaseClient<Database> {
@@ -143,5 +142,20 @@ export default class SupabaseClient {
 
   public static onAuthStateChange(callback: (event: string, session: Session | null) => void) {
     return this.client.auth.onAuthStateChange(callback);
+  }
+
+  public static async updatePassword(newPassword: string): Promise<void> {
+    const { error } = await this.client.auth.updateUser({ password: newPassword });
+    if (error) {
+      throw error;
+    }
+  }
+
+  public static async updateDisplayName(fullName: string): Promise<User> {
+    const { data, error } = await this.client.auth.updateUser({ data: { full_name: fullName } });
+    if (error) {
+      throw error;
+    }
+    return data.user;
   }
 }
