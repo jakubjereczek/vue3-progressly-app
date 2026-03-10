@@ -28,16 +28,19 @@
         </div>
       </header>
 
-      <main class="flex flex-1 flex-col gap-4 p-4 overflow-hidden bg-gray-50">
+      <main class="flex flex-1 flex-col gap-4 p-4 overflow-hidden bg-muted/30">
         <RouterView />
       </main>
     </SidebarInset>
   </SidebarProvider>
+
+  <FloatingActivityTracker v-if="showFloatingTracker" />
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
-import { useBreadcrumbs } from '@/composables/useBreadcrumbs';
+import { RouterView, useRoute } from 'vue-router';
+import { computed } from 'vue';
+import { useBreadcrumbs } from '@/composables';
 import AppSidebar from '@/components/AppSidebar.vue';
 import {
   Breadcrumb,
@@ -49,6 +52,9 @@ import {
 } from '@/components/ui/breadcrumb/';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import FloatingActivityTracker from '@/components/core/activity/FloatingActivityTracker.vue';
 
+const route = useRoute();
+const showFloatingTracker = computed(() => route.name !== 'Dashboard_Overview');
 const { breadcrumbs } = useBreadcrumbs();
 </script>
