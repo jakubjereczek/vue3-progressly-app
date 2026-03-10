@@ -1,6 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { LoginPage, RegisterPage, OverviewPage, TimesheetPage } from '@/app/pages';
+import { LoginPage, RegisterPage, OverviewPage, TimesheetPage, SettingsPage } from '@/app/pages';
 import DashboardLayout from '@/components/DashboardLayout.vue';
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -41,8 +42,12 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        path: '/dashboard',
-        redirect: '/dashboard/overview',
+        path: 'settings',
+        name: 'Dashboard_Settings',
+        component: SettingsPage,
+        meta: {
+          breadcrumb: 'Settings',
+        },
       },
     ],
   },
