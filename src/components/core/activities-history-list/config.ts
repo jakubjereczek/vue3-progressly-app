@@ -58,11 +58,4 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     class: 'w-[180px]',
     isToggleable: true,
   },
-  {
-    id: 'actions',
-    label: t('app.module.activities_history.actions'),
-    visible: true,
-    class: 'w-[60px]',
-    isToggleable: false,
-  },
 ];

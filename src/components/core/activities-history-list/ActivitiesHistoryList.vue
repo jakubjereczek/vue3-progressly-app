@@ -1,118 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { toast } from 'vue-sonner';
 import { Card } from '@/components/ui/card';
-import { useActivitiesStore } from '@/stores';
-import { useTranslation } from '@/composables';
-import type { TableRow as ITableRow } from '@/api/supabase';
-import { splitAndTrim } from '@/utils/string';
+import { useActivitiesStore, useCategoriesStore } from '@/stores';
 import { useActivitiesTable } from '@/components/core/activities-history-list/useActivitiesTable';
 import { useActivitiesTableColumns } from '@/components/core/activities-history-list/useActivitiesTableColumns';
 import ActivitiesHistoryListTable from '@/components/core/activities-history-list/ActivitiesHistoryListTable.vue';
 import ActivitiesHistoryListHeader from '@/components/core/activities-history-list/ActivitiesHistoryListHeader.vue';
-import ActivityHistoryListSheet from '@/components/core/activities-history-list/ActivitiesHistoryListSheet.vue';
-import ActivitiesHistoryListSheetDialog from '@/components/core/activities-history-list/ActivitiesHistoryListSheetDialog.vue';
 import { useMonthNavigation } from '@/components/core/activities-history-list//useMonthNavigation';
 
-export interface EditableActivity {
-  description: string;
-  tags: string;
-  category_id: string | undefined;
-}
-
-// category is not supported yet
-const { t } = useTranslation();
 const activitiesStore = useActivitiesStore();
+const categoriesStore = useCategoriesStore();
 const { loading, activities } = storeToRefs(activitiesStore);
 
-const isDeleteDialogOpen = ref(false);
-const activityToDeleteId = ref<string | null>(null);
-const isSheetOpen = ref(false);
-const currentActivity = ref<ITableRow<'activities'> | undefined>();
-const sheetMode = ref<'view' | 'edit'>('view');
-
-function openDeleteDialog(activityId: string) {
-  activityToDeleteId.value = activityId;
-  isDeleteDialogOpen.value = true;
-}
-
-function closeDeleteDialog() {
-  activityToDeleteId.value = null;
-  isDeleteDialogOpen.value = false;
-}
-
-async function confirmDeleteActivity() {
-  if (activityToDeleteId.value) {
-    const { success } = await activitiesStore.deleteActivityById(activityToDeleteId.value);
-
-    if (success) {
-      toast.success(t('app.toast_notification.activity.deleted_success'));
-    } else {
-      toast.error(t('app.toast_notification.activity.delete_error'));
-    }
-  }
-  closeDeleteDialog();
-}
-
-function openSheet(activity: ITableRow<'activities'>, mode: 'view' | 'edit') {
-  currentActivity.value = activity;
-  sheetMode.value = mode;
-  isSheetOpen.value = true;
-}
-
-async function saveActivityChanges(description: string, tags: string, categoryId: string | undefined) {
-  if (!currentActivity.value) {
-    return;
-  }
-  const updatedTagsArray = splitAndTrim(tags);
-
-  const { success } = await activitiesStore.updateActivityById(currentActivity.value.id, {
-    ...currentActivity.value,
-    description,
-    tags: updatedTagsArray,
-    category_id: categoryId,
-  });
-  if (success) {
-    toast.success(t('app.toast_notification.activity.updated_success'));
-  } else {
-    toast.error(t('activityUpdateError'));
-  }
-  isSheetOpen.value = false;
-}
-
-const { currentMonth, changeMonth } = useMonthNavigation()
-const { sortedActivities } = useActivitiesTable(activities, currentMonth);
+const { currentMonth, changeMonth } = useMonthNavigation();
+const { sortedActivities } = useActivitiesTable(activities);
 const { columns, columnVisibility, visibleColumns, toggleColumnVisibility } = useActivitiesTableColumns();
 
-
-function handleActivityAction(activity: ITableRow<'activities'>, action: 'delete' | 'edit' | 'view') {
-  if (!activity) {
-    return;
-  }
-  if (action === 'delete') {
-    openDeleteDialog(activity.id);
-  }
-  if (action === 'edit') {
-    openSheet(activity, 'edit');
-  }
-  if (action === 'view') {
-    openSheet(activity, 'view');
-  }
+function getMonthRange(yearMonth: string): { from: Date; to: Date } {
+  const [year, month] = yearMonth.split('-').map(Number);
+  const from = new Date(year, month - 1, 1, 0, 0, 0, 0);
+  const to = new Date(year, month, 0, 23, 59, 59, 999);
+  return { from, to };
 }
 
-function toggleSheetOpen(isOpen: boolean) {
-  isSheetOpen.value = isOpen;
-}
+watch(currentMonth, (ym) => {
+  const { from, to } = getMonthRange(ym);
+  activitiesStore.getActivitiesInRange(from, to);
+}, { immediate: true });
 
-function toggleDialogOpen(isOpen: boolean) {
-  isDeleteDialogOpen.value = isOpen;
-}
-
-onMounted(async () => {
-  // fetch only activites per months
-  await activitiesStore.getActivities();
-});
+onMounted(() => categoriesStore.getCategories());
 </script>
 
 <template>
@@ -131,23 +48,7 @@ onMounted(async () => {
         :visible-columns="visibleColumns"
         :activities="sortedActivities"
         :loading="loading"
-        @view="(activity) => handleActivityAction(activity, 'view')"
-        @delete="(activity) => handleActivityAction(activity, 'delete')"
-        @edit="(activity) => handleActivityAction(activity, 'edit')"
       />
     </div>
-    <ActivityHistoryListSheet
-      :activity="currentActivity"
-      :sheet-mode="sheetMode"
-      :is-sheet-open="isSheetOpen"
-      @toggle-open="toggleSheetOpen"
-      @save="saveActivityChanges"
-    />
-    <ActivitiesHistoryListSheetDialog
-      :is-dialog-open="isDeleteDialogOpen"
-      @toggle-open="toggleDialogOpen"
-      @close="closeDeleteDialog"
-      @confirm="confirmDeleteActivity"
-    />
   </Card>
 </template>

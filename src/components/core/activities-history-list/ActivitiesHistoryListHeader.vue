@@ -41,12 +41,15 @@ function formatMonthDisplay(dateString: string): string {
 
 <template>
   <div class="flex flex-wrap items-start justify-between gap-4">
-    <h2 class="text-xl font-semibold">{{ t('app.module.activities_history.title') }}</h2>
-    <div class="flex items-center space-x-4">
+    <div>
+      <h2 class="text-xl font-semibold">{{ t('app.module.activities_history.title') }}</h2>
+      <p class="text-sm text-muted-foreground mt-0.5">{{ t('app.module.activities_history.description') }}</p>
+    </div>
+    <div class="flex items-center gap-4">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <Button variant="outline" class="ml-auto">
-            {{ t('app.module.activities_history.columns') }} <ChevronDown class="w-4 h-4 ml-2" />
+          <Button variant="outline" class="gap-2">
+            {{ t('app.module.activities_history.columns') }} <ChevronDown class="w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -67,7 +70,7 @@ function formatMonthDisplay(dateString: string): string {
           </template>
         </DropdownMenuContent>
       </DropdownMenu>
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center gap-2">
         <Button variant="outline" size="icon" @click="emit('changeMonth', 'prev')">
           <ChevronLeft class="w-5 h-5" />
         </Button>

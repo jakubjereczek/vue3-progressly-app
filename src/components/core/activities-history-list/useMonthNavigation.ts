@@ -1,25 +1,28 @@
 import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-export function useMonthNavigation(initialMonth?: string) {
-  const currentMonth = ref(initialMonth ?? new Date().toISOString().substring(0, 7));
+function toYearMonth(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+}
+
+export function useMonthNavigation() {
+  const route = useRoute();
+  const router = useRouter();
+
+  const queryMonth = route.query.month as string | undefined;
+  const initial = queryMonth && /^\d{4}-\d{2}$/.test(queryMonth)
+    ? queryMonth
+    : toYearMonth(new Date());
+
+  const currentMonth = ref(initial);
 
   function changeMonth(direction: 'prev' | 'next') {
-    const parts = currentMonth.value.split('-');
-    const year = Number(parts[0]);
-    const month = Number(parts[1]);
+    const [year, month] = currentMonth.value.split('-').map(Number);
     const date = new Date(year, month - 1, 1);
-
-    if (direction === 'prev') {
-      date.setMonth(date.getMonth() - 1);
-    } else {
-      date.setMonth(date.getMonth() + 1);
-    }
-
-    currentMonth.value = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    date.setMonth(date.getMonth() + (direction === 'next' ? 1 : -1));
+    currentMonth.value = toYearMonth(date);
+    router.replace({ query: { ...route.query, month: currentMonth.value } });
   }
 
-  return {
-    currentMonth,
-    changeMonth,
-  };
+  return { currentMonth, changeMonth };
 }
