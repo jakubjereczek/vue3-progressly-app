@@ -32,11 +32,6 @@ export function formatDuration(startedAt: string, finishedAt: string | null): st
   return `${pad(h)}:${pad(m)}:${pad(s)}`;
 }
 
-/**
- * Formats total duration in seconds as HH:MM:SS.
- * When total >= 24h, returns "[days]d HH:MM" (e.g. "2d 08:12").
- * Uses base-60 conversion (seconds → minutes → hours).
- */
 export function formatTotalDuration(totalSeconds: number): string {
   const totalSecs = Math.max(0, Math.floor(totalSeconds));
   const pad = (num: number): string => String(num).padStart(2, '0');
@@ -57,4 +52,20 @@ export function getTodayDateString(): string {
   const now = new Date();
 
   return now.toISOString().split('T')[0]!;
+}
+
+export function formatActivityDateTime(
+  dateString: string | null | undefined,
+  locale: string,
+  fallback: string,
+): string {
+  if (!dateString) return fallback;
+  return new Date(dateString).toLocaleString(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 }

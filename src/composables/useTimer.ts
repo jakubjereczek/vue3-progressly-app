@@ -1,4 +1,4 @@
-import { ref, watch, onBeforeUnmount, type Ref } from 'vue';
+import { ref, watch, onBeforeUnmount, onMounted, type Ref } from 'vue';
 
 interface UseTimerOptions {
   isRunning: Ref<boolean>;
@@ -9,6 +9,13 @@ interface UseTimerOptions {
 export function useTimer({ getStartTime, isRunning, onTick }: UseTimerOptions) {
   const elapsedSeconds = ref(0);
   let intervalId: number | null = null;
+
+  function syncFromStartTime() {
+    const startedAt = getStartTime();
+    if (startedAt !== null) {
+      elapsedSeconds.value = Math.floor((Date.now() - startedAt) / 1000);
+    }
+  }
 
   function stopClock() {
     if (intervalId !== null) {
@@ -24,14 +31,20 @@ export function useTimer({ getStartTime, isRunning, onTick }: UseTimerOptions) {
     }
     const startedAt = getStartTime();
     if (startedAt !== null) {
-      elapsedSeconds.value = Math.floor((Date.now() - startedAt) / 1000);
+      syncFromStartTime();
 
       intervalId = window.setInterval(() => {
-        elapsedSeconds.value++;
+        syncFromStartTime();
         if (onTick) {
           onTick(elapsedSeconds.value);
         }
       }, 1000);
+    }
+  }
+
+  function onVisibilityChange() {
+    if (document.visibilityState === 'visible' && isRunning.value) {
+      syncFromStartTime();
     }
   }
 
@@ -47,8 +60,13 @@ export function useTimer({ getStartTime, isRunning, onTick }: UseTimerOptions) {
     { immediate: true },
   );
 
+  onMounted(() => {
+    document.addEventListener('visibilitychange', onVisibilityChange);
+  });
+
   onBeforeUnmount(() => {
     stopClock();
+    document.removeEventListener('visibilitychange', onVisibilityChange);
   });
 
   return {

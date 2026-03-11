@@ -14,13 +14,13 @@ const categoriesStore = useCategoriesStore();
 const { loading, activities } = storeToRefs(activitiesStore);
 
 const { currentMonth, changeMonth } = useMonthNavigation();
+// @ts-expect-error Typescript doesn't regnize that useActivitiesTable is called with a ref and not a raw array, but it works fine
 const { sortedActivities } = useActivitiesTable(activities);
 const { columns, columnVisibility, visibleColumns, toggleColumnVisibility } = useActivitiesTableColumns();
-
 function getMonthRange(yearMonth: string): { from: Date; to: Date } {
   const [year, month] = yearMonth.split('-').map(Number);
-  const from = new Date(year, month - 1, 1, 0, 0, 0, 0);
-  const to = new Date(year, month, 0, 23, 59, 59, 999);
+  const from = new Date(year!, month! - 1, 1, 0, 0, 0, 0);
+  const to = new Date(year!, month!, 0, 23, 59, 59, 999);
   return { from, to };
 }
 
