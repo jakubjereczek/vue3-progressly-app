@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { FormField, FormLabel, FormControl, FormDescription } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { useTranslation } from '@/composables';
+import type { TableRow } from '@/api/supabase';
 
 export type TimerState = 'playing' | 'ready' | 'loading' | 'disabled';
 
@@ -14,6 +14,7 @@ interface Props {
   tagsInput: string;
   elapsedSeconds: number;
   state: TimerState;
+  categories: TableRow<'categories'>[];
 }
 
 const props = defineProps<Props>();
@@ -43,58 +44,39 @@ const localTagsInput = computed({
 });
 
 const isDisabled = computed(() => props.state === 'playing' || props.state === 'loading');
-
-function handleSubmit() {
-  emit('submitForm');
-}
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="space-y-5" id="activityForm">
-    <FormField name="activityDescription">
-      <FormLabel>{{ t('app.module.overview.activity_tracker.description_label') }}</FormLabel>
-      <FormControl>
-        <Textarea
-          v-model="localDescription"
-          :placeholder="t('app.module.overview.activity_tracker.start_placeholder')"
-          rows="4"
-          :disabled="isDisabled"
-        />
-      </FormControl>
-      <FormDescription>{{ t('app.module.overview.activity_tracker.description_hint') }}</FormDescription>
-    </FormField>
+  <form @submit.prevent="$emit('submitForm')" class="flex flex-col flex-1 min-h-0 gap-3" id="activityForm">
+    <Textarea
+      v-model="localDescription"
+      :placeholder="t('app.module.overview.activity_tracker.start_placeholder')"
+      :disabled="isDisabled"
+      class="min-h-[100px] max-h-[160px] resize-none text-base placeholder:text-muted-foreground/40 border-border/60 focus-visible:ring-primary/20 leading-relaxed"
+    />
+    <div class="flex gap-3 flex-shrink-0">
+      <Select v-model="localCategory" :disabled="isDisabled">
+        <SelectTrigger class="flex-1 min-w-0">
+          <SelectValue :placeholder="t('app.module.overview.activity_tracker.category_placeholder')" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem v-for="cat in categories" :key="cat.id" :value="cat.id">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ backgroundColor: cat.color }" />
+                {{ cat.name }}
+              </div>
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <FormField name="activityCategory">
-        <FormLabel>{{ t('app.module.overview.activity_tracker.category_label') }}</FormLabel>
-        <FormControl>
-          <Select v-model="localCategory" :disabled="isDisabled">
-            <SelectTrigger class="w-full">
-              <SelectValue :placeholder="t('app.module.overview.activity_tracker.category_placeholder')" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value="Praca">{{ t('app.module.overview.activity_tracker.category.work') }}</SelectItem>
-                <SelectItem value="Nauka">{{ t('app.module.overview.activity_tracker.category.study') }}</SelectItem>
-                <SelectItem value="Ćwiczenia">{{ t('app.module.overview.activity_tracker.category.exercise') }}</SelectItem>
-                <SelectItem value="Inne">{{ t('app.module.overview.activity_tracker.category.other') }}</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-      </FormField>
-
-      <FormField name="activityTags">
-        <FormLabel>{{ t('app.module.overview.activity_tracker.tags_label') }}</FormLabel>
-        <FormControl>
-          <Input 
-            v-model="localTagsInput" 
-            :placeholder="t('app.module.overview.activity_tracker.tags_label')" 
-            :disabled="isDisabled" 
-          />
-        </FormControl>
-        <FormDescription class="col-span-2">{{ t('app.module.overview.activity_tracker.tags_hint') }}</FormDescription>
-      </FormField>
+      <Input
+        v-model="localTagsInput"
+        :placeholder="t('app.module.overview.activity_tracker.tags_placeholder')"
+        :disabled="isDisabled"
+        class="flex-1 min-w-0"
+      />
     </div>
   </form>
 </template>
