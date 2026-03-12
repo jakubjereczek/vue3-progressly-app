@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { LoginPage, RegisterPage, OverviewPage, TimesheetPage, SettingsPage, CalendarPage } from '@/app/pages';
+import { LoginPage, RegisterPage, OverviewPage, TimesheetPage, SettingsPage, ExportPage, CalendarPage } from '@/app/pages';
 import DashboardLayout from '@/components/DashboardLayout.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -47,6 +47,14 @@ const routes: RouteRecordRaw[] = [
         component: SettingsPage,
         meta: {
           breadcrumb: 'Settings',
+        },
+      },
+      {
+        path: 'export',
+        name: 'Dashboard_Export',
+        component: ExportPage,
+        meta: {
+          breadcrumb: 'Export',
         },
       },
       {
