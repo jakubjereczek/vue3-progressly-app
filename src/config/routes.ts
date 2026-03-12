@@ -1,5 +1,5 @@
 import type { RouteRecordRaw } from 'vue-router';
-import { LoginPage, RegisterPage, OverviewPage, TimesheetPage, SettingsPage } from '@/app/pages';
+import { LoginPage, RegisterPage, OverviewPage, TimesheetPage, SettingsPage, CalendarPage } from '@/app/pages';
 import DashboardLayout from '@/components/DashboardLayout.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -48,6 +48,18 @@ const routes: RouteRecordRaw[] = [
         meta: {
           breadcrumb: 'Settings',
         },
+      },
+      {
+        path: 'calendar',
+        name: 'Dashboard_Calendar',
+        component: CalendarPage,
+        meta: {
+          breadcrumb: 'Calendar',
+        },
+      },
+      {
+        path: '/dashboard',
+        redirect: '/dashboard/overview',
       },
     ],
   },
