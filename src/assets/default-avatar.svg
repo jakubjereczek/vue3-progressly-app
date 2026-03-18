@@ -1,5 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-  <rect width="64" height="64" fill="none"/>
-  <circle cx="32" cy="22" r="10" fill="#000000"/>
-  <path d="M12 54c4-9 12-14 20-14s16 5 20 14v6H12v-6z" fill="#000000"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+  <!--
+    Progressly default user avatar.
+    Adaptive light/dark via CSS media query — works when loaded as <img src>.
+  -->
+  <style>
+    .bg { fill: #ebebeb; }
+    .fg { fill: #b4b4b4; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #2d2d2d; }
+      .fg { fill: #525252; }
+    }
+  </style>
+  <rect width="64" height="64" rx="14" class="bg"/>
+  <circle cx="32" cy="22" r="10" class="fg"/>
+  <path d="M12 54c4-9 12-14 20-14s16 5 20 14v6H12v-6z" class="fg"/>
 </svg>

@@ -1,0 +1,27 @@
+<svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    Progressly Apple Touch Icon — 180×180
+    Dark background, white ring. Used as iOS / Android homescreen icon.
+
+    Geometry (center 90,90 · r=52 · stroke-width=11):
+      7 o'clock (120°): (90 - 26, 90 + 45.03) = (64, 135.03)
+      5 o'clock  (60°): (90 + 26, 90 + 45.03) = (116, 135.03)
+      Arc: M 64 135 A 52 52 0 1 1 116 135  (large-arc=1, sweep=1, 300°)
+      Dot: cx=116 cy=135 r=11
+  -->
+
+  <!-- App icon background -->
+  <rect width="180" height="180" rx="38" fill="#171717"/>
+
+  <!-- Progress ring arc -->
+  <path
+    d="M 64 135.03 A 52 52 0 1 1 116 135.03"
+    stroke="white"
+    stroke-width="11"
+    stroke-linecap="round"
+    fill="none"
+  />
+
+  <!-- Progress head dot -->
+  <circle cx="116" cy="135.03" r="11" fill="white" />
+</svg>

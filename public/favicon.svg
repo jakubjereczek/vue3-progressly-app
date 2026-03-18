@@ -1,0 +1,28 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    Progressly favicon — "Progress Ring"
+    Adaptive: dark ring on light mode, light ring on dark mode.
+
+    Geometry (center 16,16 · r=10 · stroke-width=2.5):
+      7 o'clock (120° from 3): (11, 24.66)
+      5 o'clock  (60° from 3): (21, 24.66)
+      Arc: M 11 24.66 A 10 10 0 1 1 21 24.66  (large-arc=1, sweep=1, 300°)
+      Dot: cx=21 cy=24.66 r=2.5
+  -->
+  <style>
+    .ring { stroke: #171717; }
+    .dot  { fill:   #171717; }
+    @media (prefers-color-scheme: dark) {
+      .ring { stroke: #fafafa; }
+      .dot  { fill:   #fafafa; }
+    }
+  </style>
+  <path
+    class="ring"
+    d="M 11 24.66 A 10 10 0 1 1 21 24.66"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    fill="none"
+  />
+  <circle class="dot" cx="21" cy="24.66" r="2.5" />
+</svg>
