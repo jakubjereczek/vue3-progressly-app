@@ -1,8 +1,14 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue';
+import { useCategoryName } from '@/composables';
+
+const props = defineProps<{
   name: string;
   color: string;
 }>();
+
+const { resolveCategoryName } = useCategoryName();
+const displayName = computed(() => resolveCategoryName(props.name));
 </script>
 
 <template>
@@ -15,6 +21,6 @@ defineProps<{
     }"
   >
     <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :style="{ backgroundColor: color }" />
-    {{ name }}
+    {{ displayName }}
   </span>
 </template>

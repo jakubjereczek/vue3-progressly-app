@@ -158,4 +158,11 @@ export default class SupabaseClient {
     }
     return data.user;
   }
+
+  public static async deleteUser(): Promise<void> {
+    const { error } = await this.client.rpc('delete_user');
+    if (error) {
+      throw error;
+    }
+  }
 }

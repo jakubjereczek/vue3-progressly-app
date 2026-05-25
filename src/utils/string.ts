@@ -5,6 +5,6 @@ export function splitAndTrim(input: string): string[] {
     .filter(Boolean);
 }
 
-export function arrayToString(arr: unknown) {
-  return Array.isArray(arr) ? arr.join(', ') : '';
+export function arrayToString(arr: string[] | unknown): string {
+  return Array.isArray(arr) ? (arr as string[]).join(', ') : '';
 }

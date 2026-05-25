@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores';
 import { storeToRefs } from 'pinia';
+import ProgresslyIcon from '@/components/ProgresslyIcon.vue';
 
 const userStore = useUserStore();
 const { planName } = storeToRefs(userStore);
@@ -12,10 +13,10 @@ const { planName } = storeToRefs(userStore);
       <div
         class="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground"
       >
-        <Clock class="size-4" />
+        <ProgresslyIcon class="size-4" />
       </div>
       <div class="grid flex-1 text-left text-sm leading-tight">
-        <span class="truncate font-medium"> Progressly </span>
+        <span class="truncate font-medium">Progressly</span>
         <span class="truncate text-xs">{{ planName ?? '—' }}</span>
       </div>
     </SidebarMenuItem>

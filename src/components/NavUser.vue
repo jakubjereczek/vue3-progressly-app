@@ -4,6 +4,9 @@ import {
   ChevronsUpDown,
   LogOut,
   Sparkles,
+  Monitor,
+  Sun,
+  Moon,
 } from "lucide-vue-next"
 
 import {
@@ -31,13 +34,17 @@ import { computed } from "vue"
 import { storeToRefs } from 'pinia'
 import type { User } from "@supabase/supabase-js"
 import defaultAvatar from '@/assets/default-avatar.svg'
-import { useTranslation } from '@/composables/useTranslation' 
+import { useTranslation } from '@/composables/useTranslation'
 import { useUserStore } from '@/stores'
 import { useRouter } from "vue-router"
+import { useTheme, type ThemeMode } from '@/composables/useTheme'
 
 const { t } = useTranslation()
 const userStore = useUserStore();
 const router = useRouter();
+const { theme, setTheme } = useTheme();
+
+const themeIcons: Record<ThemeMode, unknown> = { system: Monitor, light: Sun, dark: Moon };
 
 const props = defineProps<{
   user: User
@@ -124,6 +131,31 @@ async function onLogoutClick() {
               </RouterLink>
             </DropdownMenuItem>
           </DropdownMenuGroup>
+
+          <DropdownMenuSeparator />
+
+          <DropdownMenuItem class="cursor-default focus:bg-transparent" @select.prevent>
+            <div class="flex items-center justify-between w-full gap-3">
+              <div class="flex items-center gap-2 text-sm">
+                <component :is="themeIcons[theme]" class="w-4 h-4" />
+                {{ t('app.module.settings.theme.label') }}
+              </div>
+              <div class="flex items-center gap-0.5 bg-muted/60 rounded-md p-0.5 border border-border/40">
+                <button
+                  v-for="opt in (['system', 'light', 'dark'] as ThemeMode[])"
+                  :key="opt"
+                  class="p-1 rounded transition-colors"
+                  :class="theme === opt ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                  :aria-label="opt"
+                  @click.stop="setTheme(opt)"
+                >
+                  <Monitor v-if="opt === 'system'" class="w-3 h-3" />
+                  <Sun v-else-if="opt === 'light'" class="w-3 h-3" />
+                  <Moon v-else class="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 

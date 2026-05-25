@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import type { User } from '@supabase/supabase-js';
 import SupabaseClient from '@/api';
-import PlanService from '@/api/services/planService';
+import PlanService, { type PlanInfo } from '@/api/services/planService';
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null);
@@ -10,6 +10,7 @@ export const useUserStore = defineStore('user', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
   const planName = ref<string | null>(null);
+  const plan = ref<PlanInfo | null>(null);
   const isPremium = computed(() => planName.value === 'Premium');
 
   function setUser(newUser: User) {
@@ -21,13 +22,13 @@ export const useUserStore = defineStore('user', () => {
     user.value = null;
     loggedIn.value = false;
     planName.value = null;
+    plan.value = null;
   }
 
   async function fetchPlan(userId: string): Promise<void> {
-    const plan = await PlanService.getByUserId(userId);
-    if (plan) {
-      planName.value = plan.name;
-    }
+    const planInfo = await PlanService.getByUserId(userId);
+    plan.value = planInfo;
+    planName.value = planInfo?.name ?? null;
   }
 
   async function register(email: string, password: string): Promise<User | null> {
@@ -111,15 +112,21 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function updatePassword(newPassword: string): Promise<{ success: boolean }> {
+  async function updatePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; invalidCurrent?: boolean }> {
     loading.value = true;
     error.value = null;
     try {
+      const email = user.value?.email;
+      if (!email) return { success: false };
+      const { user: reauthed } = await SupabaseClient.signIn(email, currentPassword);
+      if (!reauthed) return { success: false, invalidCurrent: true };
       await SupabaseClient.updatePassword(newPassword);
       return { success: true };
     } catch (err: unknown) {
-      error.value = (err as Error)?.message ?? '';
-      return { success: false };
+      const msg = (err as Error)?.message ?? '';
+      const isInvalid = msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials');
+      error.value = msg;
+      return { success: false, invalidCurrent: isInvalid };
     } finally {
       loading.value = false;
     }
@@ -131,6 +138,21 @@ export const useUserStore = defineStore('user', () => {
     try {
       const updatedUser = await SupabaseClient.updateDisplayName(fullName);
       setUser(updatedUser);
+      return { success: true };
+    } catch (err: unknown) {
+      error.value = (err as Error)?.message ?? '';
+      return { success: false };
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function deleteAccount(): Promise<{ success: boolean }> {
+    loading.value = true;
+    error.value = null;
+    try {
+      await SupabaseClient.deleteUser();
+      clearUser();
       return { success: true };
     } catch (err: unknown) {
       error.value = (err as Error)?.message ?? '';
@@ -165,6 +187,7 @@ export const useUserStore = defineStore('user', () => {
     loading,
     error,
     planName,
+    plan,
     isPremium,
     setUser,
     clearUser,
@@ -176,5 +199,6 @@ export const useUserStore = defineStore('user', () => {
     fetchPlan,
     updatePassword,
     updateDisplayName,
+    deleteAccount,
   };
 });

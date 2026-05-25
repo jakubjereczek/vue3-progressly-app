@@ -1,3 +1,24 @@
+/** Seconds in a full day — use instead of the magic literal 86400. */
+export const SECONDS_PER_DAY = 86400;
+
+/** Milliseconds in a full day — use instead of the magic literal 86400000. */
+export const MS_PER_DAY = 86_400_000;
+
+/**
+ * Compact human-readable duration: "1h 30m", "45m", "2h".
+ * Use for space-constrained UI (chart labels, badges).
+ * Use formatTotalDuration for precise hh:mm:ss display.
+ */
+export function formatDurationCompact(totalSeconds: number): string {
+  const s = Math.max(0, Math.floor(totalSeconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  if (h > 0 && m > 0) return `${h}h ${m}m`;
+  if (h > 0) return `${h}h`;
+  if (m > 0) return `${m}m`;
+  return '0m';
+}
+
 export function formatTime(totalSeconds: number): string {
   const pad = (num: number): string => String(num).padStart(2, '0');
   const totalSecs = Math.max(0, totalSeconds);
@@ -17,19 +38,24 @@ export function getDuration(startedAt: string, finishedAt: string | null): numbe
   const end = finishedAt ? new Date(finishedAt).getTime() : new Date().getTime();
   const durationMs = end - start;
 
-  return durationMs;
+  return Math.max(0, durationMs);
 }
 
 export function formatDuration(startedAt: string, finishedAt: string | null): string {
-  const durationMs = getDuration(startedAt, finishedAt);
-  const seconds = Math.floor(durationMs / 1000);
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
+  return formatTime(getDuration(startedAt, finishedAt) / 1000);
+}
 
-  const pad = (num: number) => num.toString().padStart(2, '0');
-
-  return `${pad(h)}:${pad(m)}:${pad(s)}`;
+/**
+ * Formats an ISO datetime string as a locale-aware HH:MM time string.
+ * Returns '—' when iso is null.
+ */
+export function formatISOTime(iso: string | null, locale?: string): string {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleTimeString(locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
 }
 
 export function formatTotalDuration(totalSeconds: number): string {
@@ -49,9 +75,14 @@ export function formatTotalDuration(totalSeconds: number): string {
 }
 
 export function getTodayDateString(): string {
-  const now = new Date();
+  return localDateToString(new Date());
+}
 
-  return now.toISOString().split('T')[0]!;
+export function localDateToString(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
 }
 
 export function formatActivityDateTime(

@@ -6,6 +6,7 @@ export interface Column {
   visible: boolean;
   class: string;
   isToggleable: boolean;
+  isSortable?: boolean;
 }
 
 export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
@@ -15,6 +16,7 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     visible: true,
     class: 'w-[120px]',
     isToggleable: false,
+    isSortable: true,
   },
   {
     id: 'description',
@@ -22,6 +24,7 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     visible: true,
     class: 'w-[360px]',
     isToggleable: false,
+    isSortable: true,
   },
   {
     id: 'category',
@@ -29,6 +32,7 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     visible: true,
     class: 'w-[120px]',
     isToggleable: true,
+    isSortable: false,
   },
   {
     id: 'tags',
@@ -36,6 +40,7 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     visible: true,
     class: 'w-[180px]',
     isToggleable: true,
+    isSortable: false,
   },
   {
     id: 'duration',
@@ -43,6 +48,7 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     visible: true,
     class: 'w-[120px]',
     isToggleable: false,
+    isSortable: true,
   },
   {
     id: 'startedAt',
@@ -50,6 +56,7 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     visible: true,
     class: 'w-[180px]',
     isToggleable: true,
+    isSortable: true,
   },
   {
     id: 'finishedAt',
@@ -57,5 +64,6 @@ export const getColumnDefinitions = (t: ComposerTranslation): Column[] => [
     visible: true,
     class: 'w-[180px]',
     isToggleable: true,
+    isSortable: true,
   },
 ];
