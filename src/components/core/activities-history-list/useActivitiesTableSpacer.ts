@@ -61,6 +61,5 @@ export function useActivitiesTableSpacer(activitiesSource: MaybeRefOrGetter<Tabl
   return {
     spacerHeight,
     isReady,
-    updateSpacerHeight,
   };
 }
