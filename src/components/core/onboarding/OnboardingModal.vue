@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
-import { Zap, Play, ClipboardList, BarChart2, CalendarDays, Layers, PieChart, TrendingUp, Target, Download, ArrowRight, X } from 'lucide-vue-next';
+import {
+  Zap,
+  Play,
+  ClipboardList,
+  BarChart2,
+  CalendarDays,
+  Layers,
+  PieChart,
+  TrendingUp,
+  Target,
+  Download,
+  ArrowRight,
+  X,
+} from 'lucide-vue-next';
 import { useOnboarding } from './useOnboarding';
 import { useTranslation } from '@/composables';
 import { cn } from '@/lib/utils';
@@ -237,10 +250,7 @@ const tooltipStyle = computed(() => {
     };
   }
 
-  const left = Math.min(
-    Math.max(r!.x + r!.w / 2 - CARD_W / 2, 16),
-    vw - CARD_W - 16,
-  );
+  const left = Math.min(Math.max(r!.x + r!.w / 2 - CARD_W / 2, 16), vw - CARD_W - 16);
 
   if (placement === 'bottom') {
     return {
@@ -296,7 +306,6 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
       leave-to-class="opacity-0"
     >
       <div v-if="!isOnboardingDone" class="fixed inset-0 z-tour" style="pointer-events: none">
-
         <!-- Spotlight overlay -->
         <svg class="absolute inset-0 w-full h-full">
           <defs>
@@ -313,12 +322,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
               />
             </mask>
           </defs>
-          <rect
-            width="100%"
-            height="100%"
-            style="fill: var(--color-overlay-light)"
-            mask="url(#tour-spotlight-mask)"
-          />
+          <rect width="100%" height="100%" style="fill: var(--color-overlay-light)" mask="url(#tour-spotlight-mask)" />
         </svg>
 
         <!-- Highlight ring -->
@@ -354,10 +358,7 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
             leave-to-class="opacity-0 translate-y-1 scale-[0.97]"
             mode="out-in"
           >
-            <div
-              :key="animKey"
-              class="bg-card border border-border/60 rounded-2xl shadow-2xl overflow-hidden"
-            >
+            <div :key="animKey" class="bg-card border border-border/60 rounded-2xl shadow-2xl overflow-hidden">
               <div class="h-0.5 w-full" :style="{ background: `var(${step.accentVar})` }" />
 
               <div class="px-5 py-5">
@@ -394,29 +395,35 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
                 </div>
 
                 <div class="flex items-center justify-between">
-                  <div class="flex items-center gap-1.5" role="group" :aria-label="t('app.core.common.step_indicator', { current: currentStep + 1, total: TOTAL_STEPS })">
+                  <div
+                    class="flex items-center gap-1.5"
+                    role="group"
+                    :aria-label="t('app.core.common.step_indicator', { current: currentStep + 1, total: TOTAL_STEPS })"
+                  >
                     <div
                       v-for="i in TOTAL_STEPS"
                       :key="i"
                       role="img"
                       :aria-label="t('app.core.common.step_indicator', { current: i, total: TOTAL_STEPS })"
                       :aria-current="currentStep === i - 1 ? 'step' : undefined"
-                      :class="cn(
-                        'rounded-full transition-all duration-200',
-                        currentStep === i - 1
-                          ? 'w-4 h-1.5 bg-primary'
-                          : 'w-1.5 h-1.5 bg-muted-foreground/25',
-                      )"
+                      :class="
+                        cn(
+                          'rounded-full transition-all duration-200',
+                          currentStep === i - 1 ? 'w-4 h-1.5 bg-primary' : 'w-1.5 h-1.5 bg-muted-foreground/25',
+                        )
+                      "
                     />
                   </div>
                   <button
                     @click="goNext"
                     :disabled="isNavigating"
-                    :class="cn(
-                      'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150',
-                      'bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.97] shadow-sm',
-                      isNavigating && 'opacity-60 cursor-wait',
-                    )"
+                    :class="
+                      cn(
+                        'flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-150',
+                        'bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.97] shadow-sm',
+                        isNavigating && 'opacity-60 cursor-wait',
+                      )
+                    "
                   >
                     {{ isLast ? t('app.core.onboarding.done') : t('app.core.onboarding.next') }}
                     <ArrowRight v-if="!isLast" class="w-3 h-3" />
@@ -426,7 +433,6 @@ onUnmounted(() => document.removeEventListener('keydown', handleKeydown));
             </div>
           </Transition>
         </div>
-
       </div>
     </Transition>
   </Teleport>

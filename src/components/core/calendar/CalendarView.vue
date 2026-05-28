@@ -28,9 +28,7 @@ const today = new Date();
 
 function parseUrlYear(): number {
   const year = Number(route.query.year);
-  return isFinite(year) && year >= 2000 && year <= today.getFullYear() + 1
-    ? year
-    : today.getFullYear();
+  return isFinite(year) && year >= 2000 && year <= today.getFullYear() + 1 ? year : today.getFullYear();
 }
 function parseUrlMonth(): number {
   const month = Number(route.query.month);
@@ -203,13 +201,26 @@ const manualEntryOpen = ref(false);
       </div>
       <div class="flex items-center gap-2">
         <span class="text-sm font-medium capitalize mr-1">{{ monthLabel }}</span>
-        <Button variant="outline" size="icon" class="w-8 h-8" @click="prevMonth" :aria-label="t('app.action.prev_month')">
+        <Button
+          variant="outline"
+          size="icon"
+          class="w-8 h-8"
+          @click="prevMonth"
+          :aria-label="t('app.action.prev_month')"
+        >
           <ChevronLeft class="w-4 h-4" />
         </Button>
         <Button v-if="!isCurrentMonth" variant="outline" size="sm" class="h-8 text-xs px-3" @click="goToToday">
           {{ t('app.module.calendar.today') }}
         </Button>
-        <Button variant="outline" size="icon" class="w-8 h-8" :disabled="isCurrentMonth" @click="nextMonth" :aria-label="t('app.action.next_month')">
+        <Button
+          variant="outline"
+          size="icon"
+          class="w-8 h-8"
+          :disabled="isCurrentMonth"
+          @click="nextMonth"
+          :aria-label="t('app.action.next_month')"
+        >
           <ChevronRight class="w-4 h-4" />
         </Button>
       </div>
@@ -241,7 +252,9 @@ const manualEntryOpen = ref(false);
           </div>
           <div v-else class="grid h-full" style="grid-template-rows: repeat(6, minmax(0, 1fr))">
             <template v-for="week in weeks" :key="week.weekNum">
-              <div class="border-b border-border/30 last:border-b-0 grid grid-cols-[2.5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr] min-h-0">
+              <div
+                class="border-b border-border/30 last:border-b-0 grid grid-cols-[2.5rem_1fr_1fr_1fr_1fr_1fr_1fr_1fr] min-h-0"
+              >
                 <div class="flex items-center justify-center border-r border-border/30">
                   <span class="text-2xs font-medium text-muted-foreground/50 tabular-nums">
                     {{ week.weekNum }}
@@ -292,7 +305,10 @@ const manualEntryOpen = ref(false);
                       {{ day.formattedTotal }}
                     </span>
                   </div>
-                  <div v-if="day.categorySlices.length > 0" class="relative flex h-1 rounded-full overflow-hidden gap-px mt-1">
+                  <div
+                    v-if="day.categorySlices.length > 0"
+                    class="relative flex h-1 rounded-full overflow-hidden gap-px mt-1"
+                  >
                     <div
                       v-for="slice in day.categorySlices"
                       :key="slice.categoryId ?? 'none'"
@@ -521,7 +537,9 @@ const manualEntryOpen = ref(false);
       leave-from-class="translate-y-0"
       leave-to-class="translate-y-full"
     >
-      <div class="sm:hidden fixed inset-x-0 bottom-0 z-50 flex flex-col bg-card border-t border-border/40 rounded-t-2xl shadow-hero overflow-hidden max-h-[85svh]">
+      <div
+        class="sm:hidden fixed inset-x-0 bottom-0 z-50 flex flex-col bg-card border-t border-border/40 rounded-t-2xl shadow-hero overflow-hidden max-h-[85svh]"
+      >
         <!-- Handle bar -->
         <div class="flex justify-center pt-3 pb-1 flex-shrink-0">
           <div class="w-8 h-1 rounded-full bg-muted-foreground/30" />
@@ -539,7 +557,10 @@ const manualEntryOpen = ref(false);
                 <Clock class="w-3 h-3" />
                 <span>{{ selectedDay.sessionCount }} {{ t('app.module.calendar.sessions') }}</span>
               </div>
-              <div v-if="selectedDay.categorySlices.length > 0" class="flex items-center gap-1 text-xs text-muted-foreground">
+              <div
+                v-if="selectedDay.categorySlices.length > 0"
+                class="flex items-center gap-1 text-xs text-muted-foreground"
+              >
                 <Layers class="w-3 h-3" />
                 <span>{{ selectedDay.categorySlices.length }} {{ t('app.module.calendar.categories') }}</span>
               </div>
@@ -599,7 +620,10 @@ const manualEntryOpen = ref(false);
 
         <!-- Activity list -->
         <div class="flex-1 overflow-y-auto min-h-0">
-          <div v-if="selectedDay.activities.length === 0" class="flex flex-col items-center justify-center h-full gap-3 p-6 text-center">
+          <div
+            v-if="selectedDay.activities.length === 0"
+            class="flex flex-col items-center justify-center h-full gap-3 p-6 text-center"
+          >
             <Clock class="w-7 h-7 text-muted-foreground/30" />
             <p class="text-sm text-muted-foreground">{{ t('app.module.calendar.no_activities') }}</p>
             <button
@@ -617,7 +641,14 @@ const manualEntryOpen = ref(false);
               @click="handleView(act.id)"
             >
               <div class="flex-shrink-0 mt-1.5">
-                <span :class="cn('inline-block w-2 h-2 rounded-full ring-1 ring-border/40', act.isActive ? 'bg-chart-3' : 'bg-success')" />
+                <span
+                  :class="
+                    cn(
+                      'inline-block w-2 h-2 rounded-full ring-1 ring-border/40',
+                      act.isActive ? 'bg-chart-3' : 'bg-success',
+                    )
+                  "
+                />
               </div>
               <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium leading-snug truncate">
@@ -626,17 +657,27 @@ const manualEntryOpen = ref(false);
                 <p class="text-xs text-muted-foreground mt-0.5">
                   {{ act.startTime }}–{{ act.endTime }}
                   <span v-if="act.categoryName" class="ml-1">
-                    · <span class="inline-block w-1.5 h-1.5 rounded-full align-middle mr-0.5" :style="{ backgroundColor: act.categoryColor ?? undefined }" />{{ act.categoryName }}
+                    ·
+                    <span
+                      class="inline-block w-1.5 h-1.5 rounded-full align-middle mr-0.5"
+                      :style="{ backgroundColor: act.categoryColor ?? undefined }"
+                    />{{ act.categoryName }}
                   </span>
                 </p>
               </div>
               <div class="flex-shrink-0 flex flex-col items-end gap-1.5">
                 <span class="text-xs font-medium text-muted-foreground tabular-nums">{{ act.formattedDuration }}</span>
                 <div class="flex items-center gap-1">
-                  <button class="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors" @click.stop="handleEdit(act.id)">
+                  <button
+                    class="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    @click.stop="handleEdit(act.id)"
+                  >
                     <Pencil class="w-3.5 h-3.5" />
                   </button>
-                  <button class="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" @click.stop="handleDelete(act.id)">
+                  <button
+                    class="p-1 rounded text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                    @click.stop="handleDelete(act.id)"
+                  >
                     <Trash2 class="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -651,14 +692,28 @@ const manualEntryOpen = ref(false);
             {{ t('app.module.calendar.breakdown') }}
           </p>
           <div class="flex flex-col gap-2">
-            <div v-for="slice in selectedDay.categorySlices" :key="slice.categoryId ?? 'none'" class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full flex-shrink-0 ring-1 ring-border/40" :style="{ backgroundColor: slice.color ?? 'var(--color-muted-foreground)' }" />
-              <span class="text-xs flex-1 truncate">{{ slice.categoryName ?? t('app.module.calendar.uncategorized') }}</span>
+            <div
+              v-for="slice in selectedDay.categorySlices"
+              :key="slice.categoryId ?? 'none'"
+              class="flex items-center gap-2"
+            >
+              <div
+                class="w-2 h-2 rounded-full flex-shrink-0 ring-1 ring-border/40"
+                :style="{ backgroundColor: slice.color ?? 'var(--color-muted-foreground)' }"
+              />
+              <span class="text-xs flex-1 truncate">{{
+                slice.categoryName ?? t('app.module.calendar.uncategorized')
+              }}</span>
               <div class="flex items-center gap-2 flex-shrink-0">
                 <div class="w-16 h-1 bg-muted rounded-full overflow-hidden">
-                  <div class="h-full rounded-full" :style="{ width: slice.percentage + '%', backgroundColor: slice.color ?? 'var(--color-primary)' }" />
+                  <div
+                    class="h-full rounded-full"
+                    :style="{ width: slice.percentage + '%', backgroundColor: slice.color ?? 'var(--color-primary)' }"
+                  />
                 </div>
-                <span class="text-xs text-muted-foreground tabular-nums w-8 text-right">{{ Math.round(slice.percentage) }}%</span>
+                <span class="text-xs text-muted-foreground tabular-nums w-8 text-right"
+                  >{{ Math.round(slice.percentage) }}%</span
+                >
               </div>
             </div>
           </div>

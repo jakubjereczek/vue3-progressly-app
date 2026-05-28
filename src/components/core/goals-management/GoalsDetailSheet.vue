@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Pencil, Archive, Trash2, ArchiveRestore, Target, Calendar, TrendingUp, Award, Clock, Layers } from 'lucide-vue-next';
+import {
+  Pencil,
+  Archive,
+  Trash2,
+  ArchiveRestore,
+  Target,
+  Calendar,
+  TrendingUp,
+  Award,
+  Clock,
+  Layers,
+} from 'lucide-vue-next';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import type { TableRow } from '@/api/supabase';
 import { useTranslation } from '@/composables';
@@ -27,23 +38,17 @@ const emit = defineEmits<{
 const { t } = useTranslation();
 
 const category = computed(() =>
-  props.goal?.category_id
-    ? props.categories.find((c) => c.id === props.goal!.category_id) ?? null
-    : null,
+  props.goal?.category_id ? (props.categories.find((c) => c.id === props.goal!.category_id) ?? null) : null,
 );
 
 const status = computed(() => (props.goal ? getGoalStatus(props.goal) : 'active'));
 
-const currentValue = computed(() =>
-  props.goal ? computeGoalCurrent(props.goal, props.activities) : 0,
-);
+const currentValue = computed(() => (props.goal ? computeGoalCurrent(props.goal, props.activities) : 0));
 
 const percentage = computed(() => {
   if (!props.goal) return 0;
   const target = getGoalTarget(props.goal);
-  return target > 0
-    ? Math.min(100, Math.round((currentValue.value / target) * 100))
-    : 0;
+  return target > 0 ? Math.min(100, Math.round((currentValue.value / target) * 100)) : 0;
 });
 
 const progressColor = computed(() => {
@@ -53,9 +58,7 @@ const progressColor = computed(() => {
   return props.goal.color;
 });
 
-const detail = computed(() =>
-  props.goal ? useGoalDetail(props.goal, props.activities) : null,
-);
+const detail = computed(() => (props.goal ? useGoalDetail(props.goal, props.activities) : null));
 
 const CHART_H = 80;
 
@@ -67,10 +70,7 @@ function barHeight(value: number): number {
 function targetLineBottom(): number {
   if (!props.goal || !detail.value) return 0;
   const target = getGoalTarget(props.goal);
-  return Math.min(
-    (target / detail.value.maxBarValue.value) * CHART_H,
-    CHART_H,
-  );
+  return Math.min((target / detail.value.maxBarValue.value) * CHART_H, CHART_H);
 }
 
 const periodLabel = computed(() => {
@@ -93,11 +93,9 @@ function fmtBarVal(bar: GoalPeriodBar): string {
   return formatDurationCompact(bar.seconds);
 }
 
-
 const kpiItems = computed(() => {
   if (!props.goal || !detail.value) return [];
-  const formatValue = (v: number) =>
-    isCountGoal.value ? String(v) : formatTotalDuration(v);
+  const formatValue = (v: number) => (isCountGoal.value ? String(v) : formatTotalDuration(v));
   return [
     {
       icon: Award,
@@ -115,11 +113,13 @@ const kpiItems = computed(() => {
       value: String(detail.value.totalSessions.value),
     },
     ...(detail.value.daysRemaining.value !== null
-      ? [{
-          icon: Calendar,
-          label: t('app.module.goals.detail.days_remaining'),
-          value: String(detail.value.daysRemaining.value),
-        }]
+      ? [
+          {
+            icon: Calendar,
+            label: t('app.module.goals.detail.days_remaining'),
+            value: String(detail.value.daysRemaining.value),
+          },
+        ]
       : []),
   ];
 });
@@ -200,7 +200,6 @@ const kpiItems = computed(() => {
         </SheetHeader>
 
         <div class="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-6">
-
           <!-- Current progress -->
           <div class="flex flex-col gap-2">
             <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
@@ -209,16 +208,11 @@ const kpiItems = computed(() => {
             <div class="bg-muted/30 rounded-xl border border-border/40 p-4 flex flex-col gap-3">
               <div class="flex items-end justify-between gap-4">
                 <div>
-                  <div
-                    class="text-3xl font-bold tabular-nums leading-none"
-                    :style="{ color: progressColor }"
-                  >
+                  <div class="text-3xl font-bold tabular-nums leading-none" :style="{ color: progressColor }">
                     {{ percentage }}%
                   </div>
                   <div class="text-sm text-muted-foreground mt-1">
-                    <template v-if="isCountGoal">
-                      {{ currentValue }} / {{ goal.target_count ?? 0 }}
-                    </template>
+                    <template v-if="isCountGoal"> {{ currentValue }} / {{ goal.target_count ?? 0 }} </template>
                     <template v-else>
                       {{ formatTotalDuration(currentValue) }}
                       <span class="text-muted-foreground/50 mx-1">/</span>
@@ -227,13 +221,15 @@ const kpiItems = computed(() => {
                   </div>
                 </div>
                 <span
-                  :class="cn(
-                    'text-2xs font-medium px-2.5 py-1 rounded-full border',
-                    status === 'active' && 'bg-success/10 text-success border-success/20',
-                    status === 'upcoming' && 'bg-warning/10 text-warning border-warning/20',
-                    status === 'ended' && 'bg-muted text-muted-foreground border-border/40',
-                    status === 'archived' && 'bg-muted text-muted-foreground border-border/40',
-                  )"
+                  :class="
+                    cn(
+                      'text-2xs font-medium px-2.5 py-1 rounded-full border',
+                      status === 'active' && 'bg-success/10 text-success border-success/20',
+                      status === 'upcoming' && 'bg-warning/10 text-warning border-warning/20',
+                      status === 'ended' && 'bg-muted text-muted-foreground border-border/40',
+                      status === 'archived' && 'bg-muted text-muted-foreground border-border/40',
+                    )
+                  "
                 >
                   {{ t(`app.module.goals.status.${status}`) }}
                 </span>
@@ -281,7 +277,10 @@ const kpiItems = computed(() => {
             <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
               {{ t('app.module.goals.detail.history') }}
             </span>
-            <div v-if="detail.bars.value.length <= 1" class="bg-card border border-border/40 rounded-xl px-4 py-6 text-center">
+            <div
+              v-if="detail.bars.value.length <= 1"
+              class="bg-card border border-border/40 rounded-xl px-4 py-6 text-center"
+            >
               <p class="text-xs text-muted-foreground/50">{{ t('app.module.goals.detail.no_history') }}</p>
             </div>
             <div v-else class="bg-card border border-border/40 rounded-xl px-4 pt-3 pb-2">
@@ -296,13 +295,16 @@ const kpiItems = computed(() => {
                   <div
                     class="w-full h-px opacity-50"
                     :style="{
-                      background: `repeating-linear-gradient(90deg, ${goal.color} 0, ${goal.color} 4px, transparent 4px, transparent 8px)`
+                      background: `repeating-linear-gradient(90deg, ${goal.color} 0, ${goal.color} 4px, transparent 4px, transparent 8px)`,
                     }"
                   />
                 </div>
 
                 <!-- Bars -->
-                <div class="absolute bottom-0 left-0 right-0 flex gap-0.5 items-end" :style="{ height: CHART_H + 'px' }">
+                <div
+                  class="absolute bottom-0 left-0 right-0 flex gap-0.5 items-end"
+                  :style="{ height: CHART_H + 'px' }"
+                >
                   <div
                     v-for="bar in detail.bars.value"
                     :key="bar.key"
@@ -314,18 +316,27 @@ const kpiItems = computed(() => {
                       v-if="!bar.isFuture && (isCountGoal ? bar.count : bar.seconds) > 0"
                       class="absolute left-0 right-0 text-center text-2xs leading-none font-medium truncate pointer-events-none"
                       :style="{
-                        bottom: (barHeight(isCountGoal ? bar.count : bar.seconds) + 3) + 'px',
-                        color: isGoalPeriodMet(isCountGoal ? bar.count : bar.seconds, isCountGoal ? (goal.target_count ?? 0) : (goal.target_seconds ?? 0), isCountGoal)
+                        bottom: barHeight(isCountGoal ? bar.count : bar.seconds) + 3 + 'px',
+                        color: isGoalPeriodMet(
+                          isCountGoal ? bar.count : bar.seconds,
+                          isCountGoal ? (goal.target_count ?? 0) : (goal.target_seconds ?? 0),
+                          isCountGoal,
+                        )
                           ? 'var(--color-success)'
                           : goal.color + 'cc',
                       }"
-                    >{{ fmtBarVal(bar) }}</span>
+                      >{{ fmtBarVal(bar) }}</span
+                    >
                     <div
                       class="absolute bottom-0 left-0 right-0 rounded-t transition-all duration-500 ease-out"
                       :class="bar.isFuture ? 'opacity-20' : bar.isCurrentPeriod ? 'brightness-110' : ''"
                       :style="{
                         height: barHeight(isCountGoal ? bar.count : bar.seconds) + 'px',
-                        backgroundColor: isGoalPeriodMet(isCountGoal ? bar.count : bar.seconds, isCountGoal ? (goal.target_count ?? 0) : (goal.target_seconds ?? 0), isCountGoal)
+                        backgroundColor: isGoalPeriodMet(
+                          isCountGoal ? bar.count : bar.seconds,
+                          isCountGoal ? (goal.target_count ?? 0) : (goal.target_seconds ?? 0),
+                          isCountGoal,
+                        )
                           ? 'var(--color-success)'
                           : bar.isCurrentPeriod
                             ? goal.color
@@ -401,13 +412,9 @@ const kpiItems = computed(() => {
           </div>
 
           <!-- No activities -->
-          <div
-            v-else-if="detail && detail.recentActivities.value.length === 0"
-            class="text-center py-6"
-          >
+          <div v-else-if="detail && detail.recentActivities.value.length === 0" class="text-center py-6">
             <p class="text-xs text-muted-foreground/50">{{ t('app.module.goals.detail.no_activities') }}</p>
           </div>
-
         </div>
       </template>
     </SheetContent>

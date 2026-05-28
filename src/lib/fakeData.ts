@@ -4,28 +4,52 @@ export const FAKE_USER_ID = 'dev-fake-user';
 
 export const FAKE_CATEGORIES: TableRow<'categories'>[] = [
   {
-    id: 'fcat-1', name: 'Work', color: '#3B82F6', user_id: FAKE_USER_ID, created_at: '2024-01-01T00:00:00Z',
-    archived_at: null
+    id: 'fcat-1',
+    name: 'Work',
+    color: '#3B82F6',
+    user_id: FAKE_USER_ID,
+    created_at: '2024-01-01T00:00:00Z',
+    archived_at: null,
   },
   {
-    id: 'fcat-2', name: 'Learning', color: '#8B5CF6', user_id: FAKE_USER_ID, created_at: '2024-01-01T00:00:00Z',
-    archived_at: null
+    id: 'fcat-2',
+    name: 'Learning',
+    color: '#8B5CF6',
+    user_id: FAKE_USER_ID,
+    created_at: '2024-01-01T00:00:00Z',
+    archived_at: null,
   },
   {
-    id: 'fcat-3', name: 'Exercise', color: '#10B981', user_id: FAKE_USER_ID, created_at: '2024-01-01T00:00:00Z',
-    archived_at: null
+    id: 'fcat-3',
+    name: 'Exercise',
+    color: '#10B981',
+    user_id: FAKE_USER_ID,
+    created_at: '2024-01-01T00:00:00Z',
+    archived_at: null,
   },
   {
-    id: 'fcat-4', name: 'Personal', color: '#F59E0B', user_id: FAKE_USER_ID, created_at: '2024-01-01T00:00:00Z',
-    archived_at: null
+    id: 'fcat-4',
+    name: 'Personal',
+    color: '#F59E0B',
+    user_id: FAKE_USER_ID,
+    created_at: '2024-01-01T00:00:00Z',
+    archived_at: null,
   },
   {
-    id: 'fcat-5', name: 'Side Project', color: '#EF4444', user_id: FAKE_USER_ID, created_at: '2024-01-01T00:00:00Z',
-    archived_at: null
+    id: 'fcat-5',
+    name: 'Side Project',
+    color: '#EF4444',
+    user_id: FAKE_USER_ID,
+    created_at: '2024-01-01T00:00:00Z',
+    archived_at: null,
   },
   {
-    id: 'fcat-6', name: 'Reading', color: '#06B6D4', user_id: FAKE_USER_ID, created_at: '2024-01-01T00:00:00Z',
-    archived_at: null
+    id: 'fcat-6',
+    name: 'Reading',
+    color: '#06B6D4',
+    user_id: FAKE_USER_ID,
+    created_at: '2024-01-01T00:00:00Z',
+    archived_at: null,
   },
 ];
 
@@ -203,7 +227,7 @@ export const FAKE_GOALS: TableRow<'goals'>[] = [
     created_at: '2026-01-01T00:00:00Z',
     updated_at: null,
     metric: '',
-    target_count: null
+    target_count: null,
   },
   {
     id: 'fgoal-2',
@@ -220,7 +244,7 @@ export const FAKE_GOALS: TableRow<'goals'>[] = [
     created_at: '2026-01-01T00:00:00Z',
     updated_at: null,
     metric: '',
-    target_count: null
+    target_count: null,
   },
   {
     id: 'fgoal-3',
@@ -237,7 +261,7 @@ export const FAKE_GOALS: TableRow<'goals'>[] = [
     created_at: '2026-03-01T00:00:00Z',
     updated_at: null,
     metric: '',
-    target_count: null
+    target_count: null,
   },
   {
     id: 'fgoal-4',
@@ -254,7 +278,7 @@ export const FAKE_GOALS: TableRow<'goals'>[] = [
     created_at: '2026-01-01T00:00:00Z',
     updated_at: null,
     metric: '',
-    target_count: null
+    target_count: null,
   },
   {
     id: 'fgoal-5',
@@ -271,6 +295,6 @@ export const FAKE_GOALS: TableRow<'goals'>[] = [
     created_at: '2026-01-01T00:00:00Z',
     updated_at: null,
     metric: '',
-    target_count: null
+    target_count: null,
   },
 ];

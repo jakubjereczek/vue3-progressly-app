@@ -6,6 +6,8 @@ const _devTrigger = ref(0);
 export function useGoalsCheckIn() {
   return {
     devTrigger: _devTrigger,
-    triggerPreview: () => { _devTrigger.value++; },
+    triggerPreview: () => {
+      _devTrigger.value++;
+    },
   };
 }

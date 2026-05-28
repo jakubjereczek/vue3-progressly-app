@@ -45,19 +45,20 @@ function stepZoom(direction: 'in' | 'out') {
     </div>
 
     <div class="flex items-center gap-3 flex-wrap">
-
       <!-- Mode tabs -->
       <div class="flex items-center bg-muted/40 rounded-lg p-0.5 gap-0.5 border border-border/40">
         <button
           v-for="m in MODES"
           :key="m.value"
           @click="emit('changeMode', m.value)"
-          :class="cn(
-            'px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
-            mode === m.value
-              ? 'bg-card text-foreground shadow-sm border border-border/40'
-              : 'text-muted-foreground hover:text-foreground'
-          )"
+          :class="
+            cn(
+              'px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
+              mode === m.value
+                ? 'bg-card text-foreground shadow-sm border border-border/40'
+                : 'text-muted-foreground hover:text-foreground',
+            )
+          "
         >
           {{ t(m.labelKey) }}
         </button>
@@ -100,7 +101,12 @@ function stepZoom(direction: 'in' | 'out') {
 
       <!-- Navigation -->
       <div class="flex items-center gap-2">
-        <Button variant="outline" size="icon" @click="emit('navigate', 'prev')" :aria-label="t('app.module.gantt.nav.prev')">
+        <Button
+          variant="outline"
+          size="icon"
+          @click="emit('navigate', 'prev')"
+          :aria-label="t('app.module.gantt.nav.prev')"
+        >
           <ChevronLeft class="w-5 h-5" />
         </Button>
         <span class="text-sm font-medium text-center min-w-[180px] text-center">
@@ -116,7 +122,6 @@ function stepZoom(direction: 'in' | 'out') {
           <ChevronRight class="w-5 h-5" />
         </Button>
       </div>
-
     </div>
   </div>
 </template>

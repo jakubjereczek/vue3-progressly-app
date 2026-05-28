@@ -1,24 +1,35 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { Download, FileText, Braces, Hash, Layers, Clock, CalendarRange, FileSpreadsheet, Lock, Layers2 } from 'lucide-vue-next';
+import {
+  Download,
+  FileText,
+  Braces,
+  Hash,
+  Layers,
+  Clock,
+  CalendarRange,
+  FileSpreadsheet,
+  Lock,
+  Layers2,
+} from 'lucide-vue-next';
 import { RouterLink } from 'vue-router';
 import { toast } from 'vue-sonner';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import LoadingSpinner from '@/components/ui/loading-spinner/LoadingSpinner.vue';
 import { useTranslation, useCategoryName } from '@/composables';
 import { useUserStore } from '@/stores';
 import { useExportData, type ExportPreset } from './useExportData';
-import { useExportDownload, type ExportFormat, type CsvSeparator, type CsvEncoding, type JsonStructure } from './useExportDownload';
+import {
+  useExportDownload,
+  type ExportFormat,
+  type CsvSeparator,
+  type CsvEncoding,
+  type JsonStructure,
+} from './useExportDownload';
 import { formatTotalDuration, localDateToString } from '@/utils/time';
 import { cn } from '@/lib/utils';
 
@@ -91,7 +102,6 @@ async function handleExport() {
 
 <template>
   <Card data-tour="export" class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden">
-
     <!-- Header -->
     <div class="flex items-start justify-between gap-4 flex-shrink-0">
       <div>
@@ -111,8 +121,8 @@ async function handleExport() {
               selectedFormat === fmt.value && !isFormatLocked(fmt.value)
                 ? 'bg-card text-foreground shadow-sm border border-border/40'
                 : isFormatLocked(fmt.value)
-                ? 'text-muted-foreground/40 cursor-not-allowed'
-                : 'text-muted-foreground hover:text-foreground',
+                  ? 'text-muted-foreground/40 cursor-not-allowed'
+                  : 'text-muted-foreground hover:text-foreground',
             )
           "
           @click="!isFormatLocked(fmt.value) && (selectedFormat = fmt.value)"
@@ -155,8 +165,8 @@ async function handleExport() {
               isPresetLocked(preset.value)
                 ? 'border-border/30 text-muted-foreground/40 cursor-not-allowed'
                 : selectedPreset === preset.value
-                ? 'bg-primary text-primary-foreground border-primary font-medium'
-                : 'border-border/60 text-muted-foreground hover:border-border hover:text-foreground',
+                  ? 'bg-primary text-primary-foreground border-primary font-medium'
+                  : 'border-border/60 text-muted-foreground hover:border-border hover:text-foreground',
             )
           "
           @click="!isPresetLocked(preset.value) && (selectedPreset = preset.value)"
@@ -208,7 +218,8 @@ async function handleExport() {
             v-if="countByCategory.get(cat.id)"
             class="text-2xs tabular-nums leading-none px-1 py-px rounded"
             :class="selectedCategoryIds.has(cat.id) ? 'bg-primary-foreground/20' : 'bg-muted text-muted-foreground'"
-          >{{ countByCategory.get(cat.id) }}</span>
+            >{{ countByCategory.get(cat.id) }}</span
+          >
         </button>
       </div>
       <p v-if="selectedCategoryIds.size > 0" class="text-xs text-muted-foreground mt-2">
@@ -223,7 +234,9 @@ async function handleExport() {
       </p>
       <div class="flex items-center gap-4 flex-wrap">
         <div class="flex items-center gap-2">
-          <span class="text-xs text-muted-foreground flex-shrink-0">{{ t('app.module.export.csv_options.separator') }}</span>
+          <span class="text-xs text-muted-foreground flex-shrink-0">{{
+            t('app.module.export.csv_options.separator')
+          }}</span>
           <Select v-model="csvSeparator">
             <SelectTrigger class="h-8 text-xs w-44"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -234,7 +247,9 @@ async function handleExport() {
           </Select>
         </div>
         <div class="flex items-center gap-2">
-          <span class="text-xs text-muted-foreground flex-shrink-0">{{ t('app.module.export.csv_options.encoding') }}</span>
+          <span class="text-xs text-muted-foreground flex-shrink-0">{{
+            t('app.module.export.csv_options.encoding')
+          }}</span>
           <Select v-model="csvEncoding">
             <SelectTrigger class="h-8 text-xs w-48"><SelectValue /></SelectTrigger>
             <SelectContent>
@@ -253,14 +268,19 @@ async function handleExport() {
       </p>
       <div class="flex items-center gap-0.5 bg-muted/40 rounded-lg p-0.5 border border-border/40 w-fit">
         <button
-          v-for="opt in ([{ value: 'flat', labelKey: 'app.module.export.json_options.flat', icon: Layers2 }, { value: 'nested', labelKey: 'app.module.export.json_options.nested', icon: Layers }] as const)"
+          v-for="opt in [
+            { value: 'flat', labelKey: 'app.module.export.json_options.flat', icon: Layers2 },
+            { value: 'nested', labelKey: 'app.module.export.json_options.nested', icon: Layers },
+          ] as const"
           :key="opt.value"
-          :class="cn(
-            'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
-            jsonStructure === opt.value
-              ? 'bg-card text-foreground shadow-sm border border-border/40'
-              : 'text-muted-foreground hover:text-foreground'
-          )"
+          :class="
+            cn(
+              'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-150',
+              jsonStructure === opt.value
+                ? 'bg-card text-foreground shadow-sm border border-border/40'
+                : 'text-muted-foreground hover:text-foreground',
+            )
+          "
           @click="jsonStructure = opt.value"
         >
           <component :is="opt.icon" class="w-3.5 h-3.5" />
@@ -268,7 +288,11 @@ async function handleExport() {
         </button>
       </div>
       <p class="text-xs text-muted-foreground mt-1.5">
-        {{ jsonStructure === 'flat' ? t('app.module.export.json_options.flat_hint') : t('app.module.export.json_options.nested_hint') }}
+        {{
+          jsonStructure === 'flat'
+            ? t('app.module.export.json_options.flat_hint')
+            : t('app.module.export.json_options.nested_hint')
+        }}
       </p>
     </div>
 
@@ -289,7 +313,6 @@ async function handleExport() {
     </div>
 
     <template v-else>
-
       <!-- ── SUMMARY STATS ──────────────────────────────────────── -->
       <div class="grid grid-cols-3 gap-3 flex-shrink-0">
         <div class="flex flex-col gap-2 rounded-xl border border-border/40 bg-card p-4">
@@ -297,21 +320,27 @@ async function handleExport() {
             <Hash class="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <span class="text-xs text-muted-foreground">{{ t('app.module.export.preview.activities') }}</span>
           </div>
-          <span class="text-2xl font-semibold tabular-nums text-foreground leading-none">{{ enrichedActivities.length }}</span>
+          <span class="text-2xl font-semibold tabular-nums text-foreground leading-none">{{
+            enrichedActivities.length
+          }}</span>
         </div>
         <div class="flex flex-col gap-2 rounded-xl border border-border/40 bg-card p-4">
           <div class="flex items-center gap-2">
             <Layers class="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <span class="text-xs text-muted-foreground">{{ t('app.module.export.preview.categories') }}</span>
           </div>
-          <span class="text-2xl font-semibold tabular-nums text-foreground leading-none">{{ uniqueCategoryCount }}</span>
+          <span class="text-2xl font-semibold tabular-nums text-foreground leading-none">{{
+            uniqueCategoryCount
+          }}</span>
         </div>
         <div class="flex flex-col gap-2 rounded-xl border border-border/40 bg-card p-4">
           <div class="flex items-center gap-2">
             <Clock class="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <span class="text-xs text-muted-foreground">{{ t('app.module.export.preview.total_time') }}</span>
           </div>
-          <span class="text-2xl font-semibold font-mono tabular-nums text-foreground leading-none">{{ formatTotalDuration(totalSeconds) }}</span>
+          <span class="text-2xl font-semibold font-mono tabular-nums text-foreground leading-none">{{
+            formatTotalDuration(totalSeconds)
+          }}</span>
         </div>
       </div>
 
@@ -325,11 +354,21 @@ async function handleExport() {
             <table class="w-full text-xs">
               <thead class="sticky top-0 z-10">
                 <tr class="bg-muted/80 border-b border-border/40">
-                  <th class="px-3 py-2 text-left font-medium text-muted-foreground whitespace-nowrap" scope="col">{{ t('app.module.export.preview.col.date') }}</th>
-                  <th class="px-3 py-2 text-left font-medium text-muted-foreground max-w-[180px]" scope="col">{{ t('app.module.export.preview.col.description') }}</th>
-                  <th class="px-3 py-2 text-left font-medium text-muted-foreground whitespace-nowrap" scope="col">{{ t('app.module.export.preview.col.category') }}</th>
-                  <th class="px-3 py-2 text-left font-medium text-muted-foreground whitespace-nowrap" scope="col">{{ t('app.module.export.preview.col.tags') }}</th>
-                  <th class="px-3 py-2 text-right font-medium text-muted-foreground whitespace-nowrap" scope="col">{{ t('app.module.export.preview.col.duration') }}</th>
+                  <th class="px-3 py-2 text-left font-medium text-muted-foreground whitespace-nowrap" scope="col">
+                    {{ t('app.module.export.preview.col.date') }}
+                  </th>
+                  <th class="px-3 py-2 text-left font-medium text-muted-foreground max-w-[180px]" scope="col">
+                    {{ t('app.module.export.preview.col.description') }}
+                  </th>
+                  <th class="px-3 py-2 text-left font-medium text-muted-foreground whitespace-nowrap" scope="col">
+                    {{ t('app.module.export.preview.col.category') }}
+                  </th>
+                  <th class="px-3 py-2 text-left font-medium text-muted-foreground whitespace-nowrap" scope="col">
+                    {{ t('app.module.export.preview.col.tags') }}
+                  </th>
+                  <th class="px-3 py-2 text-right font-medium text-muted-foreground whitespace-nowrap" scope="col">
+                    {{ t('app.module.export.preview.col.duration') }}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -338,8 +377,12 @@ async function handleExport() {
                   :key="row.id"
                   :class="cn('border-b border-border/20 last:border-0', i % 2 === 1 && 'bg-muted/20')"
                 >
-                  <td class="px-3 py-2 text-muted-foreground whitespace-nowrap font-mono">{{ localDateToString(new Date(row.started_at)) }}</td>
-                  <td class="px-3 py-2 max-w-[180px] truncate text-foreground" :title="row.description">{{ row.description }}</td>
+                  <td class="px-3 py-2 text-muted-foreground whitespace-nowrap font-mono">
+                    {{ localDateToString(new Date(row.started_at)) }}
+                  </td>
+                  <td class="px-3 py-2 max-w-[180px] truncate text-foreground" :title="row.description">
+                    {{ row.description }}
+                  </td>
                   <td class="px-3 py-2 whitespace-nowrap">
                     <span v-if="row.categoryName" class="text-foreground">{{ row.categoryName }}</span>
                     <span v-else class="text-muted-foreground/40">—</span>
@@ -348,7 +391,9 @@ async function handleExport() {
                     <span v-if="row.tags.length" class="text-muted-foreground">{{ row.tags.join(', ') }}</span>
                     <span v-else class="text-muted-foreground/40">—</span>
                   </td>
-                  <td class="px-3 py-2 text-right font-mono text-foreground whitespace-nowrap">{{ row.durationFormatted }}</td>
+                  <td class="px-3 py-2 text-right font-mono text-foreground whitespace-nowrap">
+                    {{ row.durationFormatted }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -359,7 +404,13 @@ async function handleExport() {
       <!-- ── EXPORT ACTION ──────────────────────────────────────── -->
       <div class="flex items-center justify-between gap-4 flex-shrink-0">
         <p class="text-xs text-muted-foreground">
-          {{ selectedFormat === 'csv' ? t('app.module.export.format.csv_hint') : selectedFormat === 'json' ? t('app.module.export.format.json_hint') : t('app.module.export.format.xlsx_hint') }}
+          {{
+            selectedFormat === 'csv'
+              ? t('app.module.export.format.csv_hint')
+              : selectedFormat === 'json'
+                ? t('app.module.export.format.json_hint')
+                : t('app.module.export.format.xlsx_hint')
+          }}
         </p>
         <Button class="gap-2 flex-shrink-0" :disabled="exportLoading" @click="handleExport">
           <LoadingSpinner v-if="exportLoading" class="w-4 h-4" />
@@ -367,7 +418,6 @@ async function handleExport() {
           {{ t('app.module.export.action.export') }}
         </Button>
       </div>
-
     </template>
   </Card>
 </template>

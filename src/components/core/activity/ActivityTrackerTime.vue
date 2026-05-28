@@ -50,7 +50,9 @@ function toggleTimer() {
       <circle cx="50" cy="50" r="45" stroke="currentColor" class="text-border" stroke-width="3" fill="none" />
       <circle
         v-if="state === 'playing'"
-        cx="50" cy="50" r="45"
+        cx="50"
+        cy="50"
+        r="45"
         stroke="url(#timerGradient)"
         stroke-width="3"
         fill="none"
@@ -75,7 +77,9 @@ function toggleTimer() {
       }"
     >
       <template v-if="state === 'playing'">
-        <div class="font-mono text-3xl md:text-2xl xl:text-3xl font-light text-foreground tracking-tight select-none tabular-nums">
+        <div
+          class="font-mono text-3xl md:text-2xl xl:text-3xl font-light text-foreground tracking-tight select-none tabular-nums"
+        >
           {{ formattedTime }}
         </div>
         <span class="w-2 h-2 mt-2 rounded-full bg-destructive animate-pulse"></span>

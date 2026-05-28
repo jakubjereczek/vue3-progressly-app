@@ -112,7 +112,10 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
-  async function updatePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; invalidCurrent?: boolean }> {
+  async function updatePassword(
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<{ success: boolean; invalidCurrent?: boolean }> {
     loading.value = true;
     error.value = null;
     try {

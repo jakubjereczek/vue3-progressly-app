@@ -35,7 +35,11 @@ const { activePrivateCategories, publicCategories } = storeToRefs(useCategoriesS
 const categories = computed(() => [...activePrivateCategories.value, ...publicCategories.value]);
 
 const todayDate = localDateToString(new Date());
-const minDate = (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 2); return localDateToString(d); })();
+const minDate = (() => {
+  const d = new Date();
+  d.setFullYear(d.getFullYear() - 2);
+  return localDateToString(d);
+})();
 const nowTime = new Date().toTimeString().slice(0, 5);
 const oneHourAgoTime = (() => {
   const d = new Date();
@@ -51,7 +55,9 @@ const startTime = ref(oneHourAgoTime);
 const endTime = ref(nowTime);
 
 const timeError = computed(() => {
-  if (!startTime.value || !endTime.value || !date.value) {return false;}
+  if (!startTime.value || !endTime.value || !date.value) {
+    return false;
+  }
   const start = new Date(`${date.value}T${startTime.value}`);
   const end = new Date(`${date.value}T${endTime.value}`);
   return end <= start;
@@ -136,12 +142,7 @@ function handleOpenChange(open: boolean) {
             />
           </div>
         </div>
-        <p
-          v-if="timeError"
-          id="me-time-error"
-          role="alert"
-          class="text-xs text-destructive -mt-2"
-        >
+        <p v-if="timeError" id="me-time-error" role="alert" class="text-xs text-destructive -mt-2">
           {{ t('app.module.manual_entry.time_error') }}
         </p>
         <div class="grid grid-cols-2 gap-3">
@@ -153,11 +154,7 @@ function handleOpenChange(open: boolean) {
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem
-                    v-for="cat in categories"
-                    :key="cat.id"
-                    :value="cat.id"
-                  >
+                  <SelectItem v-for="cat in categories" :key="cat.id" :value="cat.id">
                     <div class="flex items-center gap-2">
                       <span
                         class="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-border/40"
@@ -172,11 +169,7 @@ function handleOpenChange(open: boolean) {
           </div>
           <div class="flex flex-col gap-1.5">
             <Label for="me-tags">{{ t('app.module.manual_entry.tags_label') }}</Label>
-            <Input
-              id="me-tags"
-              v-model="tagsInput"
-              :placeholder="t('app.module.manual_entry.tags_placeholder')"
-            />
+            <Input id="me-tags" v-model="tagsInput" :placeholder="t('app.module.manual_entry.tags_placeholder')" />
           </div>
         </div>
       </div>

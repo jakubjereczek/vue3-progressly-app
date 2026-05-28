@@ -14,20 +14,9 @@
               large-arc=1, sweep=1 (clockwise, 300° arc through the top)
 -->
 <template>
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    aria-hidden="true"
-    v-bind="$attrs"
-  >
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" v-bind="$attrs">
     <!-- 300° progress arc — gap at bottom center -->
-    <path
-      d="M 8 18.93 A 8 8 0 1 1 16 18.93"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-    />
+    <path d="M 8 18.93 A 8 8 0 1 1 16 18.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
     <!-- Progress head — current position indicator -->
     <circle cx="16" cy="18.93" r="2" fill="currentColor" />
   </svg>

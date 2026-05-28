@@ -1,12 +1,12 @@
 export { useAuthListener } from './useAuthListener';
 export { useTranslation } from './useTranslation';
 export { useBreadcrumbs } from './useBreadcrumbs';
-export { useTimer } from './useTimer'
-export { useLocale } from './useLocale'
-export { useActivitySheet } from './useActivitySheet'
-export { useScrollShadow } from './useScrollShadow'
-export { useInitializeStores } from './useInitializeStores'
-export { useRestartActivity } from './useRestartActivity'
-export { useTheme } from './useTheme'
-export { useCategoryName } from './useCategoryName'
-export type { ThemeMode } from './useTheme'
+export { useTimer } from './useTimer';
+export { useLocale } from './useLocale';
+export { useActivitySheet } from './useActivitySheet';
+export { useScrollShadow } from './useScrollShadow';
+export { useInitializeStores } from './useInitializeStores';
+export { useRestartActivity } from './useRestartActivity';
+export { useTheme } from './useTheme';
+export { useCategoryName } from './useCategoryName';
+export type { ThemeMode } from './useTheme';

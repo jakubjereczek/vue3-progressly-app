@@ -159,9 +159,7 @@ function generateDemoActivities(locale: string): TableRow<'activities'>[] {
     // Skip ~25% of workdays, ~55% of weekend days
     if (seededRand(seed) < (isWeekend ? 0.55 : 0.25)) continue;
 
-    const sessionCount = isWeekend
-      ? 1
-      : Math.max(1, Math.floor(seededRand(seed + 1) * 3) + 1);
+    const sessionCount = isWeekend ? 1 : Math.max(1, Math.floor(seededRand(seed + 1) * 3) + 1);
 
     let currentMinute = 8 * 60 + Math.floor(seededRand(seed + 2) * 90);
 

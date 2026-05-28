@@ -9,9 +9,8 @@ export function useWeekNavigation() {
 
   const queryWeek = route.query.week as string | undefined;
   const parsedWeek = queryWeek ? new Date(queryWeek) : null;
-  const initial = parsedWeek && !isNaN(parsedWeek.getTime())
-    ? getMondayOfWeek(parsedWeek)
-    : getMondayOfWeek(new Date());
+  const initial =
+    parsedWeek && !isNaN(parsedWeek.getTime()) ? getMondayOfWeek(parsedWeek) : getMondayOfWeek(new Date());
 
   const currentWeekStart = ref(initial);
 

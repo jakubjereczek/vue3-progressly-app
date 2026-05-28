@@ -12,7 +12,7 @@ export function useGanttScroll(getHourWidth: () => number) {
 
   const scrollToNow = async () => {
     await nextTick();
-    await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+    await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
     if (scrollContainer.value) {
       const hw = getHourWidth();
       const targetScroll = getNowPosition();

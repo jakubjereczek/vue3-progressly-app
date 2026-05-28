@@ -1,6 +1,6 @@
 import { onUnmounted } from 'vue';
 import SupabaseClient from '../api';
-import { useUserStore } from '../stores'
+import { useUserStore } from '../stores';
 
 export function useAuthListener() {
   const userStore = useUserStore();

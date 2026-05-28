@@ -9,7 +9,12 @@ import { storeToRefs } from 'pinia';
 import { useTranslation } from '@/composables';
 import { formatTotalDuration, getTodayDateString, MS_PER_DAY } from '@/utils/time';
 import { parseLocalDate } from '@/utils/date';
-import { computeGoalCurrentSeconds, computeGoalCurrentCount, getGoalTarget, getGoalExpectedPct } from './useGoalProgress';
+import {
+  computeGoalCurrentSeconds,
+  computeGoalCurrentCount,
+  getGoalTarget,
+  getGoalExpectedPct,
+} from './useGoalProgress';
 import { cn } from '@/lib/utils';
 
 const { t } = useTranslation();
@@ -75,10 +80,7 @@ function progressColor(pct: number, goalColor: string): string {
     <!-- Empty state -->
     <div v-if="displayedGoals.length === 0" class="py-6 text-center flex flex-col items-center justify-center gap-2">
       <p class="text-xs text-muted-foreground/60">{{ t('app.module.goals.widget.empty') }}</p>
-      <RouterLink
-        to="/dashboard/goals"
-        class="text-xs font-semibold text-primary hover:underline mt-0.5 inline-block"
-      >
+      <RouterLink to="/dashboard/goals" class="text-xs font-semibold text-primary hover:underline mt-0.5 inline-block">
         {{ t('app.module.goals.widget.create_first') }}
       </RouterLink>
     </div>
@@ -94,11 +96,11 @@ function progressColor(pct: number, goalColor: string): string {
         <div class="flex items-start justify-between gap-4">
           <div class="flex items-center gap-3 min-w-0 flex-1">
             <!-- Dynamic dynamic indicator color element -->
-            <span 
-              class="w-1 h-7 rounded-full shrink-0 mt-0.5 border border-black/5 dark:border-white/10" 
-              :style="{ backgroundColor: goal.color }" 
+            <span
+              class="w-1 h-7 rounded-full shrink-0 mt-0.5 border border-black/5 dark:border-white/10"
+              :style="{ backgroundColor: goal.color }"
             />
-            
+
             <div class="min-w-0 flex flex-col">
               <span class="text-sm font-semibold tracking-tight text-foreground truncate leading-none mb-1">
                 {{ goal.name }}
@@ -109,10 +111,7 @@ function progressColor(pct: number, goalColor: string): string {
                 </span>
                 <template v-if="getCategory(goal.category_id)">
                   <span class="text-muted-foreground/30 text-2xs">·</span>
-                  <span
-                    class="font-medium text-2xs"
-                    :style="{ color: getCategory(goal.category_id)!.color }"
-                  >
+                  <span class="font-medium text-2xs" :style="{ color: getCategory(goal.category_id)!.color }">
                     {{ getCategory(goal.category_id)!.name }}
                   </span>
                 </template>
@@ -125,17 +124,19 @@ function progressColor(pct: number, goalColor: string): string {
             <!-- Expected vs actual trend pill -->
             <span
               v-if="getGoalExpectedPct(goal) > 0"
-              :class="cn(
-                'inline-flex items-center gap-0.5 text-2xs font-bold px-1.5 py-0.5 rounded-md border leading-none shrink-0',
-                getProgress(goal).pct >= getGoalExpectedPct(goal)
-                  ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/10'
-                  : 'bg-destructive/10 text-destructive border-destructive/10'
-              )"
+              :class="
+                cn(
+                  'inline-flex items-center gap-0.5 text-2xs font-bold px-1.5 py-0.5 rounded-md border leading-none shrink-0',
+                  getProgress(goal).pct >= getGoalExpectedPct(goal)
+                    ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/10'
+                    : 'bg-destructive/10 text-destructive border-destructive/10',
+                )
+              "
             >
               <TrendingUp v-if="getProgress(goal).pct >= getGoalExpectedPct(goal)" class="w-2.5 h-2.5 shrink-0" />
               <TrendingDown v-else class="w-2.5 h-2.5 shrink-0" />
             </span>
-            
+
             <!-- Absolute Percentage Value -->
             <span
               class="text-sm font-bold font-mono tabular-nums min-w-[40px] text-right"
@@ -169,10 +170,12 @@ function progressColor(pct: number, goalColor: string): string {
         <div class="flex items-center justify-between gap-2 px-0.5">
           <span class="text-2xs font-mono font-semibold text-muted-foreground/60 tabular-nums">
             <template v-if="getProgress(goal).isCount">
-              {{ getProgress(goal).current }} <span class="text-muted-foreground/40">/</span> {{ goal.target_count }} {{ t('app.module.goals.card.activities') }}
+              {{ getProgress(goal).current }} <span class="text-muted-foreground/40">/</span> {{ goal.target_count }}
+              {{ t('app.module.goals.card.activities') }}
             </template>
             <template v-else>
-              {{ formatTotalDuration(getProgress(goal).current) }} <span class="text-muted-foreground/40">/</span> {{ formatTotalDuration(goal.target_seconds ?? 0) }}
+              {{ formatTotalDuration(getProgress(goal).current) }} <span class="text-muted-foreground/40">/</span>
+              {{ formatTotalDuration(goal.target_seconds ?? 0) }}
             </template>
           </span>
           <span

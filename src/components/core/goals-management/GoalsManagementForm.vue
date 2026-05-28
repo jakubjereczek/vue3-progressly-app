@@ -2,7 +2,14 @@
 import { computed, watch } from 'vue';
 import type { GoalDraft } from './useGoalsManagement';
 import { useTranslation, useCategoryName } from '@/composables';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -119,7 +126,10 @@ const publicCategories = computed(() => props.categories.filter((c) => c.user_id
           <Label>{{ t('app.module.goals.form.type_label') }}</Label>
           <div class="flex gap-2">
             <button
-              v-for="opt in [{ value: 'per_period', label: t('app.module.goals.type.per_period') }, { value: 'total', label: t('app.module.goals.type.total') }]"
+              v-for="opt in [
+                { value: 'per_period', label: t('app.module.goals.type.per_period') },
+                { value: 'total', label: t('app.module.goals.type.total') },
+              ]"
               :key="opt.value"
               type="button"
               class="flex-1 py-2 px-3 text-xs rounded-lg border font-medium transition-all"
@@ -161,7 +171,10 @@ const publicCategories = computed(() => props.categories.filter((c) => c.user_id
           <Label>{{ t('app.module.goals.form.metric_label') }}</Label>
           <div class="flex gap-2">
             <button
-              v-for="opt in [{ value: 'duration', label: t('app.module.goals.form.metric.duration') }, { value: 'count', label: t('app.module.goals.form.metric.count') }]"
+              v-for="opt in [
+                { value: 'duration', label: t('app.module.goals.form.metric.duration') },
+                { value: 'count', label: t('app.module.goals.form.metric.count') },
+              ]"
               :key="opt.value"
               type="button"
               class="flex-1 py-2 px-3 text-xs rounded-lg border font-medium transition-all"
@@ -228,7 +241,7 @@ const publicCategories = computed(() => props.categories.filter((c) => c.user_id
             :model-value="draft.category_id ?? '__all__'"
             @update:model-value="update('category_id', $event === '__all__' ? null : String($event))"
           >
-            <SelectTrigger> 
+            <SelectTrigger>
               <SelectValue :placeholder="t('app.module.goals.form.category_all')" />
             </SelectTrigger>
             <SelectContent>
@@ -266,7 +279,9 @@ const publicCategories = computed(() => props.categories.filter((c) => c.user_id
           <div class="flex-1 flex flex-col gap-1.5">
             <Label>
               {{ t('app.module.goals.form.ended_at_label') }}
-              <span class="text-muted-foreground/60 font-normal ml-1 text-2xs">{{ t('app.module.goals.form.optional') }}</span>
+              <span class="text-muted-foreground/60 font-normal ml-1 text-2xs">{{
+                t('app.module.goals.form.optional')
+              }}</span>
             </Label>
             <Input
               type="date"
@@ -283,7 +298,13 @@ const publicCategories = computed(() => props.categories.filter((c) => c.user_id
       <DialogFooter>
         <Button variant="outline" @click="emit('update:open', false)">{{ t('app.action.cancel') }}</Button>
         <Button :disabled="!isValid || loading" @click="emit('submit')">
-          {{ loading ? t('app.module.goals.form.saving') : (isEditing ? t('app.action.save_changes') : t('app.module.goals.form.create_button')) }}
+          {{
+            loading
+              ? t('app.module.goals.form.saving')
+              : isEditing
+                ? t('app.action.save_changes')
+                : t('app.module.goals.form.create_button')
+          }}
         </Button>
       </DialogFooter>
     </DialogContent>

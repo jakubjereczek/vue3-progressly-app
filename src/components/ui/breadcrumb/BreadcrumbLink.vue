@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from "vue"
-import { RouterLink, type RouteLocationRaw } from 'vue-router'
-import { cn } from "@/lib/utils"
+import type { HTMLAttributes } from 'vue';
+import { RouterLink, type RouteLocationRaw } from 'vue-router';
+import { cn } from '@/lib/utils';
 
 const props = defineProps<{
-  to: RouteLocationRaw,
-  class?: HTMLAttributes["class"]
-}>()
-
+  to: RouteLocationRaw;
+  class?: HTMLAttributes['class'];
+}>();
 </script>
 
 <template>

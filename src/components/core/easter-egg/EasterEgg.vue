@@ -19,7 +19,10 @@ const isVisible = ref(false);
 
 // ─── Konami Code detector ─────────────────────────────────────────────────────
 const KONAMI = [
-  'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+  'ArrowUp',
+  'ArrowUp',
+  'ArrowDown',
+  'ArrowDown',
   // 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
   // 'b', 'a',
 ];
@@ -104,15 +107,14 @@ const fakeStats = {
 
       <!-- Body -->
       <div class="px-4 py-4 flex flex-col gap-4">
-
         <!-- Fake data toggle -->
         <div
-          :class="cn(
-            'flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer',
-            isFakeMode
-              ? 'bg-primary/5 border-primary/30'
-              : 'bg-muted/30 border-border/40 hover:bg-muted',
-          )"
+          :class="
+            cn(
+              'flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer',
+              isFakeMode ? 'bg-primary/5 border-primary/30' : 'bg-muted/30 border-border/40 hover:bg-muted',
+            )
+          "
           @click="toggle"
         >
           <div class="flex-shrink-0 mt-0.5">
@@ -123,22 +125,28 @@ const fakeStats = {
               <p class="text-sm font-medium">Fake Data Mode</p>
               <!-- Toggle pill -->
               <div
-                :class="cn(
-                  'w-8 h-4.5 rounded-full transition-colors flex-shrink-0 relative',
-                  isFakeMode ? 'bg-primary' : 'bg-border',
-                )"
-                style="height: 18px; width: 32px;"
+                :class="
+                  cn(
+                    'w-8 h-4.5 rounded-full transition-colors flex-shrink-0 relative',
+                    isFakeMode ? 'bg-primary' : 'bg-border',
+                  )
+                "
+                style="height: 18px; width: 32px"
               >
                 <span
-                  :class="cn(
-                    'absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white shadow transition-transform',
-                    isFakeMode ? 'translate-x-[14px]' : 'translate-x-0.5',
-                  )"
+                  :class="
+                    cn(
+                      'absolute top-0.5 w-3.5 h-3.5 rounded-full bg-white shadow transition-transform',
+                      isFakeMode ? 'translate-x-[14px]' : 'translate-x-0.5',
+                    )
+                  "
                 />
               </div>
             </div>
             <p class="text-xs text-muted-foreground mt-0.5">
-              {{ isFakeMode ? 'Intercepting all API requests with mock data.' : 'Click to load fake data into all views.' }}
+              {{
+                isFakeMode ? 'Intercepting all API requests with mock data.' : 'Click to load fake data into all views.'
+              }}
             </p>
           </div>
         </div>
@@ -188,7 +196,10 @@ const fakeStats = {
         <!-- Onboarding reset -->
         <button
           class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg border border-border/50 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          @click="resetOnboarding(); isVisible = false"
+          @click="
+            resetOnboarding();
+            isVisible = false;
+          "
         >
           <Zap class="w-3 h-3" />
           Replay onboarding
@@ -197,7 +208,10 @@ const fakeStats = {
         <!-- Goals check-in preview -->
         <button
           class="flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg border border-border/50 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-          @click="triggerCheckIn(); isVisible = false"
+          @click="
+            triggerCheckIn();
+            isVisible = false;
+          "
         >
           <Target class="w-3 h-3" />
           Preview goals check-in

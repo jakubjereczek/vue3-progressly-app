@@ -10,9 +10,7 @@ export function useMonthNavigation() {
   const router = useRouter();
 
   const queryMonth = route.query.month as string | undefined;
-  const initial = queryMonth && /^\d{4}-\d{2}$/.test(queryMonth)
-    ? queryMonth
-    : toYearMonth(new Date());
+  const initial = queryMonth && /^\d{4}-\d{2}$/.test(queryMonth) ? queryMonth : toYearMonth(new Date());
 
   const currentMonth = ref(initial);
 

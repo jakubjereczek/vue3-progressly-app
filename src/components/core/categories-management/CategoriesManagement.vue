@@ -2,7 +2,18 @@
 import { onMounted, ref, computed, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { Pencil, Trash2, Plus, Lock, Tag, Hash, Archive, ArchiveRestore, ChevronDown, GripVertical } from 'lucide-vue-next';
+import {
+  Pencil,
+  Trash2,
+  Plus,
+  Lock,
+  Tag,
+  Hash,
+  Archive,
+  ArchiveRestore,
+  ChevronDown,
+  GripVertical,
+} from 'lucide-vue-next';
 import LoadingSpinner from '@/components/ui/loading-spinner/LoadingSpinner.vue';
 import { toast } from 'vue-sonner';
 import { useCategoriesStore, useUserStore } from '@/stores';
@@ -27,7 +38,8 @@ const { t } = useTranslation();
 const { resolveCategoryName } = useCategoryName();
 const route = useRoute();
 const categoriesStore = useCategoriesStore();
-const { activePrivateCategories, archivedCategories, publicCategories, loading, actionLoading } = storeToRefs(categoriesStore);
+const { activePrivateCategories, archivedCategories, publicCategories, loading, actionLoading } =
+  storeToRefs(categoriesStore);
 const { plan } = storeToRefs(useUserStore());
 
 const atCategoryLimit = computed(() => {
@@ -47,7 +59,11 @@ const { editingId, draft, isAdding, newCategory, startEdit, cancelEdit, startAdd
 const SORT_KEY = 'progressly:cat-order';
 
 function loadOrder(): string[] {
-  try { return JSON.parse(localStorage.getItem(SORT_KEY) ?? '[]'); } catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(SORT_KEY) ?? '[]');
+  } catch {
+    return [];
+  }
 }
 
 const categoryOrder = ref<string[]>(loadOrder());
@@ -113,7 +129,9 @@ onMounted(async () => {
     if (el) {
       el.scrollIntoView({ block: 'center', behavior: 'smooth' });
       flashingCategoryId.value = highlightId;
-      setTimeout(() => { flashingCategoryId.value = null; }, 2000);
+      setTimeout(() => {
+        flashingCategoryId.value = null;
+      }, 2000);
     }
   }
 });
@@ -135,10 +153,7 @@ async function handleSaveEdit(id: string) {
 
 async function handleCreate() {
   if (!newCategory.value.name.trim()) return;
-  const { success } = await categoriesStore.createCategory(
-    newCategory.value.name.trim(),
-    newCategory.value.color,
-  );
+  const { success } = await categoriesStore.createCategory(newCategory.value.name.trim(), newCategory.value.color);
   if (success) {
     toast.success(t('app.toast_notification.category.created_success'));
     cancelAdd();
@@ -200,7 +215,10 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <Card data-tour="categories-management" class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden">
+  <Card
+    data-tour="categories-management"
+    class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden"
+  >
     <!-- Header -->
     <div class="flex items-start justify-between gap-4 flex-shrink-0">
       <div>
@@ -230,12 +248,14 @@ async function confirmDelete() {
         role="tab"
         :aria-selected="activeTab === 'categories'"
         @click="activeTab = 'categories'"
-        :class="cn(
-          'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border-b-2 -mb-px transition-colors',
-          activeTab === 'categories'
-            ? 'border-primary text-primary'
-            : 'border-transparent text-muted-foreground hover:text-foreground'
-        )"
+        :class="
+          cn(
+            'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border-b-2 -mb-px transition-colors',
+            activeTab === 'categories'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground',
+          )
+        "
       >
         <Tag class="w-3.5 h-3.5" />
         {{ t('app.module.categories.tab.categories') }}
@@ -244,12 +264,14 @@ async function confirmDelete() {
         role="tab"
         :aria-selected="activeTab === 'tags'"
         @click="activeTab = 'tags'"
-        :class="cn(
-          'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border-b-2 -mb-px transition-colors',
-          activeTab === 'tags'
-            ? 'border-primary text-primary'
-            : 'border-transparent text-muted-foreground hover:text-foreground'
-        )"
+        :class="
+          cn(
+            'flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium border-b-2 -mb-px transition-colors',
+            activeTab === 'tags'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground',
+          )
+        "
       >
         <Hash class="w-3.5 h-3.5" />
         {{ t('app.module.categories.tab.tags') }}
@@ -258,7 +280,6 @@ async function confirmDelete() {
 
     <!-- ── CATEGORIES TAB ─────────────────────────────────────── -->
     <div v-if="activeTab === 'categories'" class="flex-1 overflow-y-auto flex flex-col gap-4 min-h-0 pr-1">
-
       <!-- My Categories (active) -->
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
@@ -319,12 +340,16 @@ async function confirmDelete() {
                   dragFromIndex === catIndex && 'opacity-40',
                 ]"
               >
-                <GripVertical class="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 cursor-grab sm:opacity-0 sm:group-hover:opacity-100 transition-opacity" />
+                <GripVertical
+                  class="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 cursor-grab sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                />
                 <span
                   class="w-5 h-5 rounded-full flex-shrink-0 ring-1 ring-border/40 shadow-sm"
                   :style="{ backgroundColor: cat.color }"
                 />
-                <span class="text-sm font-medium flex-1 truncate text-foreground">{{ resolveCategoryName(cat.name) }}</span>
+                <span class="text-sm font-medium flex-1 truncate text-foreground">{{
+                  resolveCategoryName(cat.name)
+                }}</span>
                 <div class="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <button
                     @click="startEdit(cat)"
@@ -354,10 +379,7 @@ async function confirmDelete() {
               </div>
 
               <!-- Edit mode -->
-              <div
-                v-else
-                class="flex items-center gap-3 py-2 px-3 rounded-lg bg-muted/30 border border-border/50"
-              >
+              <div v-else class="flex items-center gap-3 py-2 px-3 rounded-lg bg-muted/30 border border-border/50">
                 <label
                   class="w-7 h-7 rounded-full flex-shrink-0 ring-2 ring-border overflow-hidden cursor-pointer shadow-sm"
                   :style="{ backgroundColor: draft.color }"
@@ -393,11 +415,7 @@ async function confirmDelete() {
                 class="w-7 h-7 rounded-full flex-shrink-0 ring-2 ring-border overflow-hidden cursor-pointer shadow-sm"
                 :style="{ backgroundColor: newCategory.color }"
               >
-                <input
-                  type="color"
-                  v-model="newCategory.color"
-                  class="opacity-0 w-full h-full cursor-pointer"
-                />
+                <input type="color" v-model="newCategory.color" class="opacity-0 w-full h-full cursor-pointer" />
               </label>
               <input
                 v-model="newCategory.name"
@@ -437,7 +455,12 @@ async function confirmDelete() {
             {{ archivedCategories.length }}
           </Badge>
           <ChevronDown
-            :class="cn('w-3.5 h-3.5 text-muted-foreground transition-transform duration-200', archivedExpanded && 'rotate-180')"
+            :class="
+              cn(
+                'w-3.5 h-3.5 text-muted-foreground transition-transform duration-200',
+                archivedExpanded && 'rotate-180',
+              )
+            "
           />
         </button>
 
@@ -457,16 +480,20 @@ async function confirmDelete() {
                 class="w-5 h-5 rounded-full flex-shrink-0 ring-1 ring-border/40 shadow-sm grayscale"
                 :style="{ backgroundColor: cat.color }"
               />
-              <span class="text-sm font-medium flex-1 truncate text-muted-foreground">{{ resolveCategoryName(cat.name) }}</span>
+              <span class="text-sm font-medium flex-1 truncate text-muted-foreground">{{
+                resolveCategoryName(cat.name)
+              }}</span>
               <div class="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                 <button
                   @click="handleUnarchive(cat.id)"
                   :disabled="atCategoryLimit || actionLoading"
                   :title="atCategoryLimit ? t('app.module.categories.restore_limit_reached') : undefined"
-                  :class="cn(
-                    'rounded-md p-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
-                    !atCategoryLimit && !actionLoading ? 'hover:bg-muted' : '',
-                  )"
+                  :class="
+                    cn(
+                      'rounded-md p-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
+                      !atCategoryLimit && !actionLoading ? 'hover:bg-muted' : '',
+                    )
+                  "
                   :aria-label="t('app.module.categories.action.restore')"
                 >
                   <ArchiveRestore class="w-3.5 h-3.5 text-muted-foreground" />
@@ -530,7 +557,17 @@ async function confirmDelete() {
   </Card>
 
   <!-- Archive confirmation dialog -->
-  <AlertDialog :open="categoryToArchive !== null" @update:open="(open) => { if (!open) nextTick(() => { categoryToArchive = null }) }">
+  <AlertDialog
+    :open="categoryToArchive !== null"
+    @update:open="
+      (open) => {
+        if (!open)
+          nextTick(() => {
+            categoryToArchive = null;
+          });
+      }
+    "
+  >
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{ t('app.module.categories.archive_dialog.title') }}</AlertDialogTitle>
@@ -546,7 +583,17 @@ async function confirmDelete() {
   </AlertDialog>
 
   <!-- Delete confirmation dialog -->
-  <AlertDialog :open="categoryToDelete !== null" @update:open="(open) => { if (!open) nextTick(() => { categoryToDelete = null }) }">
+  <AlertDialog
+    :open="categoryToDelete !== null"
+    @update:open="
+      (open) => {
+        if (!open)
+          nextTick(() => {
+            categoryToDelete = null;
+          });
+      }
+    "
+  >
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{ t('app.module.categories.delete_dialog.title') }}</AlertDialogTitle>

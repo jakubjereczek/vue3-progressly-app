@@ -24,12 +24,7 @@ withDefaults(
           <HelpCircle class="w-3 h-3" />
         </button>
       </TooltipTrigger>
-      <TooltipContent
-        :side="side"
-        hide-arrow
-        class="text-xs leading-relaxed text-center"
-        :style="{ maxWidth }"
-      >
+      <TooltipContent :side="side" hide-arrow class="text-xs leading-relaxed text-center" :style="{ maxWidth }">
         {{ text }}
       </TooltipContent>
     </Tooltip>

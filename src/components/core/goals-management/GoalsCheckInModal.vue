@@ -36,9 +36,9 @@ const CHECKIN_SHOW_DELAY_MS = 1200;
 const STORAGE_KEY = 'progressly_goals_checkin';
 
 interface CheckInState {
-  daily: string;    // ISO date "YYYY-MM-DD"
-  weekly: string;   // "YYYY-WNN"
-  monthly: string;  // "YYYY-MM"
+  daily: string; // ISO date "YYYY-MM-DD"
+  weekly: string; // "YYYY-WNN"
+  monthly: string; // "YYYY-MM"
 }
 
 function getState(): CheckInState {
@@ -178,7 +178,7 @@ function markSeen() {
   const hasMonthly = goalsToShow.value.some((g) => g.period === 'monthly');
   saveState({
     daily: hasDaily ? day : state.daily,
-    weekly: (hasWeekly || !hasDaily) ? week : state.weekly,
+    weekly: hasWeekly || !hasDaily ? week : state.weekly,
     monthly: hasMonthly ? month : state.monthly,
   });
 }
@@ -277,26 +277,25 @@ onMounted(async () => {
               }"
             >
               <!-- Check-in type label -->
-              <span
-                class="text-2xs font-semibold uppercase tracking-[0.15em]"
-                :style="{ color: currentGoal.color }"
-              >{{ checkInTitle }}</span>
+              <span class="text-2xs font-semibold uppercase tracking-[0.15em]" :style="{ color: currentGoal.color }">{{
+                checkInTitle
+              }}</span>
 
               <!-- Goal name -->
-              <p id="checkin-modal-title" class="text-base font-semibold text-center text-foreground leading-snug px-6">{{ currentGoal.name }}</p>
+              <p id="checkin-modal-title" class="text-base font-semibold text-center text-foreground leading-snug px-6">
+                {{ currentGoal.name }}
+              </p>
 
               <!-- Large ring -->
               <div class="relative mt-1" :style="{ width: RING_SIZE_LG + 'px', height: RING_SIZE_LG + 'px' }">
                 <svg class="w-full h-full" viewBox="0 0 108 108" fill="none">
                   <!-- Track -->
-                  <circle
-                    cx="54" cy="54" r="45"
-                    stroke="var(--color-muted)"
-                    stroke-width="7"
-                  />
+                  <circle cx="54" cy="54" r="45" stroke="var(--color-muted)" stroke-width="7" />
                   <!-- Background glow ring -->
                   <circle
-                    cx="54" cy="54" r="45"
+                    cx="54"
+                    cy="54"
+                    r="45"
                     :stroke="ringColor"
                     stroke-width="7"
                     opacity="0.12"
@@ -304,7 +303,9 @@ onMounted(async () => {
                   />
                   <!-- Progress arc -->
                   <circle
-                    cx="54" cy="54" r="45"
+                    cx="54"
+                    cy="54"
+                    r="45"
                     :stroke="ringColor"
                     stroke-width="7"
                     stroke-linecap="round"
@@ -317,10 +318,9 @@ onMounted(async () => {
                 </svg>
                 <!-- Center content -->
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <span
-                    class="text-3xl font-black tabular-nums leading-none"
-                    :style="{ color: ringColor }"
-                  >{{ pct }}</span>
+                  <span class="text-3xl font-black tabular-nums leading-none" :style="{ color: ringColor }">{{
+                    pct
+                  }}</span>
                   <span class="text-2xs font-semibold text-muted-foreground/60 mt-0.5">%</span>
                 </div>
 
@@ -349,21 +349,36 @@ onMounted(async () => {
 
             <!-- ── Body ── -->
             <div class="px-6 py-5 flex flex-col gap-4">
-
               <!-- Headline block -->
               <div class="text-center">
                 <h2 class="text-2xl font-black leading-tight text-foreground">
-                  <template v-if="headlineType === 'completed'">{{ t('app.module.goals.checkin.headline.completed_long') }}</template>
-                  <template v-else-if="headlineType === 'great'">{{ t('app.module.goals.checkin.headline.great') }}</template>
-                  <template v-else-if="headlineType === 'on_track'">{{ t('app.module.goals.checkin.headline.on_track') }}</template>
-                  <template v-else-if="headlineType === 'behind'">{{ t('app.module.goals.checkin.headline.behind') }}</template>
+                  <template v-if="headlineType === 'completed'">{{
+                    t('app.module.goals.checkin.headline.completed_long')
+                  }}</template>
+                  <template v-else-if="headlineType === 'great'">{{
+                    t('app.module.goals.checkin.headline.great')
+                  }}</template>
+                  <template v-else-if="headlineType === 'on_track'">{{
+                    t('app.module.goals.checkin.headline.on_track')
+                  }}</template>
+                  <template v-else-if="headlineType === 'behind'">{{
+                    t('app.module.goals.checkin.headline.behind')
+                  }}</template>
                   <template v-else>{{ t('app.module.goals.checkin.headline.start') }}</template>
                 </h2>
                 <p class="text-sm text-muted-foreground mt-1.5 leading-relaxed">
-                  <template v-if="headlineType === 'completed'">{{ t('app.module.goals.checkin.sub.completed') }}</template>
-                  <template v-else-if="headlineType === 'great'">{{ t('app.module.goals.checkin.sub.great') }}</template>
-                  <template v-else-if="headlineType === 'on_track'">{{ t('app.module.goals.checkin.sub.on_track') }}</template>
-                  <template v-else-if="headlineType === 'behind'">{{ t('app.module.goals.checkin.sub.behind') }}</template>
+                  <template v-if="headlineType === 'completed'">{{
+                    t('app.module.goals.checkin.sub.completed')
+                  }}</template>
+                  <template v-else-if="headlineType === 'great'">{{
+                    t('app.module.goals.checkin.sub.great')
+                  }}</template>
+                  <template v-else-if="headlineType === 'on_track'">{{
+                    t('app.module.goals.checkin.sub.on_track')
+                  }}</template>
+                  <template v-else-if="headlineType === 'behind'">{{
+                    t('app.module.goals.checkin.sub.behind')
+                  }}</template>
                   <template v-else>{{ t('app.module.goals.checkin.sub.start') }}</template>
                 </p>
               </div>
@@ -383,7 +398,11 @@ onMounted(async () => {
                 >
                   <TrendingUp v-if="isOnTrack" class="w-3 h-3 inline -mt-px" />
                   <Zap v-else class="w-3 h-3 inline -mt-px" />
-                  {{ pct >= expectedPct ? t('app.module.goals.analytics.status.on_track') : t('app.module.goals.analytics.status.behind') }}
+                  {{
+                    pct >= expectedPct
+                      ? t('app.module.goals.analytics.status.on_track')
+                      : t('app.module.goals.analytics.status.behind')
+                  }}
                 </span>
               </div>
 
@@ -392,7 +411,9 @@ onMounted(async () => {
                 v-if="goalsToShow.length > 1"
                 class="flex justify-center gap-1.5"
                 role="group"
-                :aria-label="t('app.core.common.step_indicator', { current: currentIndex + 1, total: goalsToShow.length })"
+                :aria-label="
+                  t('app.core.common.step_indicator', { current: currentIndex + 1, total: goalsToShow.length })
+                "
               >
                 <div
                   v-for="(_, i) in goalsToShow"
@@ -402,7 +423,9 @@ onMounted(async () => {
                   :aria-current="i === currentIndex ? 'step' : undefined"
                   class="rounded-full transition-all duration-300"
                   :class="i === currentIndex ? 'w-4 h-1.5' : 'w-1.5 h-1.5 bg-muted'"
-                  :style="i === currentIndex ? { width: '16px', height: '6px', backgroundColor: currentGoal.color } : {}"
+                  :style="
+                    i === currentIndex ? { width: '16px', height: '6px', backgroundColor: currentGoal.color } : {}
+                  "
                 />
               </div>
 

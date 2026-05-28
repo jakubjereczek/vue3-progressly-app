@@ -73,13 +73,23 @@ function formatMonthDisplay(dateString: string): string {
           </DropdownMenuContent>
         </DropdownMenu>
         <div class="flex items-center gap-2">
-          <Button variant="outline" size="icon" @click="emit('changeMonth', 'prev')" :aria-label="t('app.action.prev_month')">
+          <Button
+            variant="outline"
+            size="icon"
+            @click="emit('changeMonth', 'prev')"
+            :aria-label="t('app.action.prev_month')"
+          >
             <ChevronLeft class="w-5 h-5" />
           </Button>
           <span class="text-sm font-medium text-center min-w-[120px] text-center">
             {{ formatMonthDisplay(currentMonth) }}
           </span>
-          <Button variant="outline" size="icon" @click="emit('changeMonth', 'next')" :aria-label="t('app.action.next_month')">
+          <Button
+            variant="outline"
+            size="icon"
+            @click="emit('changeMonth', 'next')"
+            :aria-label="t('app.action.next_month')"
+          >
             <ChevronRight class="w-5 h-5" />
           </Button>
         </div>
@@ -87,7 +97,9 @@ function formatMonthDisplay(dateString: string): string {
     </div>
 
     <div class="relative">
-      <Search class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/50 pointer-events-none" />
+      <Search
+        class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/50 pointer-events-none"
+      />
       <Input
         :model-value="searchQuery"
         :placeholder="t('app.module.activities_history.search_placeholder')"

@@ -31,10 +31,14 @@ export function useScrollShadow(elRef: Ref<HTMLElement | null>, direction: 'vert
     }
   }
 
-  watch(elRef, (newEl, oldEl) => {
-    if (oldEl) detach();
-    if (newEl) attach(newEl);
-  }, { immediate: true });
+  watch(
+    elRef,
+    (newEl, oldEl) => {
+      if (oldEl) detach();
+      if (newEl) attach(newEl);
+    },
+    { immediate: true },
+  );
 
   onUnmounted(() => detach());
 

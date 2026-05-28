@@ -5,7 +5,13 @@ import type { TableRow } from '@/api/supabase';
 import { useTranslation } from '@/composables';
 import { formatTotalDuration } from '@/utils/time';
 import { parseLocalDate } from '@/utils/date';
-import { computeGoalCurrentSeconds, computeGoalCurrentCount, getGoalStatus, getGoalTarget, getGoalExpectedPct } from './useGoalProgress';
+import {
+  computeGoalCurrentSeconds,
+  computeGoalCurrentCount,
+  getGoalStatus,
+  getGoalTarget,
+  getGoalExpectedPct,
+} from './useGoalProgress';
 import { cn } from '@/lib/utils';
 
 const CIRC = +(2 * Math.PI * 22).toFixed(2);
@@ -28,20 +34,14 @@ const { t } = useTranslation();
 const status = computed(() => getGoalStatus(props.goal));
 
 const category = computed(() =>
-  props.goal.category_id
-    ? props.categories.find((c) => c.id === props.goal.category_id)
-    : null,
+  props.goal.category_id ? props.categories.find((c) => c.id === props.goal.category_id) : null,
 );
 
 const isCount = computed(() => props.goal.metric === 'count');
 
-const currentSeconds = computed(() =>
-  computeGoalCurrentSeconds(props.goal, props.activities),
-);
+const currentSeconds = computed(() => computeGoalCurrentSeconds(props.goal, props.activities));
 
-const currentCount = computed(() =>
-  computeGoalCurrentCount(props.goal, props.activities),
-);
+const currentCount = computed(() => computeGoalCurrentCount(props.goal, props.activities));
 
 const percentage = computed(() => {
   const target = getGoalTarget(props.goal);
@@ -72,9 +72,7 @@ const dateRangeLabel = computed(() => {
 });
 
 const expectedPct = computed(() => getGoalExpectedPct(props.goal));
-const isOnTrack = computed(() =>
-  status.value === 'active' ? percentage.value >= expectedPct.value : false,
-);
+const isOnTrack = computed(() => (status.value === 'active' ? percentage.value >= expectedPct.value : false));
 
 const progressColor = computed(() => {
   if (percentage.value >= 100) return 'var(--color-success)';
@@ -89,13 +87,15 @@ function ringOffset(pct: number): number {
 
 <template>
   <div
-    :class="cn(
-      'bg-card border border-border/40 rounded-xl overflow-hidden flex flex-col',
-      'hover:border-border/70 hover:bg-card/80',
-      'transition-all duration-150 cursor-pointer group',
-      status === 'archived' && 'opacity-60',
-      status === 'ended' && 'opacity-75',
-    )"
+    :class="
+      cn(
+        'bg-card border border-border/40 rounded-xl overflow-hidden flex flex-col',
+        'hover:border-border/70 hover:bg-card/80',
+        'transition-all duration-150 cursor-pointer group',
+        status === 'archived' && 'opacity-60',
+        status === 'ended' && 'opacity-75',
+      )
+    "
   >
     <!-- Top color accent strip -->
     <div class="h-[3px] w-full flex-shrink-0" :style="{ backgroundColor: goal.color }" />
@@ -112,11 +112,7 @@ function ringOffset(pct: number): number {
         <div class="flex items-center gap-1.5 mt-1 ml-3.5 flex-wrap">
           <span class="text-2xs text-muted-foreground">{{ periodLabel }}</span>
           <span class="text-muted-foreground/30 text-2xs">·</span>
-          <span
-            v-if="category"
-            class="inline-flex items-center gap-1 text-2xs"
-            :style="{ color: category.color }"
-          >
+          <span v-if="category" class="inline-flex items-center gap-1 text-2xs" :style="{ color: category.color }">
             <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" :style="{ backgroundColor: category.color }" />
             <span>{{ category.name }}</span>
           </span>
@@ -126,28 +122,46 @@ function ringOffset(pct: number): number {
         <!-- Status + on-track badges -->
         <div class="flex items-center gap-1.5 mt-2 ml-3.5 flex-wrap">
           <span
-            :class="cn(
-              'text-2xs font-semibold px-1.5 py-0.5 rounded-full border',
-              status === 'active' && 'bg-success/10 text-success border-success/20',
-              status === 'upcoming' && 'bg-warning/10 text-warning border-warning/20',
-              (status === 'ended' || status === 'archived') && 'bg-muted text-muted-foreground border-border/40',
-            )"
-          >{{ statusLabel }}</span>
+            :class="
+              cn(
+                'text-2xs font-semibold px-1.5 py-0.5 rounded-full border',
+                status === 'active' && 'bg-success/10 text-success border-success/20',
+                status === 'upcoming' && 'bg-warning/10 text-warning border-warning/20',
+                (status === 'ended' || status === 'archived') && 'bg-muted text-muted-foreground border-border/40',
+              )
+            "
+            >{{ statusLabel }}</span
+          >
           <span
             v-if="status === 'active' && expectedPct > 0"
             class="text-2xs font-semibold px-1.5 py-0.5 rounded-full border"
-            :style="isOnTrack
-              ? { color: 'var(--color-success)', borderColor: 'color-mix(in oklab, var(--color-success) 30%, transparent)', backgroundColor: 'color-mix(in oklab, var(--color-success) 8%, transparent)' }
-              : { color: 'var(--color-destructive)', borderColor: 'color-mix(in oklab, var(--color-destructive) 30%, transparent)', backgroundColor: 'color-mix(in oklab, var(--color-destructive) 8%, transparent)' }"
+            :style="
+              isOnTrack
+                ? {
+                    color: 'var(--color-success)',
+                    borderColor: 'color-mix(in oklab, var(--color-success) 30%, transparent)',
+                    backgroundColor: 'color-mix(in oklab, var(--color-success) 8%, transparent)',
+                  }
+                : {
+                    color: 'var(--color-destructive)',
+                    borderColor: 'color-mix(in oklab, var(--color-destructive) 30%, transparent)',
+                    backgroundColor: 'color-mix(in oklab, var(--color-destructive) 8%, transparent)',
+                  }
+            "
           >
-            {{ isOnTrack ? t('app.module.goals.analytics.status.on_track') : t('app.module.goals.analytics.status.behind') }}
+            {{
+              isOnTrack
+                ? t('app.module.goals.analytics.status.on_track')
+                : t('app.module.goals.analytics.status.behind')
+            }}
           </span>
         </div>
 
         <!-- Current / target -->
         <p v-if="status !== 'upcoming'" class="text-2xs text-muted-foreground/60 mt-2 ml-3.5 tabular-nums">
           <template v-if="isCount">
-            {{ currentCount }} <span class="opacity-50 mx-0.5">/</span> {{ goal.target_count }} {{ t('app.module.goals.card.activities') }}
+            {{ currentCount }} <span class="opacity-50 mx-0.5">/</span> {{ goal.target_count }}
+            {{ t('app.module.goals.card.activities') }}
           </template>
           <template v-else>
             {{ formatTotalDuration(currentSeconds) }}
@@ -195,19 +209,16 @@ function ringOffset(pct: number): number {
         </div>
 
         <!-- Circular ring -->
-        <div class="relative" style="width: 56px; height: 56px;">
+        <div class="relative" style="width: 56px; height: 56px">
           <svg width="56" height="56" viewBox="0 0 56 56">
             <!-- Track -->
-            <circle
-              cx="28" cy="28" r="22"
-              fill="none"
-              stroke="var(--color-muted)"
-              stroke-width="4"
-            />
+            <circle cx="28" cy="28" r="22" fill="none" stroke="var(--color-muted)" stroke-width="4" />
             <!-- Progress -->
             <circle
               v-if="status !== 'upcoming'"
-              cx="28" cy="28" r="22"
+              cx="28"
+              cy="28"
+              r="22"
               fill="none"
               :stroke="progressColor"
               stroke-width="4"
@@ -215,7 +226,7 @@ function ringOffset(pct: number): number {
               :stroke-dasharray="CIRC"
               :stroke-dashoffset="ringOffset(percentage)"
               transform="rotate(-90 28 28)"
-              style="transition: stroke-dashoffset 0.7s ease-out;"
+              style="transition: stroke-dashoffset 0.7s ease-out"
             />
           </svg>
           <!-- Center text -->
@@ -224,7 +235,8 @@ function ringOffset(pct: number): number {
               v-if="status !== 'upcoming'"
               class="text-2xs font-semibold tabular-nums leading-none"
               :style="{ color: progressColor }"
-            >{{ percentage }}%</span>
+              >{{ percentage }}%</span
+            >
             <span v-else class="text-2xs text-muted-foreground/30">—</span>
           </div>
         </div>
@@ -256,12 +268,16 @@ function ringOffset(pct: number): number {
       </div>
       <!-- Period elapsed + pace label -->
       <p v-if="status === 'active' && expectedPct > 0" class="text-2xs text-muted-foreground/60 mt-1">
-        {{ expectedPct }}% {{ goal.type === 'total' ? t('app.module.goals.analytics.of_total_elapsed') : t('app.module.goals.analytics.of_period_elapsed') }}
+        {{ expectedPct }}%
+        {{
+          goal.type === 'total'
+            ? t('app.module.goals.analytics.of_total_elapsed')
+            : t('app.module.goals.analytics.of_period_elapsed')
+        }}
         <span class="mx-1 opacity-30">·</span>
-        <span
-          class="font-medium"
-          :style="{ color: isOnTrack ? 'var(--color-success)' : 'var(--color-destructive)' }"
-        >{{ isOnTrack ? t('app.module.goals.analytics.pace.on_track') : t('app.module.goals.analytics.pace.behind') }}</span>
+        <span class="font-medium" :style="{ color: isOnTrack ? 'var(--color-success)' : 'var(--color-destructive)' }">{{
+          isOnTrack ? t('app.module.goals.analytics.pace.on_track') : t('app.module.goals.analytics.pace.behind')
+        }}</span>
       </p>
     </div>
 

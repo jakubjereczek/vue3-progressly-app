@@ -24,8 +24,7 @@ export function useMonthNavigation() {
   const isCurrentMonth = computed(() => {
     const n = new Date();
     return (
-      currentMonthStart.value.getFullYear() === n.getFullYear() &&
-      currentMonthStart.value.getMonth() === n.getMonth()
+      currentMonthStart.value.getFullYear() === n.getFullYear() && currentMonthStart.value.getMonth() === n.getMonth()
     );
   });
 

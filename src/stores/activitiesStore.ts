@@ -159,7 +159,6 @@ export const useActivitiesStore = defineStore('activities', () => {
     }
   }
 
-
   async function getActivitiesInRange(from: Date, to: Date): Promise<void> {
     if (demoMode.value) return;
     if (!userStore.user) return;
@@ -207,9 +206,7 @@ export const useActivitiesStore = defineStore('activities', () => {
     error.value = undefined;
     try {
       await ActivitiesService.delete({ id: activityId, user_id: userStore.user.id });
-      activities.value = activities.value.filter(
-        (a) => a.id !== activityId,
-      ) as unknown as TableRow<'activities'>[];
+      activities.value = activities.value.filter((a) => a.id !== activityId) as unknown as TableRow<'activities'>[];
       if (trackingActivity.value?.id === activityId) {
         trackingActivity.value = undefined;
       }
@@ -294,17 +291,13 @@ export const useActivitiesStore = defineStore('activities', () => {
     if (!userStore.user || ids.length === 0) return { success: false };
 
     const snapshot = activities.value.filter((a) => ids.includes(a.id));
-    activities.value = activities.value.filter(
-      (a) => !ids.includes(a.id),
-    ) as unknown as TableRow<'activities'>[];
+    activities.value = activities.value.filter((a) => !ids.includes(a.id)) as unknown as TableRow<'activities'>[];
     if (trackingActivity.value && ids.includes(trackingActivity.value.id)) {
       trackingActivity.value = undefined;
     }
 
     try {
-      await Promise.all(
-        ids.map((id) => ActivitiesService.delete({ id, user_id: userStore.user!.id })),
-      );
+      await Promise.all(ids.map((id) => ActivitiesService.delete({ id, user_id: userStore.user!.id })));
       return { success: true };
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);

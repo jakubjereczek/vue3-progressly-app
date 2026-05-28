@@ -80,14 +80,21 @@ function handleCloseAttempt(open: boolean) {
 
 const isActive = computed(() => !props.activity?.finished_at);
 const fallback = computed(() => t('app.status.in_progress'));
-const formattedStartedAt = computed(() => formatActivityDateTime(props.activity?.started_at, locale.value, fallback.value));
-const formattedFinishedAt = computed(() => formatActivityDateTime(props.activity?.finished_at ?? undefined, locale.value, fallback.value));
+const formattedStartedAt = computed(() =>
+  formatActivityDateTime(props.activity?.started_at, locale.value, fallback.value),
+);
+const formattedFinishedAt = computed(() =>
+  formatActivityDateTime(props.activity?.finished_at ?? undefined, locale.value, fallback.value),
+);
 const formattedDuration = computed(() =>
   props.activity ? formatDuration(props.activity.started_at, props.activity.finished_at || null) : '',
 );
 
-const currentCategory = computed(() =>
-  categories.value.find(c => c.id === (props.sheetMode === 'edit' ? activityCategoryId.value : props.activity?.category_id)) ?? null,
+const currentCategory = computed(
+  () =>
+    categories.value.find(
+      (c) => c.id === (props.sheetMode === 'edit' ? activityCategoryId.value : props.activity?.category_id),
+    ) ?? null,
 );
 
 const currentTags = computed<string[]>(() => {
@@ -103,13 +110,17 @@ function toDatetimeLocal(iso: string): string {
 }
 
 const startMin = computed(() => {
-  if (!props.activity?.started_at) {return '';}
+  if (!props.activity?.started_at) {
+    return '';
+  }
   const d = new Date(props.activity.started_at);
   d.setDate(d.getDate() - 1);
   return toDatetimeLocal(d.toISOString());
 });
 const startMax = computed(() => {
-  if (!props.activity?.started_at) {return '';}
+  if (!props.activity?.started_at) {
+    return '';
+  }
   const d = new Date(props.activity.started_at);
   d.setDate(d.getDate() + 1);
   const cap = new Date();
@@ -117,7 +128,9 @@ const startMax = computed(() => {
 });
 const endMin = computed(() => editStartedAt.value);
 const endMax = computed(() => {
-  if (!props.activity?.started_at) {return '';}
+  if (!props.activity?.started_at) {
+    return '';
+  }
   const d = new Date(props.activity.started_at);
   d.setDate(d.getDate() + 1);
   const cap = new Date();
@@ -149,8 +162,17 @@ function handleSave() {
     }
   }
   const startedAt = editStartedAt.value ? new Date(editStartedAt.value).toISOString() : props.activity!.started_at;
-  const finishedAt = editFinishedAt.value ? new Date(editFinishedAt.value).toISOString() : props.activity!.finished_at ?? undefined;
-  emit('save', activityDescription.value, activityTags.value, activityCategoryId.value || undefined, startedAt, finishedAt);
+  const finishedAt = editFinishedAt.value
+    ? new Date(editFinishedAt.value).toISOString()
+    : (props.activity!.finished_at ?? undefined);
+  emit(
+    'save',
+    activityDescription.value,
+    activityTags.value,
+    activityCategoryId.value || undefined,
+    startedAt,
+    finishedAt,
+  );
 }
 </script>
 
@@ -160,21 +182,22 @@ function handleSave() {
       <SheetHeader class="px-6 pt-6 pb-4 border-b border-border/40 flex-shrink-0">
         <div class="flex items-center gap-2 mb-3">
           <span
-            :class="cn(
-              'inline-block w-2 h-2 rounded-full ring-1 ring-border/40 flex-shrink-0',
-              isActive ? 'bg-chart-3' : 'bg-success',
-            )"
+            :class="
+              cn(
+                'inline-block w-2 h-2 rounded-full ring-1 ring-border/40 flex-shrink-0',
+                isActive ? 'bg-chart-3' : 'bg-success',
+              )
+            "
           />
           <SheetTitle class="text-base font-semibold">
-            {{ sheetMode === 'edit'
-              ? t('app.module.activities_history.details_sheet.edit_title')
-              : t('app.module.activities_history.details_sheet.view_title') }}
+            {{
+              sheetMode === 'edit'
+                ? t('app.module.activities_history.details_sheet.edit_title')
+                : t('app.module.activities_history.details_sheet.view_title')
+            }}
           </SheetTitle>
         </div>
-        <p
-          v-if="sheetMode === 'view'"
-          class="text-xl font-semibold leading-snug text-foreground"
-        >
+        <p v-if="sheetMode === 'view'" class="text-xl font-semibold leading-snug text-foreground">
           {{ activity?.description || t('app.core.common.no_description') }}
         </p>
         <div v-if="sheetMode === 'view' && activity" class="flex items-center gap-3 mt-2">
@@ -183,9 +206,7 @@ function handleSave() {
             <span>{{ formattedDuration }}</span>
           </div>
           <span class="text-muted-foreground/40">·</span>
-          <span class="text-sm text-muted-foreground">
-            {{ formattedStartedAt }} – {{ formattedFinishedAt }}
-          </span>
+          <span class="text-sm text-muted-foreground"> {{ formattedStartedAt }} – {{ formattedFinishedAt }} </span>
         </div>
       </SheetHeader>
       <div v-if="activity" class="flex-1 overflow-y-auto">
@@ -249,11 +270,7 @@ function handleSave() {
               <Label for="as-description" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                 {{ t('app.module.activities_history.category.description') }}
               </Label>
-              <Textarea
-                id="as-description"
-                v-model="activityDescription"
-                class="min-h-[100px] resize-none"
-              />
+              <Textarea id="as-description" v-model="activityDescription" class="min-h-[100px] resize-none" />
             </div>
             <div class="flex flex-col gap-1.5">
               <Label for="as-category" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
@@ -265,11 +282,7 @@ function handleSave() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem
-                      v-for="cat in selectableCategories"
-                      :key="cat.id"
-                      :value="cat.id"
-                    >
+                    <SelectItem v-for="cat in selectableCategories" :key="cat.id" :value="cat.id">
                       <div class="flex items-center gap-2">
                         <span
                           class="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-border/40"
@@ -286,11 +299,7 @@ function handleSave() {
               <Label for="as-tags" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                 {{ t('app.module.activities_history.category.tags') }}
               </Label>
-              <Input
-                id="as-tags"
-                v-model="activityTags"
-                placeholder="tag1, tag2, tag3"
-              />
+              <Input id="as-tags" v-model="activityTags" placeholder="tag1, tag2, tag3" />
               <p class="text-xs text-muted-foreground">
                 {{ t('app.module.overview.activity_tracker.tags_hint') }}
               </p>
@@ -344,13 +353,7 @@ function handleSave() {
       </div>
       <SheetFooter class="px-6 py-4 border-t border-border/40 flex-shrink-0">
         <Button variant="outline" @click="handleCloseAttempt(false)">{{ t('app.action.cancel') }}</Button>
-        <Button
-          v-if="sheetMode === 'edit'"
-          :disabled="actionLoading"
-          @click="handleSave"
-          type="submit"
-          class="gap-2"
-        >
+        <Button v-if="sheetMode === 'edit'" :disabled="actionLoading" @click="handleSave" type="submit" class="gap-2">
           <LoadingSpinner v-if="actionLoading" class="w-4 h-4" />
           {{ t('app.action.save_changes') }}
         </Button>
@@ -358,7 +361,14 @@ function handleSave() {
     </SheetContent>
   </Sheet>
 
-  <AlertDialog :open="showDiscardConfirm" @update:open="(v) => { if (!v) showDiscardConfirm = false }">
+  <AlertDialog
+    :open="showDiscardConfirm"
+    @update:open="
+      (v) => {
+        if (!v) showDiscardConfirm = false;
+      }
+    "
+  >
     <AlertDialogContent>
       <AlertDialogTitle>{{ t('app.module.activities_history.edit.discard_title') }}</AlertDialogTitle>
       <AlertDialogDescription>{{ t('app.module.activities_history.edit.discard_desc') }}</AlertDialogDescription>
@@ -366,8 +376,14 @@ function handleSave() {
         <AlertDialogCancel @click="showDiscardConfirm = false">{{ t('app.action.cancel') }}</AlertDialogCancel>
         <AlertDialogAction
           class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-          @click="() => { showDiscardConfirm = false; emit('toggleOpen', false); }"
-        >{{ t('app.action.discard') }}</AlertDialogAction>
+          @click="
+            () => {
+              showDiscardConfirm = false;
+              emit('toggleOpen', false);
+            }
+          "
+          >{{ t('app.action.discard') }}</AlertDialogAction
+        >
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

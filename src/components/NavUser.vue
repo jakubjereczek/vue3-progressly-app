@@ -1,19 +1,7 @@
 <script setup lang="ts">
-import {
-  BadgeCheck,
-  ChevronsUpDown,
-  LogOut,
-  Sparkles,
-  Monitor,
-  Sun,
-  Moon,
-} from "lucide-vue-next"
+import { BadgeCheck, ChevronsUpDown, LogOut, Sparkles, Monitor, Sun, Moon } from 'lucide-vue-next';
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,24 +10,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar'
+} from '@/components/ui/dropdown-menu';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 
-import { computed } from "vue"
-import { storeToRefs } from 'pinia'
-import type { User } from "@supabase/supabase-js"
-import defaultAvatar from '@/assets/default-avatar.svg'
-import { useTranslation } from '@/composables/useTranslation'
-import { useUserStore } from '@/stores'
-import { useRouter } from "vue-router"
-import { useTheme, type ThemeMode } from '@/composables/useTheme'
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia';
+import type { User } from '@supabase/supabase-js';
+import defaultAvatar from '@/assets/default-avatar.svg';
+import { useTranslation } from '@/composables/useTranslation';
+import { useUserStore } from '@/stores';
+import { useRouter } from 'vue-router';
+import { useTheme, type ThemeMode } from '@/composables/useTheme';
 
-const { t } = useTranslation()
+const { t } = useTranslation();
 const userStore = useUserStore();
 const router = useRouter();
 const { theme, setTheme } = useTheme();
@@ -47,21 +30,20 @@ const { theme, setTheme } = useTheme();
 const themeIcons: Record<ThemeMode, unknown> = { system: Monitor, light: Sun, dark: Moon };
 
 const props = defineProps<{
-  user: User
-}>()
+  user: User;
+}>();
 
-const { isMobile } = useSidebar()
-const { isPremium } = storeToRefs(userStore)
+const { isMobile } = useSidebar();
+const { isPremium } = storeToRefs(userStore);
 
-const avatarUrl = computed(() => props.user.user_metadata?.avatar_url ?? defaultAvatar)
-const email = computed(() => props.user.email)
-const displayName = computed(() => props.user.user_metadata?.full_name ?? "User")
+const avatarUrl = computed(() => props.user.user_metadata?.avatar_url ?? defaultAvatar);
+const email = computed(() => props.user.email);
+const displayName = computed(() => props.user.user_metadata?.full_name ?? 'User');
 
 async function onLogoutClick() {
   await userStore.logout();
   router.push('/login');
 }
-
 </script>
 
 <template>
@@ -142,10 +124,12 @@ async function onLogoutClick() {
               </div>
               <div class="flex items-center gap-0.5 bg-muted/60 rounded-md p-0.5 border border-border/40">
                 <button
-                  v-for="opt in (['system', 'light', 'dark'] as ThemeMode[])"
+                  v-for="opt in ['system', 'light', 'dark'] as ThemeMode[]"
                   :key="opt"
                   class="p-1 rounded transition-colors"
-                  :class="theme === opt ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'"
+                  :class="
+                    theme === opt ? 'bg-card shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  "
                   :aria-label="opt"
                   @click.stop="setTheme(opt)"
                 >

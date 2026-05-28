@@ -1,6 +1,6 @@
-import { createRouter, createWebHistory } from "vue-router";
-import routes from "./routes";
-import { useUserStore } from "../stores";
+import { createRouter, createWebHistory } from 'vue-router';
+import routes from './routes';
+import { useUserStore } from '../stores';
 
 export const router = createRouter({
   history: createWebHistory('/vue3-progressly-app/'),
@@ -20,7 +20,6 @@ router.beforeEach(async (to, _from, next) => {
 
   if (to.meta.guest && userStore.loggedIn) {
     return next({ name: 'Dashboard' });
-    
   }
 
   next();

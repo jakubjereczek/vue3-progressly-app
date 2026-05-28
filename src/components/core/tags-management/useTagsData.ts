@@ -30,9 +30,7 @@ export function useTagsData(activities: Ref<TableRow<'activities'>[]>) {
         name,
         count: data.count,
         lastUsed: data.lastUsed,
-        formattedLastUsed: data.lastUsed
-          ? new Date(data.lastUsed).toLocaleDateString()
-          : '—',
+        formattedLastUsed: data.lastUsed ? new Date(data.lastUsed).toLocaleDateString() : '—',
       }))
       .sort((a, b) => b.count - a.count);
   });

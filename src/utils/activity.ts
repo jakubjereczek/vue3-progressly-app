@@ -32,9 +32,7 @@ export function calculateStreak(activities: TableRow<'activities'>[]): number {
 /**
  * Groups activities by their local date string (YYYY-MM-DD) derived from started_at.
  */
-export function groupActivitiesByDate(
-  activities: TableRow<'activities'>[],
-): Map<string, TableRow<'activities'>[]> {
+export function groupActivitiesByDate(activities: TableRow<'activities'>[]): Map<string, TableRow<'activities'>[]> {
   const map = new Map<string, TableRow<'activities'>[]>();
   for (const a of activities) {
     const dateStr = localDateToString(new Date(a.started_at));

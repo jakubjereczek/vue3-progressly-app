@@ -9,9 +9,9 @@ import { parseLocalDate } from '@/utils/date';
 export type AnalyticsRange = '1m' | '3m' | '6m' | '1y' | 'all';
 
 const RANGE_PERIODS: Record<string, Record<Exclude<AnalyticsRange, 'all'>, number>> = {
-  daily:   { '1m': 30, '3m': 90,  '6m': 180, '1y': 365 },
-  weekly:  { '1m': 4,  '3m': 13,  '6m': 26,  '1y': 52  },
-  monthly: { '1m': 1,  '3m': 3,   '6m': 6,   '1y': 12  },
+  daily: { '1m': 30, '3m': 90, '6m': 180, '1y': 365 },
+  weekly: { '1m': 4, '3m': 13, '6m': 26, '1y': 52 },
+  monthly: { '1m': 1, '3m': 3, '6m': 6, '1y': 12 },
 };
 
 // Returns null for 'all' (buildPeriodBars computes from goal.started_at)
@@ -52,7 +52,6 @@ export interface AnalyticsSummary {
   bestStreak: number;
 }
 
-
 function computeStreak(bars: GoalPeriodBar[], goal: TableRow<'goals'>): number {
   const target = getGoalTarget(goal);
   const isCount = goal.metric === 'count';
@@ -88,9 +87,7 @@ export function useGoalsAnalytics(
   offset: Ref<number> = ref(0),
 ) {
   const { locale } = useI18n();
-  const activeGoals = computed(() =>
-    goals.value.filter((g) => !g.archived_at),
-  );
+  const activeGoals = computed(() => goals.value.filter((g) => !g.archived_at));
 
   const analytics = computed<GoalAnalyticsData[]>(() =>
     activeGoals.value.map((goal) => {
@@ -108,21 +105,12 @@ export function useGoalsAnalytics(
       const activeBars = nonFutureBars.filter((b) => barVal(b) > 0);
       const currentBar = bars.find((b) => b.isCurrentPeriod);
 
-      const completedPeriods = nonFutureBars.filter(
-        (b) => isGoalPeriodMet(barVal(b), target, isCount),
-      ).length;
+      const completedPeriods = nonFutureBars.filter((b) => isGoalPeriodMet(barVal(b), target, isCount)).length;
       const totalPeriods = nonFutureBars.length;
-      const completionRate =
-        totalPeriods > 0
-          ? Math.round((completedPeriods / totalPeriods) * 100)
-          : 0;
+      const completionRate = totalPeriods > 0 ? Math.round((completedPeriods / totalPeriods) * 100) : 0;
 
-      const bestSeconds = activeBars.length
-        ? Math.max(...activeBars.map((b) => b.seconds))
-        : 0;
-      const bestCount = activeBars.length
-        ? Math.max(...activeBars.map((b) => b.count))
-        : 0;
+      const bestSeconds = activeBars.length ? Math.max(...activeBars.map((b) => b.seconds)) : 0;
+      const bestCount = activeBars.length ? Math.max(...activeBars.map((b) => b.count)) : 0;
       const avgSeconds = activeBars.length
         ? Math.round(activeBars.reduce((s, b) => s + b.seconds, 0) / activeBars.length)
         : 0;
@@ -130,15 +118,12 @@ export function useGoalsAnalytics(
         ? Math.round(activeBars.reduce((s, b) => s + b.count, 0) / activeBars.length)
         : 0;
 
-      const currentSeconds = goal.type === 'total'
-        ? nonFutureBars.reduce((s, b) => s + b.seconds, 0)
-        : (currentBar?.seconds ?? 0);
-      const currentCount = goal.type === 'total'
-        ? nonFutureBars.reduce((s, b) => s + b.count, 0)
-        : (currentBar?.count ?? 0);
+      const currentSeconds =
+        goal.type === 'total' ? nonFutureBars.reduce((s, b) => s + b.seconds, 0) : (currentBar?.seconds ?? 0);
+      const currentCount =
+        goal.type === 'total' ? nonFutureBars.reduce((s, b) => s + b.count, 0) : (currentBar?.count ?? 0);
       const currentValue = isCount ? currentCount : currentSeconds;
-      const currentPct =
-        target > 0 ? Math.min(100, Math.round((currentValue / target) * 100)) : 0;
+      const currentPct = target > 0 ? Math.min(100, Math.round((currentValue / target) * 100)) : 0;
       const expectedPct = getGoalExpectedPct(goal);
       const status = getGoalStatus(goal);
       const isOnTrack = status === 'active' ? currentPct >= expectedPct : false;
@@ -150,7 +135,10 @@ export function useGoalsAnalytics(
 
       const todayLocal = localDateToString(new Date());
       const daysRemaining = goal.ended_at
-        ? Math.max(0, Math.ceil((parseLocalDate(goal.ended_at).getTime() - parseLocalDate(todayLocal).getTime()) / MS_PER_DAY))
+        ? Math.max(
+            0,
+            Math.ceil((parseLocalDate(goal.ended_at).getTime() - parseLocalDate(todayLocal).getTime()) / MS_PER_DAY),
+          )
         : null;
 
       return {
@@ -183,11 +171,7 @@ export function useGoalsAnalytics(
     return {
       totalActive: data.length,
       onTrackCount: data.filter((d) => d.isOnTrack).length,
-      avgCompletionRate: data.length
-        ? Math.round(
-            data.reduce((s, d) => s + d.completionRate, 0) / data.length,
-          )
-        : 0,
+      avgCompletionRate: data.length ? Math.round(data.reduce((s, d) => s + d.completionRate, 0) / data.length) : 0,
       bestStreak: data.length ? Math.max(...data.map((d) => d.streak), 0) : 0,
     };
   });

@@ -29,12 +29,17 @@ const { t } = useTranslation();
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>{{ t('app.module.activities_history.delete_dialog.title') }}</AlertDialogTitle>
-        <AlertDialogDescription>{{ t('app.module.activities_history.delete_dialog.description') }}</AlertDialogDescription>
+        <AlertDialogDescription>{{
+          t('app.module.activities_history.delete_dialog.description')
+        }}</AlertDialogDescription>
       </AlertDialogHeader>
 
       <AlertDialogFooter>
         <AlertDialogCancel @click="emit('close')">{{ t('app.action.cancel') }}</AlertDialogCancel>
-        <AlertDialogAction @click="emit('confirm')" class="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+        <AlertDialogAction
+          @click="emit('confirm')"
+          class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+        >
           {{ t('app.action.delete') }}
         </AlertDialogAction>
       </AlertDialogFooter>

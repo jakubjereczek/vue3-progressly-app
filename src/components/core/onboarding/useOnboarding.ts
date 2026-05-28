@@ -3,9 +3,7 @@ import { ref, computed } from 'vue';
 const STORAGE_KEY = 'progressly_onboarding_v1';
 
 // Module-level so state is shared across all instances
-const _completed = ref(
-  typeof localStorage !== 'undefined' && localStorage.getItem(STORAGE_KEY) === 'true',
-);
+const _completed = ref(typeof localStorage !== 'undefined' && localStorage.getItem(STORAGE_KEY) === 'true');
 
 export function useOnboarding() {
   const isOnboardingDone = computed(() => _completed.value);

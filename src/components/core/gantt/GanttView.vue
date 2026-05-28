@@ -46,13 +46,9 @@ const weekRangeLabel = computed(() => {
   return `${fmt(start)} – ${fmt(end)}, ${start.getFullYear()}`;
 });
 
-const rangeLabel = computed(() =>
-  mode.value === 'month' ? monthLabel.value : weekRangeLabel.value,
-);
+const rangeLabel = computed(() => (mode.value === 'month' ? monthLabel.value : weekRangeLabel.value));
 
-const canGoNext = computed(() =>
-  mode.value === 'month' ? !isCurrentMonth.value : true,
-);
+const canGoNext = computed(() => (mode.value === 'month' ? !isCurrentMonth.value : true));
 
 function handleNavigate(direction: 'prev' | 'next') {
   if (mode.value === 'month') changeMonth(direction);
@@ -73,16 +69,20 @@ const activeRange = computed(() => {
   return { from, to };
 });
 
-watch(activeRange, ({ from, to }) => {
-  activitiesStore.getActivitiesInRange(from, to);
-}, { immediate: true });
+watch(
+  activeRange,
+  ({ from, to }) => {
+    activitiesStore.getActivitiesInRange(from, to);
+  },
+  { immediate: true },
+);
 
 onMounted(() => {
   categoriesStore.getCategories();
 });
 
 // ── Timeline data ─────────────────────────────────────────────────────────
-const timelineDays = computed(() => mode.value === 'month' ? monthDays.value : weekDays.value);
+const timelineDays = computed(() => (mode.value === 'month' ? monthDays.value : weekDays.value));
 const { ganttRows } = useGanttData(activities, timelineDays, categories);
 
 // ── Activity sheet ────────────────────────────────────────────────────────
@@ -129,10 +129,7 @@ function closeDetail() {
 
 // Clear selection when the selected activity is deleted from the store
 watch(activities, (newActivities) => {
-  if (
-    selectedActivityId.value !== null &&
-    !newActivities.some((a) => a.id === selectedActivityId.value)
-  ) {
+  if (selectedActivityId.value !== null && !newActivities.some((a) => a.id === selectedActivityId.value)) {
     selectedActivityId.value = null;
   }
 });
@@ -144,7 +141,7 @@ const manualEntryOpen = ref(false);
 const zoom = ref(100);
 // BASE_HOUR_WIDTH_PX: pixels per hour at 100% zoom
 const BASE_HOUR_WIDTH_PX = 240;
-const HOUR_WIDTH = computed(() => Math.round(BASE_HOUR_WIDTH_PX * zoom.value / 100));
+const HOUR_WIDTH = computed(() => Math.round((BASE_HOUR_WIDTH_PX * zoom.value) / 100));
 
 // ── Time indicator ────────────────────────────────────────────────────────
 const { timeLinePercentage } = useTimeIndicator();
@@ -153,7 +150,9 @@ const { timeLinePercentage } = useTimeIndicator();
 const { scrollContainer, scrollToNow } = useGanttScroll(() => HOUR_WIDTH.value);
 
 watch(zoom, () => scrollToNow());
-watch(loading, (val) => { if (!val) scrollToNow(); });
+watch(loading, (val) => {
+  if (!val) scrollToNow();
+});
 const { canScrollStart: canScrollLeft, canScrollEnd: canScrollRight } = useScrollShadow(scrollContainer, 'horizontal');
 
 // ── Keyboard navigation ───────────────────────────────────────────────────
@@ -161,11 +160,7 @@ const allBars = computed<GanttBar[]>(() => ganttRows.value.flatMap((r) => r.bars
 
 function handleKeydown(e: KeyboardEvent) {
   const target = e.target as HTMLElement;
-  if (
-    target.tagName === 'INPUT' ||
-    target.tagName === 'TEXTAREA' ||
-    target.isContentEditable
-  ) return;
+  if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
 
   if (!selectedBar.value) return;
 
@@ -212,7 +207,6 @@ function formatDayDate(date: Date): string {
 const formatTime = (iso: string | null) => formatISOTime(iso, locale.value);
 
 const isMonthMode = computed(() => mode.value === 'month');
-
 </script>
 
 <template>
@@ -261,10 +255,7 @@ const isMonthMode = computed(() => mode.value === 'month');
             ref="scrollContainer"
             class="h-full overflow-x-auto overflow-y-auto custom-scrollbar scroll-smooth touch-pan-x"
           >
-            <div
-              :style="{ width: 24 * HOUR_WIDTH + 'px' }"
-              class="flex flex-col relative min-h-full"
-            >
+            <div :style="{ width: 24 * HOUR_WIDTH + 'px' }" class="flex flex-col relative min-h-full">
               <!-- Hour grid background -->
               <div class="absolute inset-0 flex pointer-events-none">
                 <div
@@ -302,7 +293,9 @@ const isMonthMode = computed(() => mode.value === 'month');
                     class="absolute top-0 bottom-0 z-30 pointer-events-none border-l-2 border-destructive/80 transition-all duration-700 ease-in-out"
                     :style="{ left: timeLinePercentage + '%' }"
                   >
-                    <div class="absolute -top-1 -left-[10px] bg-destructive text-destructive-foreground rounded-full p-0.5 shadow-lg">
+                    <div
+                      class="absolute -top-1 -left-[10px] bg-destructive text-destructive-foreground rounded-full p-0.5 shadow-lg"
+                    >
                       <Clock class="w-4 h-4" />
                     </div>
                   </div>
@@ -362,7 +355,9 @@ const isMonthMode = computed(() => mode.value === 'month');
                                     <span class="absolute inset-0 rounded-full bg-chart-3/40 animate-ping" />
                                     <span class="absolute inset-[2px] rounded-full bg-chart-3" />
                                   </span>
-                                  <span class="text-2xs text-foreground font-medium truncate leading-tight">{{ bar.description || '—' }}</span>
+                                  <span class="text-2xs text-foreground font-medium truncate leading-tight">{{
+                                    bar.description || '—'
+                                  }}</span>
                                 </div>
                               </template>
 
@@ -373,10 +368,13 @@ const isMonthMode = computed(() => mode.value === 'month');
                                     <span class="absolute inset-0 rounded-full bg-chart-3/40 animate-ping" />
                                     <span class="absolute inset-[2px] rounded-full bg-chart-3" />
                                   </span>
-                                  <span class="text-2xs text-foreground font-medium truncate leading-tight">{{ bar.description || '—' }}</span>
+                                  <span class="text-2xs text-foreground font-medium truncate leading-tight">{{
+                                    bar.description || '—'
+                                  }}</span>
                                 </div>
                                 <span class="text-2xs text-muted-foreground/80 font-mono truncate leading-none mt-0.5">
-                                  {{ formatTime(bar.startedAt) }}{{ bar.isActive ? ' →' : ` – ${formatTime(bar.finishedAt)}` }}
+                                  {{ formatTime(bar.startedAt)
+                                  }}{{ bar.isActive ? ' →' : ` – ${formatTime(bar.finishedAt)}` }}
                                 </span>
                               </template>
 
@@ -387,28 +385,68 @@ const isMonthMode = computed(() => mode.value === 'month');
                                     <span class="absolute inset-0 rounded-full bg-chart-3/40 animate-ping" />
                                     <span class="absolute inset-[2px] rounded-full bg-chart-3" />
                                   </span>
-                                  <span class="text-xs text-foreground font-medium truncate leading-tight">{{ bar.description || '—' }}</span>
+                                  <span class="text-xs text-foreground font-medium truncate leading-tight">{{
+                                    bar.description || '—'
+                                  }}</span>
                                 </div>
                                 <span class="text-2xs text-muted-foreground/70 font-mono truncate leading-none mt-0.5">
-                                  {{ formatTime(bar.startedAt) }}<span class="mx-0.5 opacity-50">–</span>{{ bar.isActive ? '…' : formatTime(bar.finishedAt) }}
+                                  {{ formatTime(bar.startedAt) }}<span class="mx-0.5 opacity-50">–</span
+                                  >{{ bar.isActive ? '…' : formatTime(bar.finishedAt) }}
                                 </span>
                               </template>
                             </div>
                           </TooltipTrigger>
-                          <TooltipContent side="top" :side-offset="10" hide-arrow class="bg-popover text-popover-foreground border border-border/50 shadow-xl rounded-xl p-3 w-56 z-50">
+                          <TooltipContent
+                            side="top"
+                            :side-offset="10"
+                            hide-arrow
+                            class="bg-popover text-popover-foreground border border-border/50 shadow-xl rounded-xl p-3 w-56 z-50"
+                          >
                             <div class="flex items-center gap-2">
-                              <span class="w-2 h-2 rounded-full flex-shrink-0" :style="bar.categoryColor ? { backgroundColor: bar.categoryColor } : { backgroundColor: 'var(--color-muted-foreground)' }" />
-                              <span class="text-xs font-semibold text-foreground truncate flex-1 leading-tight">{{ bar.description || t('app.module.activities_history.no_description') }}</span>
-                              <span class="text-xs font-mono tabular-nums text-muted-foreground flex-shrink-0">{{ bar.formattedDuration }}</span>
+                              <span
+                                class="w-2 h-2 rounded-full flex-shrink-0"
+                                :style="
+                                  bar.categoryColor
+                                    ? { backgroundColor: bar.categoryColor }
+                                    : { backgroundColor: 'var(--color-muted-foreground)' }
+                                "
+                              />
+                              <span class="text-xs font-semibold text-foreground truncate flex-1 leading-tight">{{
+                                bar.description || t('app.module.activities_history.no_description')
+                              }}</span>
+                              <span class="text-xs font-mono tabular-nums text-muted-foreground flex-shrink-0">{{
+                                bar.formattedDuration
+                              }}</span>
                             </div>
                             <div class="flex items-center mt-1.5 gap-2 min-w-0">
-                              <span v-if="bar.categoryName" class="text-2xs font-medium px-1.5 py-px rounded-full border leading-none min-w-0 truncate" :style="bar.categoryColor ? { backgroundColor: `color-mix(in oklab, ${bar.categoryColor} 14%, transparent)`, color: bar.categoryColor, borderColor: `color-mix(in oklab, ${bar.categoryColor} 35%, transparent)` } : {}">{{ bar.categoryName }}</span>
+                              <span
+                                v-if="bar.categoryName"
+                                class="text-2xs font-medium px-1.5 py-px rounded-full border leading-none min-w-0 truncate"
+                                :style="
+                                  bar.categoryColor
+                                    ? {
+                                        backgroundColor: `color-mix(in oklab, ${bar.categoryColor} 14%, transparent)`,
+                                        color: bar.categoryColor,
+                                        borderColor: `color-mix(in oklab, ${bar.categoryColor} 35%, transparent)`,
+                                      }
+                                    : {}
+                                "
+                                >{{ bar.categoryName }}</span
+                              >
                               <span class="text-2xs font-mono tabular-nums text-muted-foreground flex-shrink-0 ml-auto">
-                                {{ formatTime(bar.startedAt) }}<span class="text-muted-foreground/50 mx-0.5">→</span><span :class="bar.isActive ? 'text-primary' : ''">{{ bar.isActive ? '…' : formatTime(bar.finishedAt) }}</span>
+                                {{ formatTime(bar.startedAt) }}<span class="text-muted-foreground/50 mx-0.5">→</span
+                                ><span :class="bar.isActive ? 'text-primary' : ''">{{
+                                  bar.isActive ? '…' : formatTime(bar.finishedAt)
+                                }}</span>
                               </span>
                             </div>
                             <div v-if="bar.tags.length > 0" class="flex flex-wrap gap-1 mt-1.5">
-                              <span v-for="tag in bar.tags" :key="tag" class="text-2xs px-1.5 py-px rounded-full bg-muted text-muted-foreground border border-border/40 leading-none">{{ tag }}</span>
+                              <span
+                                v-for="tag in bar.tags"
+                                :key="tag"
+                                class="text-2xs px-1.5 py-px rounded-full bg-muted text-muted-foreground border border-border/40 leading-none"
+                                >{{ tag }}</span
+                              >
                             </div>
                           </TooltipContent>
                         </Tooltip>
@@ -421,7 +459,16 @@ const isMonthMode = computed(() => mode.value === 'month');
                   class="sticky right-0 z-40 w-[100px] h-full flex-shrink-0 border-l border-border/40 px-3 flex flex-col items-end justify-center gap-1.5 shadow-card backdrop-blur-sm transition-colors"
                   :class="isToday(row.date) ? 'bg-accent/60' : 'bg-muted/60'"
                 >
-                  <span class="text-sm tabular-nums font-mono" :class="row.isEmpty ? 'text-muted-foreground' : isToday(row.date) ? 'text-primary font-medium' : 'text-foreground'">
+                  <span
+                    class="text-sm tabular-nums font-mono"
+                    :class="
+                      row.isEmpty
+                        ? 'text-muted-foreground'
+                        : isToday(row.date)
+                          ? 'text-primary font-medium'
+                          : 'text-foreground'
+                    "
+                  >
                     {{ row.isEmpty ? '—' : row.formattedTotal }}
                   </span>
                 </div>
@@ -431,17 +478,44 @@ const isMonthMode = computed(() => mode.value === 'month');
         </div>
 
         <!-- Detail panel -->
-        <transition enter-active-class="transition-all duration-200 ease-out" enter-from-class="opacity-0 translate-x-3" enter-to-class="opacity-100 translate-x-0" leave-active-class="transition-all duration-150 ease-in" leave-from-class="opacity-100 translate-x-0" leave-to-class="opacity-0 translate-x-3">
-          <div v-if="selectedBar" class="hidden sm:flex w-[280px] flex-shrink-0 border-l border-border/40 flex-col bg-card overflow-hidden">
+        <transition
+          enter-active-class="transition-all duration-200 ease-out"
+          enter-from-class="opacity-0 translate-x-3"
+          enter-to-class="opacity-100 translate-x-0"
+          leave-active-class="transition-all duration-150 ease-in"
+          leave-from-class="opacity-100 translate-x-0"
+          leave-to-class="opacity-0 translate-x-3"
+        >
+          <div
+            v-if="selectedBar"
+            class="hidden sm:flex w-[280px] flex-shrink-0 border-l border-border/40 flex-col bg-card overflow-hidden"
+          >
             <div class="flex items-start justify-between px-4 pt-4 pb-3 border-b border-border/40">
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2 mb-1">
-                  <span :class="cn('inline-block w-2 h-2 rounded-full ring-1 ring-border/40 flex-shrink-0', selectedBar.isActive ? 'bg-chart-3' : 'bg-success')" />
-                  <span class="text-2xs text-muted-foreground">{{ selectedBar.isActive ? t('app.module.gantt.detail.in_progress') : t('app.module.gantt.detail.finished') }}</span>
+                  <span
+                    :class="
+                      cn(
+                        'inline-block w-2 h-2 rounded-full ring-1 ring-border/40 flex-shrink-0',
+                        selectedBar.isActive ? 'bg-chart-3' : 'bg-success',
+                      )
+                    "
+                  />
+                  <span class="text-2xs text-muted-foreground">{{
+                    selectedBar.isActive
+                      ? t('app.module.gantt.detail.in_progress')
+                      : t('app.module.gantt.detail.finished')
+                  }}</span>
                 </div>
-                <p class="text-sm font-semibold leading-snug">{{ selectedBar.description || t('app.module.calendar.no_description') }}</p>
+                <p class="text-sm font-semibold leading-snug">
+                  {{ selectedBar.description || t('app.module.calendar.no_description') }}
+                </p>
               </div>
-              <button class="text-muted-foreground hover:text-foreground transition-colors p-1 rounded flex-shrink-0 ml-2" @click="closeDetail" :aria-label="t('app.action.close')">
+              <button
+                class="text-muted-foreground hover:text-foreground transition-colors p-1 rounded flex-shrink-0 ml-2"
+                @click="closeDetail"
+                :aria-label="t('app.action.close')"
+              >
                 <X class="w-4 h-4" />
               </button>
             </div>
@@ -452,7 +526,9 @@ const isMonthMode = computed(() => mode.value === 'month');
               </div>
               <div class="flex items-center justify-between text-xs">
                 <span class="text-muted-foreground">{{ t('app.module.gantt.detail.end') }}</span>
-                <span class="font-mono tabular-nums" :class="selectedBar.isActive ? 'text-chart-3' : ''">{{ selectedBar.isActive ? '…' : formatTime(selectedBar.finishedAt) }}</span>
+                <span class="font-mono tabular-nums" :class="selectedBar.isActive ? 'text-chart-3' : ''">{{
+                  selectedBar.isActive ? '…' : formatTime(selectedBar.finishedAt)
+                }}</span>
               </div>
               <div class="flex items-center justify-between text-xs">
                 <span class="text-muted-foreground">{{ t('app.module.gantt.detail.duration') }}</span>
@@ -460,9 +536,14 @@ const isMonthMode = computed(() => mode.value === 'month');
               </div>
             </div>
             <div v-if="selectedBar.categoryName" class="px-4 py-3 border-b border-border/40">
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">{{ t('app.module.gantt.detail.category') }}</p>
+              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
+                {{ t('app.module.gantt.detail.category') }}
+              </p>
               <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full flex-shrink-0 ring-1 ring-border/40" :style="{ backgroundColor: selectedBar.categoryColor ?? 'var(--color-muted-foreground)' }" />
+                <span
+                  class="w-3 h-3 rounded-full flex-shrink-0 ring-1 ring-border/40"
+                  :style="{ backgroundColor: selectedBar.categoryColor ?? 'var(--color-muted-foreground)' }"
+                />
                 <span class="text-sm font-medium">{{ selectedBar.categoryName }}</span>
               </div>
             </div>
@@ -471,14 +552,25 @@ const isMonthMode = computed(() => mode.value === 'month');
                 <Layers class="w-3 h-3 inline mr-1" />{{ t('app.module.gantt.detail.tags') }}
               </p>
               <div class="flex flex-wrap gap-1.5">
-                <span v-for="tag in selectedBar.tags" :key="tag" class="text-2xs bg-muted text-muted-foreground px-2 py-1 rounded-full border border-border/40">{{ tag }}</span>
+                <span
+                  v-for="tag in selectedBar.tags"
+                  :key="tag"
+                  class="text-2xs bg-muted text-muted-foreground px-2 py-1 rounded-full border border-border/40"
+                  >{{ tag }}</span
+                >
               </div>
             </div>
             <div class="px-4 py-3 mt-auto flex flex-col gap-2">
-              <button class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-border/50 text-sm text-foreground hover:bg-muted transition-colors" @click="handleBarEdit(selectedBar.activityId)">
+              <button
+                class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-border/50 text-sm text-foreground hover:bg-muted transition-colors"
+                @click="handleBarEdit(selectedBar.activityId)"
+              >
                 <Pencil class="w-3.5 h-3.5" />{{ t('app.module.gantt.detail.edit') }}
               </button>
-              <button class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-destructive/30 text-sm text-destructive hover:bg-destructive/10 transition-colors" @click="handleBarDelete(selectedBar.activityId)">
+              <button
+                class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-destructive/30 text-sm text-destructive hover:bg-destructive/10 transition-colors"
+                @click="handleBarDelete(selectedBar.activityId)"
+              >
                 <Trash2 class="w-3.5 h-3.5" />{{ t('app.module.gantt.detail.delete') }}
               </button>
             </div>
@@ -499,7 +591,9 @@ const isMonthMode = computed(() => mode.value === 'month');
       leave-from-class="translate-y-0"
       leave-to-class="translate-y-full"
     >
-      <div class="sm:hidden fixed inset-x-0 bottom-0 z-50 flex flex-col bg-card border-t border-border/40 rounded-t-2xl shadow-hero overflow-hidden max-h-[85svh]">
+      <div
+        class="sm:hidden fixed inset-x-0 bottom-0 z-50 flex flex-col bg-card border-t border-border/40 rounded-t-2xl shadow-hero overflow-hidden max-h-[85svh]"
+      >
         <!-- Handle bar -->
         <div class="flex justify-center pt-3 pb-1 flex-shrink-0">
           <div class="w-10 h-1 rounded-full bg-muted-foreground/20" />
@@ -509,12 +603,27 @@ const isMonthMode = computed(() => mode.value === 'month');
         <div class="flex items-start justify-between px-4 pt-2 pb-3 border-b border-border/40 flex-shrink-0">
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2 mb-1">
-              <span :class="cn('inline-block w-2 h-2 rounded-full ring-1 ring-border/40 flex-shrink-0', selectedBar.isActive ? 'bg-chart-3' : 'bg-success')" />
-              <span class="text-2xs text-muted-foreground">{{ selectedBar.isActive ? t('app.module.gantt.detail.in_progress') : t('app.module.gantt.detail.finished') }}</span>
+              <span
+                :class="
+                  cn(
+                    'inline-block w-2 h-2 rounded-full ring-1 ring-border/40 flex-shrink-0',
+                    selectedBar.isActive ? 'bg-chart-3' : 'bg-success',
+                  )
+                "
+              />
+              <span class="text-2xs text-muted-foreground">{{
+                selectedBar.isActive ? t('app.module.gantt.detail.in_progress') : t('app.module.gantt.detail.finished')
+              }}</span>
             </div>
-            <p class="text-sm font-semibold leading-snug">{{ selectedBar.description || t('app.module.calendar.no_description') }}</p>
+            <p class="text-sm font-semibold leading-snug">
+              {{ selectedBar.description || t('app.module.calendar.no_description') }}
+            </p>
           </div>
-          <button class="text-muted-foreground hover:text-foreground transition-colors p-1 rounded flex-shrink-0 ml-2" @click="closeDetail" :aria-label="t('app.action.close')">
+          <button
+            class="text-muted-foreground hover:text-foreground transition-colors p-1 rounded flex-shrink-0 ml-2"
+            @click="closeDetail"
+            :aria-label="t('app.action.close')"
+          >
             <X class="w-4 h-4" />
           </button>
         </div>
@@ -527,7 +636,9 @@ const isMonthMode = computed(() => mode.value === 'month');
           </div>
           <div class="flex items-center justify-between text-xs">
             <span class="text-muted-foreground">{{ t('app.module.gantt.detail.end') }}</span>
-            <span class="font-mono tabular-nums" :class="selectedBar.isActive ? 'text-chart-3' : ''">{{ selectedBar.isActive ? '…' : formatTime(selectedBar.finishedAt) }}</span>
+            <span class="font-mono tabular-nums" :class="selectedBar.isActive ? 'text-chart-3' : ''">{{
+              selectedBar.isActive ? '…' : formatTime(selectedBar.finishedAt)
+            }}</span>
           </div>
           <div class="flex items-center justify-between text-xs">
             <span class="text-muted-foreground">{{ t('app.module.gantt.detail.duration') }}</span>
@@ -537,9 +648,14 @@ const isMonthMode = computed(() => mode.value === 'month');
 
         <!-- Category -->
         <div v-if="selectedBar.categoryName" class="px-4 py-3 border-b border-border/40 flex-shrink-0">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">{{ t('app.module.gantt.detail.category') }}</p>
+          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
+            {{ t('app.module.gantt.detail.category') }}
+          </p>
           <div class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full flex-shrink-0 ring-1 ring-border/40" :style="{ backgroundColor: selectedBar.categoryColor ?? 'var(--color-muted-foreground)' }" />
+            <span
+              class="w-3 h-3 rounded-full flex-shrink-0 ring-1 ring-border/40"
+              :style="{ backgroundColor: selectedBar.categoryColor ?? 'var(--color-muted-foreground)' }"
+            />
             <span class="text-sm font-medium">{{ selectedBar.categoryName }}</span>
           </div>
         </div>
@@ -550,16 +666,27 @@ const isMonthMode = computed(() => mode.value === 'month');
             <Layers class="w-3 h-3 inline mr-1" />{{ t('app.module.gantt.detail.tags') }}
           </p>
           <div class="flex flex-wrap gap-1.5">
-            <span v-for="tag in selectedBar.tags" :key="tag" class="text-2xs bg-muted text-muted-foreground px-2 py-1 rounded-full border border-border/40">{{ tag }}</span>
+            <span
+              v-for="tag in selectedBar.tags"
+              :key="tag"
+              class="text-2xs bg-muted text-muted-foreground px-2 py-1 rounded-full border border-border/40"
+              >{{ tag }}</span
+            >
           </div>
         </div>
 
         <!-- Actions -->
         <div class="px-4 py-3 flex flex-col gap-2 flex-shrink-0">
-          <button class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-border/50 text-sm text-foreground hover:bg-muted transition-colors" @click="handleBarEdit(selectedBar.activityId)">
+          <button
+            class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-border/50 text-sm text-foreground hover:bg-muted transition-colors"
+            @click="handleBarEdit(selectedBar.activityId)"
+          >
             <Pencil class="w-3.5 h-3.5" />{{ t('app.module.gantt.detail.edit') }}
           </button>
-          <button class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-destructive/30 text-sm text-destructive hover:bg-destructive/10 transition-colors" @click="handleBarDelete(selectedBar.activityId)">
+          <button
+            class="flex items-center justify-center gap-2 w-full py-2 rounded-lg border border-destructive/30 text-sm text-destructive hover:bg-destructive/10 transition-colors"
+            @click="handleBarDelete(selectedBar.activityId)"
+          >
             <Trash2 class="w-3.5 h-3.5" />{{ t('app.module.gantt.detail.delete') }}
           </button>
         </div>

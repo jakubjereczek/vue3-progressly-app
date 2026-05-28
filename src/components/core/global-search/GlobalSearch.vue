@@ -66,10 +66,18 @@ function navigateTo(url: string) {
 }
 
 function handleKeydown(e: KeyboardEvent) {
-  if (e.key === 'ArrowDown') { e.preventDefault(); navigateDown(); }
-  else if (e.key === 'ArrowUp') { e.preventDefault(); navigateUp(); }
-  else if (e.key === 'Enter') { e.preventDefault(); selectActive(); }
-  else if (e.key === 'Escape') { close(); }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    navigateDown();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    navigateUp();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    selectActive();
+  } else if (e.key === 'Escape') {
+    close();
+  }
 }
 
 function isActive(type: SearchResultType, id: string): boolean {
@@ -83,7 +91,6 @@ function handleResultClick(result: SearchResult) {
 function setActive(type: SearchResultType, id: string) {
   activeIndex.value = getResultIndex(type, id);
 }
-
 </script>
 
 <template>
@@ -104,10 +111,7 @@ function setActive(type: SearchResultType, id: string) {
         :aria-label="t('app.core.search.aria_label')"
       >
         <!-- Backdrop -->
-        <div
-          class="absolute inset-0 bg-black/60 backdrop-blur-sm"
-          @click="close"
-        />
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="close" />
 
         <!-- Modal -->
         <Transition
@@ -121,7 +125,6 @@ function setActive(type: SearchResultType, id: string) {
         >
           <div class="relative z-10 w-full max-w-lg mx-4 mt-[13vh]">
             <div class="bg-card rounded-2xl border border-border/40 shadow-2xl overflow-hidden flex flex-col">
-
               <!-- ── Search Input ──────────────────────────────────────── -->
               <div class="flex items-center gap-3 px-4 py-3.5 border-b border-border/40 flex-shrink-0">
                 <Search class="w-4 h-4 text-muted-foreground flex-shrink-0" />
@@ -137,17 +140,20 @@ function setActive(type: SearchResultType, id: string) {
                   spellcheck="false"
                   @keydown="handleKeydown"
                 />
-                <kbd class="hidden sm:flex text-2xs leading-none text-muted-foreground/50 bg-muted px-1.5 py-1 rounded border border-border/40 flex-shrink-0">
+                <kbd
+                  class="hidden sm:flex text-2xs leading-none text-muted-foreground/50 bg-muted px-1.5 py-1 rounded border border-border/40 flex-shrink-0"
+                >
                   Esc
                 </kbd>
               </div>
 
               <!-- ── Results area ──────────────────────────────────────── -->
               <div class="overflow-y-auto max-h-[55vh] overscroll-contain">
-
                 <!-- Quick nav: empty query state -->
                 <div v-if="!hasQuery" class="p-2">
-                  <p class="px-2 pt-1 pb-2 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none">
+                  <p
+                    class="px-2 pt-1 pb-2 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none"
+                  >
                     {{ t('app.core.search.section.quick_nav') }}
                   </p>
                   <div class="grid grid-cols-2 gap-0.5">
@@ -182,10 +188,11 @@ function setActive(type: SearchResultType, id: string) {
                 <!-- Results -->
                 <template v-else-if="hasQuery && hasResults">
                   <div class="p-2 flex flex-col gap-1">
-
                     <!-- Activities section -->
                     <template v-if="activityResults.length > 0">
-                      <p class="px-2 pt-1 pb-1.5 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none">
+                      <p
+                        class="px-2 pt-1 pb-1.5 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none"
+                      >
                         {{ t('app.core.search.section.activities') }}
                       </p>
                       <button
@@ -219,16 +226,30 @@ function setActive(type: SearchResultType, id: string) {
                             <span v-if="result.subtitle" class="text-2xs text-muted-foreground truncate">
                               {{ result.subtitle }}
                             </span>
-                            <span v-if="result.subtitle && result.meta" class="text-muted-foreground/40 text-2xs">·</span>
-                            <span v-if="result.meta" class="text-2xs text-muted-foreground/70 tabular-nums font-mono flex-shrink-0">
+                            <span v-if="result.subtitle && result.meta" class="text-muted-foreground/40 text-2xs"
+                              >·</span
+                            >
+                            <span
+                              v-if="result.meta"
+                              class="text-2xs text-muted-foreground/70 tabular-nums font-mono flex-shrink-0"
+                            >
                               {{ result.meta }}
                             </span>
                           </div>
                         </div>
                         <!-- Arrow hint -->
-                        <div class="w-4 h-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" :class="isActive('activity', result.id) ? 'opacity-100' : ''">
+                        <div
+                          class="w-4 h-4 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          :class="isActive('activity', result.id) ? 'opacity-100' : ''"
+                        >
                           <svg viewBox="0 0 16 16" fill="none" class="w-4 h-4 text-muted-foreground/50">
-                            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path
+                              d="M3 8h10M9 4l4 4-4 4"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            />
                           </svg>
                         </div>
                       </button>
@@ -236,7 +257,9 @@ function setActive(type: SearchResultType, id: string) {
 
                     <!-- Categories section -->
                     <template v-if="categoryResults.length > 0">
-                      <p class="px-2 pt-2 pb-1.5 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none">
+                      <p
+                        class="px-2 pt-2 pb-1.5 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none"
+                      >
                         {{ t('app.core.search.section.categories') }}
                       </p>
                       <button
@@ -252,10 +275,7 @@ function setActive(type: SearchResultType, id: string) {
                           class="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
                           :style="{ backgroundColor: result.color + '22' }"
                         >
-                          <div
-                            class="w-2 h-2 rounded-full"
-                            :style="{ backgroundColor: result.color }"
-                          />
+                          <div class="w-2 h-2 rounded-full" :style="{ backgroundColor: result.color }" />
                         </div>
                         <div class="flex-1 min-w-0">
                           <p
@@ -263,13 +283,18 @@ function setActive(type: SearchResultType, id: string) {
                             v-html="highlightMatch(result.title, query)"
                           />
                         </div>
-                        <Tag class="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" :class="isActive('category', result.id) ? 'opacity-100' : ''" />
+                        <Tag
+                          class="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          :class="isActive('category', result.id) ? 'opacity-100' : ''"
+                        />
                       </button>
                     </template>
 
                     <!-- Goals section -->
                     <template v-if="goalResults.length > 0">
-                      <p class="px-2 pt-2 pb-1.5 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none">
+                      <p
+                        class="px-2 pt-2 pb-1.5 text-2xs font-semibold text-muted-foreground/60 uppercase tracking-widest select-none"
+                      >
                         {{ t('app.core.search.section.goals') }}
                       </p>
                       <button
@@ -285,10 +310,7 @@ function setActive(type: SearchResultType, id: string) {
                           class="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0"
                           :style="{ backgroundColor: result.color + '22' }"
                         >
-                          <div
-                            class="w-2 h-2 rounded-full"
-                            :style="{ backgroundColor: result.color }"
-                          />
+                          <div class="w-2 h-2 rounded-full" :style="{ backgroundColor: result.color }" />
                         </div>
                         <div class="flex-1 min-w-0">
                           <p
@@ -299,10 +321,12 @@ function setActive(type: SearchResultType, id: string) {
                             {{ result.meta }}
                           </p>
                         </div>
-                        <Target class="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" :class="isActive('goal', result.id) ? 'opacity-100' : ''" />
+                        <Target
+                          class="w-3.5 h-3.5 text-muted-foreground/30 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          :class="isActive('goal', result.id) ? 'opacity-100' : ''"
+                        />
                       </button>
                     </template>
-
                   </div>
                 </template>
               </div>
@@ -322,7 +346,6 @@ function setActive(type: SearchResultType, id: string) {
                   <span>{{ t('app.core.search.hint.close') }}</span>
                 </div>
               </div>
-
             </div>
           </div>
         </Transition>

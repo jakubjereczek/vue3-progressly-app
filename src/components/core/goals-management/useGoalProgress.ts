@@ -47,27 +47,15 @@ export function filterActivitiesForGoal(
   });
 }
 
-export function computeGoalCurrentSeconds(
-  goal: TableRow<'goals'>,
-  activities: TableRow<'activities'>[],
-): number {
-  return filterActivitiesForGoal(goal, activities).reduce(
-    (sum, a) => sum + getActivityDurationSeconds(a),
-    0,
-  );
+export function computeGoalCurrentSeconds(goal: TableRow<'goals'>, activities: TableRow<'activities'>[]): number {
+  return filterActivitiesForGoal(goal, activities).reduce((sum, a) => sum + getActivityDurationSeconds(a), 0);
 }
 
-export function computeGoalCurrentCount(
-  goal: TableRow<'goals'>,
-  activities: TableRow<'activities'>[],
-): number {
+export function computeGoalCurrentCount(goal: TableRow<'goals'>, activities: TableRow<'activities'>[]): number {
   return filterActivitiesForGoal(goal, activities).length;
 }
 
-export function computeGoalCurrent(
-  goal: TableRow<'goals'>,
-  activities: TableRow<'activities'>[],
-): number {
+export function computeGoalCurrent(goal: TableRow<'goals'>, activities: TableRow<'activities'>[]): number {
   return goal.metric === 'count'
     ? computeGoalCurrentCount(goal, activities)
     : computeGoalCurrentSeconds(goal, activities);
@@ -113,10 +101,7 @@ export function getGoalExpectedPct(goal: TableRow<'goals'>): number {
   return 0;
 }
 
-export function useGoalProgress(
-  goal: TableRow<'goals'>,
-  activities: TableRow<'activities'>[],
-) {
+export function useGoalProgress(goal: TableRow<'goals'>, activities: TableRow<'activities'>[]) {
   const currentSeconds = computed(() => computeGoalCurrentSeconds(goal, activities));
   const percentage = computed(() => {
     const target = getGoalTarget(goal);

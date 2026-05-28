@@ -109,10 +109,7 @@ export function useGlobalSearch() {
       .map((a) => {
         let score = scoreText(a.description ?? '', q);
         if (score === 0 && Array.isArray(a.tags)) {
-          const tagScore = (a.tags as string[]).reduce(
-            (max, tag) => Math.max(max, scoreText(tag, q) > 0 ? 40 : 0),
-            0,
-          );
+          const tagScore = (a.tags as string[]).reduce((max, tag) => Math.max(max, scoreText(tag, q) > 0 ? 40 : 0), 0);
           score = tagScore;
         }
         return { a, score };
@@ -136,7 +133,10 @@ export function useGlobalSearch() {
           color: categoryColor,
           score,
           action: () => {
-            router.push({ path: '/dashboard/timesheet', query: { highlight: a.id, month: localDateToString(new Date(a.started_at)).slice(0, 7) } });
+            router.push({
+              path: '/dashboard/timesheet',
+              query: { highlight: a.id, month: localDateToString(new Date(a.started_at)).slice(0, 7) },
+            });
             close();
           },
         };
@@ -194,11 +194,7 @@ export function useGlobalSearch() {
   });
 
   // Flat list for keyboard navigation — preserves section order
-  const allResults = computed(() => [
-    ...activityResults.value,
-    ...categoryResults.value,
-    ...goalResults.value,
-  ]);
+  const allResults = computed(() => [...activityResults.value, ...categoryResults.value, ...goalResults.value]);
 
   const hasResults = computed(() => allResults.value.length > 0);
   const hasQuery = computed(() => query.value.trim().length > 0);
@@ -212,10 +208,7 @@ export function useGlobalSearch() {
 
   function navigateUp() {
     if (allResults.value.length === 0) return;
-    activeIndex.value =
-      activeIndex.value <= 0
-        ? allResults.value.length - 1
-        : activeIndex.value - 1;
+    activeIndex.value = activeIndex.value <= 0 ? allResults.value.length - 1 : activeIndex.value - 1;
   }
 
   function selectActive() {

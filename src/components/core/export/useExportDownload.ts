@@ -66,10 +66,20 @@ function generateCsv(rows: EnrichedActivity[], options: CsvOptions): string {
 
 function generateJson(rows: EnrichedActivity[], options?: JsonOptions): string {
   if (options?.structure === 'nested') {
-    const grouped: Record<string, Record<string, Array<{
-      description: string; tags: string[]; started_at: string;
-      finished_at: string; duration_seconds: number; duration: string;
-    }>>> = {};
+    const grouped: Record<
+      string,
+      Record<
+        string,
+        Array<{
+          description: string;
+          tags: string[];
+          started_at: string;
+          finished_at: string;
+          duration_seconds: number;
+          duration: string;
+        }>
+      >
+    > = {};
     for (const row of rows) {
       const date = localDateToString(new Date(row.started_at));
       const cat = row.categoryName || 'Uncategorized';
@@ -108,7 +118,16 @@ function generateXls(rows: EnrichedActivity[]): string {
   const esc = (s: string) =>
     s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-  const headers = ['Date', 'Description', 'Category', 'Tags', 'Started At', 'Finished At', 'Duration', 'Duration (seconds)'];
+  const headers = [
+    'Date',
+    'Description',
+    'Category',
+    'Tags',
+    'Started At',
+    'Finished At',
+    'Duration',
+    'Duration (seconds)',
+  ];
   const headerRow = headers.map((h) => `<th>${esc(h)}</th>`).join('');
   const dataRows = rows
     .map((row) => {
@@ -167,11 +186,7 @@ export function useExportDownload() {
         'application/json;charset=utf-8;',
       );
     } else if (format === 'xlsx') {
-      triggerDownload(
-        generateXls(rows),
-        `progressly-export-${date}.xls`,
-        'application/vnd.ms-excel;charset=utf-8;',
-      );
+      triggerDownload(generateXls(rows), `progressly-export-${date}.xls`, 'application/vnd.ms-excel;charset=utf-8;');
     }
   }
 

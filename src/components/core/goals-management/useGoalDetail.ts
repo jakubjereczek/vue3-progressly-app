@@ -43,13 +43,13 @@ export function buildPeriodBars(
   const today = new Date();
   const todayStr = localDateToString(today);
   const shift = offsetPeriods ?? 0;
-  const relevant = activities.filter(
-    (a) => !goal.category_id || a.category_id === goal.category_id,
-  );
+  const relevant = activities.filter((a) => !goal.category_id || a.category_id === goal.category_id);
 
   function sliceSecs(from: string, to: string): number {
     return relevant
-      .filter((a) => localDateToString(new Date(a.started_at)) >= from && localDateToString(new Date(a.started_at)) <= to)
+      .filter(
+        (a) => localDateToString(new Date(a.started_at)) >= from && localDateToString(new Date(a.started_at)) <= to,
+      )
       .reduce((s, a) => s + getActivityDurationSeconds(a), 0);
   }
 
@@ -83,9 +83,10 @@ export function buildPeriodBars(
   }
 
   if (goal.period === 'daily') {
-    const count = maxPeriods === null
-      ? Math.max(1, Math.ceil((today.getTime() - parseLocalDate(goal.started_at).getTime()) / 86400000) + 1)
-      : (maxPeriods ?? 14);
+    const count =
+      maxPeriods === null
+        ? Math.max(1, Math.ceil((today.getTime() - parseLocalDate(goal.started_at).getTime()) / 86400000) + 1)
+        : (maxPeriods ?? 14);
     const dayShift = shift * count;
     const bars: GoalPeriodBar[] = [];
     for (let i = count - 1; i >= 0; i--) {
@@ -107,9 +108,13 @@ export function buildPeriodBars(
   }
 
   if (goal.period === 'weekly') {
-    const count = maxPeriods === null
-      ? Math.max(1, Math.ceil((today.getTime() - weekStart(parseLocalDate(goal.started_at), 0).getTime()) / (7 * 86400000)) + 1)
-      : (maxPeriods ?? 8);
+    const count =
+      maxPeriods === null
+        ? Math.max(
+            1,
+            Math.ceil((today.getTime() - weekStart(parseLocalDate(goal.started_at), 0).getTime()) / (7 * 86400000)) + 1,
+          )
+        : (maxPeriods ?? 8);
     const weekShift = shift * count;
     const bars: GoalPeriodBar[] = [];
     for (let i = count - 1; i >= 0; i--) {
@@ -131,9 +136,15 @@ export function buildPeriodBars(
   }
 
   if (goal.period === 'monthly') {
-    const count = maxPeriods === null
-      ? Math.max(1, (today.getFullYear() - parseLocalDate(goal.started_at).getFullYear()) * 12 + (today.getMonth() - parseLocalDate(goal.started_at).getMonth()) + 1)
-      : (maxPeriods ?? 6);
+    const count =
+      maxPeriods === null
+        ? Math.max(
+            1,
+            (today.getFullYear() - parseLocalDate(goal.started_at).getFullYear()) * 12 +
+              (today.getMonth() - parseLocalDate(goal.started_at).getMonth()) +
+              1,
+          )
+        : (maxPeriods ?? 6);
     const monthShift = shift * count;
     const bars: GoalPeriodBar[] = [];
     for (let i = count - 1; i >= 0; i--) {
@@ -159,10 +170,7 @@ export function buildPeriodBars(
   return [];
 }
 
-export function useGoalDetail(
-  goal: TableRow<'goals'>,
-  activities: TableRow<'activities'>[],
-) {
+export function useGoalDetail(goal: TableRow<'goals'>, activities: TableRow<'activities'>[]) {
   const { locale } = useI18n();
   const relevant = computed(() =>
     activities.filter(
@@ -180,14 +188,13 @@ export function useGoalDetail(
 
   // maxBarValue is metric-aware: count goals use bar.count, duration goals use bar.seconds
   const maxBarValue = computed(() =>
-    isCount
-      ? Math.max(...bars.value.map((b) => b.count), 1)
-      : Math.max(...bars.value.map((b) => b.seconds), 1),
+    isCount ? Math.max(...bars.value.map((b) => b.count), 1) : Math.max(...bars.value.map((b) => b.seconds), 1),
   );
 
   const completedPeriods = computed(() => {
     const target = isCount ? (goal.target_count ?? 0) : (goal.target_seconds ?? 0);
-    return bars.value.filter((b) => !b.isFuture && isGoalPeriodMet(isCount ? b.count : b.seconds, target, isCount)).length;
+    return bars.value.filter((b) => !b.isFuture && isGoalPeriodMet(isCount ? b.count : b.seconds, target, isCount))
+      .length;
   });
 
   const nonFutureBars = computed(() =>
@@ -196,16 +203,13 @@ export function useGoalDetail(
 
   // bestValue / avgValue are metric-aware (count or seconds depending on goal.metric)
   const bestValue = computed(() =>
-    nonFutureBars.value.length
-      ? Math.max(...nonFutureBars.value.map((b) => (isCount ? b.count : b.seconds)))
-      : 0,
+    nonFutureBars.value.length ? Math.max(...nonFutureBars.value.map((b) => (isCount ? b.count : b.seconds))) : 0,
   );
 
   const avgValue = computed(() =>
     nonFutureBars.value.length
       ? Math.round(
-          nonFutureBars.value.reduce((s, b) => s + (isCount ? b.count : b.seconds), 0) /
-            nonFutureBars.value.length,
+          nonFutureBars.value.reduce((s, b) => s + (isCount ? b.count : b.seconds), 0) / nonFutureBars.value.length,
         )
       : 0,
   );
@@ -225,9 +229,7 @@ export function useGoalDetail(
   });
 
   const recentActivities = computed(() =>
-    [...relevant.value]
-      .sort((a, b) => b.started_at.localeCompare(a.started_at))
-      .slice(0, 20),
+    [...relevant.value].sort((a, b) => b.started_at.localeCompare(a.started_at)).slice(0, 20),
   );
 
   return {

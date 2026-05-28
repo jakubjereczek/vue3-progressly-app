@@ -43,7 +43,7 @@ export const useCategoriesStore = defineStore('categories', () => {
       ]);
 
       const priv = privResult.status === 'fulfilled' ? privResult.value : [];
-      const pub  = pubResult.status  === 'fulfilled' ? pubResult.value  : [];
+      const pub = pubResult.status === 'fulfilled' ? pubResult.value : [];
 
       // Report whichever error occurred (prefer private failure as more impactful)
       if (privResult.status === 'rejected') {
@@ -58,10 +58,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     }
   }
 
-  async function createCategory(
-    name: string,
-    color: string,
-  ): Promise<{ success: boolean; limitReached?: boolean }> {
+  async function createCategory(name: string, color: string): Promise<{ success: boolean; limitReached?: boolean }> {
     if (!userStore.user) return { success: false };
 
     // Enforce plan limit client-side before hitting the API
@@ -105,10 +102,9 @@ export const useCategoriesStore = defineStore('categories', () => {
     actionLoading.value = true;
     error.value = undefined;
     try {
-      updateLocal(await CategoriesService.update(
-        { archived_at: new Date().toISOString() },
-        { id, user_id: userStore.user.id },
-      ));
+      updateLocal(
+        await CategoriesService.update({ archived_at: new Date().toISOString() }, { id, user_id: userStore.user.id }),
+      );
       return { success: true };
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
@@ -130,10 +126,7 @@ export const useCategoriesStore = defineStore('categories', () => {
     actionLoading.value = true;
     error.value = undefined;
     try {
-      updateLocal(await CategoriesService.update(
-        { archived_at: null },
-        { id, user_id: userStore.user.id },
-      ));
+      updateLocal(await CategoriesService.update({ archived_at: null }, { id, user_id: userStore.user.id }));
       return { success: true };
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);

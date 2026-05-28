@@ -32,18 +32,15 @@ const hiddenCount = computed(() => Math.max(0, activePrivateCategories.value.len
             {{ t('app.module.categories.summary.title') }}
           </p>
           <p class="text-xs text-muted-foreground leading-tight mt-0.5">
-            {{ activePrivateCategories.length }} {{ t('app.module.categories.summary.personal') }}
-            · {{ publicCategories.length }} {{ t('app.module.categories.summary.public') }}
+            {{ activePrivateCategories.length }} {{ t('app.module.categories.summary.personal') }} ·
+            {{ publicCategories.length }} {{ t('app.module.categories.summary.public') }}
           </p>
         </div>
       </div>
 
       <!-- Category pills -->
       <div class="flex-1 flex flex-wrap items-center gap-1.5 min-w-0 overflow-hidden">
-        <span
-          v-if="activePrivateCategories.length === 0"
-          class="text-xs text-muted-foreground italic"
-        >
+        <span v-if="activePrivateCategories.length === 0" class="text-xs text-muted-foreground italic">
           {{ t('app.module.categories.summary.empty') }}
         </span>
 
