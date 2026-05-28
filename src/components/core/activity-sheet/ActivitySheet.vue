@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useLocale, useTranslation } from '@/composables';
+import { useLocale, useTranslation, useCategoryName } from '@/composables';
 import { Button } from '@/components/ui/button';
 import Sheet from '@/components/ui/sheet/Sheet.vue';
 import SheetContent from '@/components/ui/sheet/SheetContent.vue';
@@ -13,12 +13,19 @@ import type { TableRow as ITableRow } from '@/api/supabase';
 import { computed, ref, watch } from 'vue';
 import { arrayToString, splitAndTrim } from '@/utils/string';
 import { formatDuration, formatActivityDateTime } from '@/utils/time';
-import SheetClose from '@/components/ui/sheet/SheetClose.vue';
 import SheetFooter from '@/components/ui/sheet/SheetFooter.vue';
 import { storeToRefs } from 'pinia';
-import { useCategoriesStore } from '@/stores';
+import { useCategoriesStore, useActivitiesStore } from '@/stores';
+import LoadingSpinner from '@/components/ui/loading-spinner/LoadingSpinner.vue';
 import { cn } from '@/lib/utils';
 import { Clock } from 'lucide-vue-next';
+import AlertDialog from '@/components/ui/alert-dialog/AlertDialog.vue';
+import AlertDialogContent from '@/components/ui/alert-dialog/AlertDialogContent.vue';
+import AlertDialogTitle from '@/components/ui/alert-dialog/AlertDialogTitle.vue';
+import AlertDialogDescription from '@/components/ui/alert-dialog/AlertDialogDescription.vue';
+import AlertDialogFooter from '@/components/ui/alert-dialog/AlertDialogFooter.vue';
+import AlertDialogCancel from '@/components/ui/alert-dialog/AlertDialogCancel.vue';
+import AlertDialogAction from '@/components/ui/alert-dialog/AlertDialogAction.vue';
 
 interface Props {
   activity: ITableRow<'activities'> | undefined;
@@ -35,8 +42,11 @@ const emit = defineEmits<{
 
 const { t } = useTranslation();
 const { locale } = useLocale();
+const { resolveCategoryName } = useCategoryName();
 const categoriesStore = useCategoriesStore();
-const { categories } = storeToRefs(categoriesStore);
+const { categories, activePrivateCategories, publicCategories } = storeToRefs(categoriesStore);
+const { actionLoading } = storeToRefs(useActivitiesStore());
+const selectableCategories = computed(() => [...activePrivateCategories.value, ...publicCategories.value]);
 
 const activityDescription = ref(props.activity?.description ?? '');
 const activityTags = ref(arrayToString(props.activity?.tags));
@@ -44,6 +54,29 @@ const activityCategoryId = ref<string>(props.activity?.category_id ?? '');
 const editStartedAt = ref('');
 const editFinishedAt = ref('');
 const timeError = ref('');
+
+const showDiscardConfirm = ref(false);
+
+const isDirty = computed(() => {
+  if (props.sheetMode !== 'edit') return false;
+  const a = props.activity;
+  if (!a) return false;
+  return (
+    activityDescription.value !== (a.description ?? '') ||
+    activityTags.value !== arrayToString(a.tags) ||
+    activityCategoryId.value !== (a.category_id ?? '') ||
+    editStartedAt.value !== (a.started_at ? toDatetimeLocal(a.started_at) : '') ||
+    editFinishedAt.value !== (a.finished_at ? toDatetimeLocal(a.finished_at) : '')
+  );
+});
+
+function handleCloseAttempt(open: boolean) {
+  if (!open && isDirty.value) {
+    showDiscardConfirm.value = true;
+  } else {
+    emit('toggleOpen', open);
+  }
+}
 
 const isActive = computed(() => !props.activity?.finished_at);
 const fallback = computed(() => t('app.status.in_progress'));
@@ -122,7 +155,7 @@ function handleSave() {
 </script>
 
 <template>
-  <Sheet :open="isSheetOpen" @update:open="(open) => emit('toggleOpen', open)">
+  <Sheet :open="isSheetOpen" @update:open="handleCloseAttempt">
     <SheetContent class="flex flex-col w-full sm:max-w-lg p-0 overflow-hidden gap-0">
       <SheetHeader class="px-6 pt-6 pb-4 border-b border-border/40 flex-shrink-0">
         <div class="flex items-center gap-2 mb-3">
@@ -140,9 +173,9 @@ function handleSave() {
         </div>
         <p
           v-if="sheetMode === 'view'"
-          class="text-xl font-bold leading-snug text-foreground"
+          class="text-xl font-semibold leading-snug text-foreground"
         >
-          {{ activity?.description || t('app.module.calendar.no_description') }}
+          {{ activity?.description || t('app.core.common.no_description') }}
         </p>
         <div v-if="sheetMode === 'view' && activity" class="flex items-center gap-3 mt-2">
           <div class="flex items-center gap-1.5 text-sm font-semibold">
@@ -159,7 +192,7 @@ function handleSave() {
         <template v-if="sheetMode === 'view'">
           <div class="px-6 py-4 border-b border-border/40 flex flex-col gap-4">
             <div>
-              <p class="text-[11px] font-medium text-muted-foreground uppercase tracking-wide mb-2">
+              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
                 {{ t('app.module.activities_history.category.category') }}
               </p>
               <div v-if="currentCategory" class="flex items-center gap-2">
@@ -174,7 +207,7 @@ function handleSave() {
               </p>
             </div>
             <div v-if="currentTags.length > 0">
-              <p class="text-[11px] font-medium text-muted-foreground uppercase tracking-wide mb-2">
+              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
                 {{ t('app.module.activities_history.category.tags') }}
               </p>
               <div class="flex flex-wrap gap-1.5">
@@ -189,18 +222,18 @@ function handleSave() {
             </div>
           </div>
           <div class="px-6 py-4 flex flex-col gap-3">
-            <p class="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
               {{ t('app.module.activities_history.category.duration') }}
             </p>
             <div class="grid grid-cols-2 gap-3">
               <div class="bg-muted/50 rounded-xl p-3">
-                <p class="text-[10px] text-muted-foreground mb-1">
+                <p class="text-2xs text-muted-foreground mb-1">
                   {{ t('app.module.activities_history.category.started_at') }}
                 </p>
                 <p class="text-sm font-medium">{{ formattedStartedAt }}</p>
               </div>
               <div class="bg-muted/50 rounded-xl p-3">
-                <p class="text-[10px] text-muted-foreground mb-1">
+                <p class="text-2xs text-muted-foreground mb-1">
                   {{ t('app.module.activities_history.category.finished_at') }}
                 </p>
                 <p class="text-sm font-medium" :class="isActive ? 'text-chart-3' : ''">
@@ -211,28 +244,29 @@ function handleSave() {
           </div>
         </template>
         <template v-else>
-          <div class="px-6 py-5 flex flex-col gap-5">
+          <div class="px-6 py-5 flex flex-col gap-6">
             <div class="flex flex-col gap-1.5">
-              <Label class="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <Label for="as-description" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                 {{ t('app.module.activities_history.category.description') }}
               </Label>
               <Textarea
+                id="as-description"
                 v-model="activityDescription"
                 class="min-h-[100px] resize-none"
               />
             </div>
             <div class="flex flex-col gap-1.5">
-              <Label class="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <Label for="as-category" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                 {{ t('app.module.activities_history.category.category') }}
               </Label>
               <Select v-model="activityCategoryId">
-                <SelectTrigger class="w-full">
+                <SelectTrigger id="as-category" class="w-full">
                   <SelectValue :placeholder="t('app.module.activities_history.uncategorized')" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectItem
-                      v-for="cat in categories"
+                      v-for="cat in selectableCategories"
                       :key="cat.id"
                       :value="cat.id"
                     >
@@ -241,7 +275,7 @@ function handleSave() {
                           class="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-border/40"
                           :style="{ backgroundColor: cat.color }"
                         />
-                        {{ cat.name }}
+                        {{ resolveCategoryName(cat.name) }}
                       </div>
                     </SelectItem>
                   </SelectGroup>
@@ -249,10 +283,11 @@ function handleSave() {
               </Select>
             </div>
             <div class="flex flex-col gap-1.5">
-              <Label class="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <Label for="as-tags" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                 {{ t('app.module.activities_history.category.tags') }}
               </Label>
               <Input
+                id="as-tags"
                 v-model="activityTags"
                 placeholder="tag1, tag2, tag3"
               />
@@ -261,7 +296,7 @@ function handleSave() {
               </p>
             </div>
             <div class="flex flex-col gap-2">
-              <p class="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
                 {{ t('app.module.activities_history.category.duration') }}
               </p>
               <p class="text-xs text-muted-foreground -mt-1">
@@ -269,10 +304,11 @@ function handleSave() {
               </p>
               <div class="grid grid-cols-2 gap-3">
                 <div class="flex flex-col gap-1.5">
-                  <Label class="text-[10px] text-muted-foreground">
+                  <Label for="as-started-at" class="text-2xs text-muted-foreground">
                     {{ t('app.module.activities_history.category.started_at') }}
                   </Label>
                   <input
+                    id="as-started-at"
                     v-model="editStartedAt"
                     type="datetime-local"
                     :min="startMin"
@@ -281,39 +317,58 @@ function handleSave() {
                   />
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <Label class="text-[10px] text-muted-foreground">
+                  <Label for="as-finished-at" class="text-2xs text-muted-foreground">
                     {{ t('app.module.activities_history.category.finished_at') }}
                   </Label>
                   <input
                     v-if="!isActive"
+                    id="as-finished-at"
                     v-model="editFinishedAt"
                     type="datetime-local"
                     :min="endMin"
                     :max="endMax"
+                    :aria-invalid="!!timeError || undefined"
+                    aria-describedby="as-time-error"
                     class="bg-background border border-border/60 rounded-md px-2.5 py-1.5 text-sm text-foreground outline-none focus:ring-1 focus:ring-ring w-full"
+                    :class="timeError ? 'border-destructive' : ''"
                   />
                   <div v-else class="bg-muted/50 rounded-md px-2.5 py-1.5 text-sm text-chart-3 font-medium">
                     {{ t('app.status.in_progress') }}
                   </div>
                 </div>
               </div>
-              <p v-if="timeError" class="text-xs text-destructive">{{ timeError }}</p>
+              <p v-if="timeError" id="as-time-error" role="alert" class="text-xs text-destructive">{{ timeError }}</p>
             </div>
           </div>
         </template>
       </div>
       <SheetFooter class="px-6 py-4 border-t border-border/40 flex-shrink-0">
-        <SheetClose as-child>
-          <Button variant="outline">{{ t('app.action.cancel') }}</Button>
-        </SheetClose>
+        <Button variant="outline" @click="handleCloseAttempt(false)">{{ t('app.action.cancel') }}</Button>
         <Button
           v-if="sheetMode === 'edit'"
+          :disabled="actionLoading"
           @click="handleSave"
           type="submit"
+          class="gap-2"
         >
+          <LoadingSpinner v-if="actionLoading" class="w-4 h-4" />
           {{ t('app.action.save_changes') }}
         </Button>
       </SheetFooter>
     </SheetContent>
   </Sheet>
+
+  <AlertDialog :open="showDiscardConfirm" @update:open="(v) => { if (!v) showDiscardConfirm = false }">
+    <AlertDialogContent>
+      <AlertDialogTitle>{{ t('app.module.activities_history.edit.discard_title') }}</AlertDialogTitle>
+      <AlertDialogDescription>{{ t('app.module.activities_history.edit.discard_desc') }}</AlertDialogDescription>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="showDiscardConfirm = false">{{ t('app.action.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction
+          class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          @click="() => { showDiscardConfirm = false; emit('toggleOpen', false); }"
+        >{{ t('app.action.discard') }}</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>

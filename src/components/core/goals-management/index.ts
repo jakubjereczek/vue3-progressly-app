@@ -1,0 +1,10 @@
+export { default as GoalsView } from './GoalsView.vue';
+export { default as GoalsCheckInModal } from './GoalsCheckInModal.vue';
+export { default as GoalsAnalyticsView } from './GoalsAnalyticsView.vue';
+export { default as GoalsOverviewWidget } from './GoalsOverviewWidget.vue';
+export { default as GoalsManagementCard } from './GoalsManagementCard.vue';
+export { default as GoalsManagementForm } from './GoalsManagementForm.vue';
+export { default as GoalsDetailSheet } from './GoalsDetailSheet.vue';
+export { useGoalsManagement } from './useGoalsManagement';
+export { useGoalProgress, computeGoalCurrentSeconds, getGoalStatus } from './useGoalProgress';
+export { useGoalDetail } from './useGoalDetail';

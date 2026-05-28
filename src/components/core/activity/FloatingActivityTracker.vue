@@ -73,9 +73,9 @@ async function handleStop() {
         <template v-if="!minimized">
           <div class="flex-1 min-w-0">
             <p class="text-xs font-semibold truncate leading-tight">
-              {{ trackingActivity?.description || t('app.module.calendar.no_description') }}
+              {{ trackingActivity?.description || t('app.core.common.no_description') }}
             </p>
-            <p class="text-[11px] text-muted-foreground mt-0.5">
+            <p class="text-2xs text-muted-foreground mt-0.5">
               {{ t('app.module.overview.today_activities.in_progress') }}
             </p>
           </div>
@@ -83,10 +83,10 @@ async function handleStop() {
             {{ formattedTime }}
           </span>
           <button
-            class="flex-shrink-0 w-7 h-7 rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive flex items-center justify-center transition-colors"
+            class="flex-shrink-0 w-7 h-7 rounded-lg bg-destructive/10 hover:bg-destructive/20 text-destructive flex items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             :disabled="actionLoading"
             @click="handleStop"
-            :title="t('app.module.overview.activity_tracker.title')"
+            :aria-label="t('app.module.overview.activity_tracker.title')"
           >
             <Square class="w-3 h-3 fill-destructive" />
           </button>

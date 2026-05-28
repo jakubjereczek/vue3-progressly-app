@@ -1,6 +1,8 @@
 import { computed, type Ref } from 'vue';
 import type { TableRow } from '@/api/supabase';
-import { formatTotalDuration, getDuration } from '@/utils/time';
+import { formatTotalDuration, getDuration, localDateToString, SECONDS_PER_DAY } from '@/utils/time';
+import { buildCategoryMap, groupActivitiesByDate } from '@/utils/activity';
+import { getISOWeekNumber, startOfDay, endOfDay } from '@/utils/date';
 
 export interface CalendarDayActivity {
   id: string;
@@ -53,67 +55,39 @@ export interface CalendarWeek {
   formattedWeekTotal: string;
 }
 
-const SECONDS_IN_DAY = 86400;
-
-function localDateStr(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
 export function useCalendarData(
   activities: Ref<TableRow<'activities'>[]>,
   categories: Ref<TableRow<'categories'>[]>,
   year: Ref<number>,
   month: Ref<number>, // 0-indexed
 ) {
-  const categoryMap = computed(() => {
-    const map = new Map<string, { name: string; color: string }>();
-    for (const c of categories.value) map.set(c.id, { name: c.name, color: c.color });
-    return map;
-  });
+  const categoryMap = computed(() => buildCategoryMap(categories.value));
+  const activitiesByDate = computed(() => groupActivitiesByDate(activities.value));
 
-  const activitiesByDate = computed(() => {
-    const map = new Map<string, TableRow<'activities'>[]>();
-    for (const activity of activities.value) {
-      const dateStr = localDateStr(new Date(activity.started_at));
-      if (!map.has(dateStr)) {
-        map.set(dateStr, []);
-      }
-      map.get(dateStr)!.push(activity);
-    }
-    return map;
-  });
-
-  const todayStr = computed(() => localDateStr(new Date()));
+  const todayStr = computed(() => localDateToString(new Date()));
 
   const monthMaxSeconds = computed(() => {
-    const daysInMonth = new Date(year.value, month.value + 1, 0).getDate();
+    const monthPrefix = `${year.value}-${String(month.value + 1).padStart(2, '0')}-`;
     let max = 0;
-    for (let d = 1; d <= daysInMonth; d++) {
-      const ds = `${year.value}-${String(month.value + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      const total = (activitiesByDate.value.get(ds) ?? []).reduce(
-        (s, a) => s + getDuration(a.started_at, a.finished_at) / 1000,
-        0,
-      );
-      max = Math.max(max, total);
+    for (const [ds, acts] of activitiesByDate.value) {
+      if (!ds.startsWith(monthPrefix)) continue;
+      const total = acts.reduce((s, a) => s + getDuration(a.started_at, a.finished_at) / 1000, 0);
+      if (total > max) max = total;
     }
     return max;
   });
 
-  function buildDay(date: Date): CalendarDay {
-    const dateStr = localDateStr(date);
+  function buildDay(date: Date, now: Date): CalendarDay {
+    const dateStr = localDateToString(date);
     const dow = date.getDay(); // 0=Sun 6=Sat
     const isWeekend = dow === 0 || dow === 6;
     const isCurrentMonth = date.getMonth() === month.value;
     const isToday = dateStr === todayStr.value;
-    const now = new Date();
-    const isFuture = !isToday && date.getTime() > now.setHours(0, 0, 0, 0);
+    const isFuture = !isToday && date.getTime() > startOfDay(now).getTime();
 
     const rawActs = activitiesByDate.value.get(dateStr) ?? [];
 
-    const dayStartMs = new Date(date).setHours(0, 0, 0, 0);
+    const dayStartMs = startOfDay(date).getTime();
 
     const acts = rawActs
       .map((a): CalendarDayActivity => {
@@ -122,7 +96,7 @@ export function useCalendarData(
         const startMs = new Date(a.started_at).getTime();
         const endMs = a.finished_at ? new Date(a.finished_at).getTime() : Date.now();
         const secFromMidnight = (startMs - dayStartMs) / 1000;
-        const durInDay = Math.min(endMs - dayStartMs, SECONDS_IN_DAY * 1000) / 1000 - Math.max(0, secFromMidnight);
+        const durInDay = Math.min(endMs - dayStartMs, SECONDS_PER_DAY * 1000) / 1000 - Math.max(0, secFromMidnight);
         return {
           id: a.id,
           description: a.description,
@@ -147,11 +121,11 @@ export function useCalendarData(
                 hour12: false,
               })
             : '…',
-          timelineLeft: Math.max(0, (Math.max(0, secFromMidnight) / SECONDS_IN_DAY) * 100),
-          timelineWidth: Math.max(0.4, (Math.max(0, durInDay) / SECONDS_IN_DAY) * 100),
+          timelineLeft: Math.max(0, (Math.max(0, secFromMidnight) / SECONDS_PER_DAY) * 100),
+          timelineWidth: Math.max(0.4, (Math.max(0, durInDay) / SECONDS_PER_DAY) * 100),
         };
       })
-      .sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime());
+      .sort((a, b) => (a.startedAt < b.startedAt ? -1 : a.startedAt > b.startedAt ? 1 : 0));
 
     const totalSeconds = acts.reduce((s, a) => s + a.durationSeconds, 0);
 
@@ -213,19 +187,16 @@ export function useCalendarData(
 
     const result: CalendarWeek[] = [];
     const cur = new Date(calStart);
+    const now = new Date(); // computed once for all 42 buildDay calls
 
     for (let w = 0; w < 6; w++) {
       const days: CalendarDay[] = [];
       for (let d = 0; d < 7; d++) {
-        days.push(buildDay(new Date(cur)));
+        days.push(buildDay(new Date(cur), now));
         cur.setDate(cur.getDate() + 1);
       }
       const weekTotal = days.reduce((s, d) => s + d.totalSeconds, 0);
-      // ISO week number
-      const thursday = new Date(days[3]!.date);
-      thursday.setDate(thursday.getDate() - ((thursday.getDay() + 6) % 7) + 3);
-      const yearStart = new Date(thursday.getFullYear(), 0, 1);
-      const weekNum = Math.ceil(((thursday.getTime() - yearStart.getTime()) / 86400000 + 1) / 7);
+      const weekNum = getISOWeekNumber(days[3]!.date);
       result.push({ weekNum, days, weekTotalSeconds: weekTotal, formattedWeekTotal: formatTotalDuration(weekTotal) });
     }
     return result;
@@ -258,13 +229,13 @@ export function useCalendarData(
     if (dow === 0) dow = 7;
     dow -= 1; // Mon=0
 
-    const from = new Date(firstDay);
-    from.setDate(from.getDate() - dow);
-    from.setHours(0, 0, 0, 0);
+    const fromRaw = new Date(firstDay);
+    fromRaw.setDate(fromRaw.getDate() - dow);
+    const from = startOfDay(fromRaw);
 
-    const to = new Date(from);
-    to.setDate(to.getDate() + 41); // 6 weeks = 42 days (index 0–41)
-    to.setHours(23, 59, 59, 999);
+    const toRaw = new Date(from);
+    toRaw.setDate(toRaw.getDate() + 41); // 6 weeks = 42 days (index 0–41)
+    const to = endOfDay(toRaw);
 
     return { from, to };
   });

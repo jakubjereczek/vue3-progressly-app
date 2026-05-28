@@ -4,7 +4,7 @@
 
     <SidebarInset>
       <header
-        class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-b bg-background"
+        class="flex h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-10 border-b bg-background"
       >
         <div class="flex items-center gap-2 px-4">
           <SidebarTrigger class="-ml-1" />
@@ -39,27 +39,27 @@
     :sheet-mode="mode"
     :is-sheet-open="isOpen"
     @toggle-open="setOpen"
-    @save="saveActivityChanges"
+    @save="save"
   />
 
   <DeleteActivityDialog
     :is-dialog-open="isDeleteOpen"
     @toggle-open="setDeleteOpen"
     @close="setDeleteOpen(false)"
-    @confirm="handleDeleteActivity"
+    @confirm="confirmDelete"
   />
 
   <FloatingActivityTracker v-if="showFloatingTracker" />
+  <GlobalSearch />
+  <EasterEgg />
+  <OnboardingModal />
+  <GoalsCheckInModal />
 </template>
 
 <script setup lang="ts">
 import { RouterView, useRoute } from 'vue-router';
-import { computed } from 'vue';
+import { computed, onMounted, onBeforeUnmount } from 'vue';
 import { useBreadcrumbs, useActivitySheet } from '@/composables';
-import { useActivitiesStore } from '@/stores';
-import { toast } from 'vue-sonner';
-import { useTranslation } from '@/composables';
-import { splitAndTrim } from '@/utils/string';
 import AppSidebar from '@/components/AppSidebar.vue';
 import {
   Breadcrumb,
@@ -74,51 +74,28 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
 import ActivityHistoryListSheet from '@/components/core/activity-sheet/ActivitySheet.vue';
 import DeleteActivityDialog from '@/components/core/activities-history-list/ActivitiesHistoryListSheetDialog.vue';
 import FloatingActivityTracker from '@/components/core/activity/FloatingActivityTracker.vue';
+import EasterEgg from '@/components/core/easter-egg/EasterEgg.vue';
+import OnboardingModal from '@/components/core/onboarding/OnboardingModal.vue';
+import { GoalsCheckInModal } from '@/components/core/goals-management';
+import { GlobalSearch, useGlobalSearch } from '@/components/core/global-search';
 
 const route = useRoute();
 const showFloatingTracker = computed(() => route.name !== 'Dashboard_Overview');
 const { breadcrumbs } = useBreadcrumbs();
-const { t } = useTranslation();
-const activitiesStore = useActivitiesStore();
-const { isOpen, mode, activity, setOpen, isDeleteOpen, activityToDelete, setDeleteOpen } = useActivitySheet();
+const { toggle: toggleSearch } = useGlobalSearch();
 
-async function saveActivityChanges(
-  description: string,
-  tags: string,
-  categoryId: string | undefined,
-  startedAt: string,
-  finishedAt: string | undefined,
-) {
-  if (!activity.value) return;
-  const updatedTagsArray = splitAndTrim(tags);
-  const { success } = await activitiesStore.updateActivityById(activity.value.id, {
-    ...activity.value,
-    description,
-    tags: updatedTagsArray,
-    category_id: categoryId,
-    started_at: startedAt,
-    finished_at: finishedAt ?? activity.value.finished_at,
-  });
-  if (success) {
-    toast.success(t('app.toast_notification.activity.updated_success'));
-  } else {
-    toast.error(t('app.toast_notification.activity.update_error'));
-  }
-  setOpen(false);
-}
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalKeydown);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown);
+});
 
-async function handleDeleteActivity() {
-  const target = activityToDelete.value;
-  if (!target) {
-    return;
+function handleGlobalKeydown(e: KeyboardEvent) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    toggleSearch();
   }
-  const { success } = await activitiesStore.deleteActivityById(target.id);
-  if (success) {
-    toast.success(t('app.toast_notification.activity.deleted_success'));
-  } else {
-    toast.error(t('app.toast_notification.activity.delete_error'));
-  }
-  setDeleteOpen(false);
-  activityToDelete.value = undefined;
 }
+const { isOpen, mode, activity, setOpen, isDeleteOpen, setDeleteOpen, save, confirmDelete } = useActivitySheet();
 </script>

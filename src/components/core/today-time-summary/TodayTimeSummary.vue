@@ -1,34 +1,24 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { useActivitiesStore } from '@/stores';
-import { useTranslation } from '@/composables';
+import { computed } from 'vue';
+import { Card } from '@/components/ui/card';
+import { useTranslation, useInitializeStores } from '@/composables';
 import { storeToRefs } from 'pinia';
-import { Clock3, Loader2, Hash, Hourglass, TrendingUp } from 'lucide-vue-next';
+import { Clock3, Hash, Hourglass, TrendingUp } from 'lucide-vue-next';
+import LoadingSpinner from '@/components/ui/loading-spinner/LoadingSpinner.vue';
 import type { TableRow as ActivityType } from '@/api/supabase';
 import { formatTotalDuration, getDuration, getTodayDateString } from '@/utils/time';
 import ErrorMessage from '@/components/error-message/ErrorMessage.vue';
 
 const { t } = useTranslation();
-const activitiesStore = useActivitiesStore();
+const { activitiesStore, categoriesStore } = useInitializeStores();
 const { loading, activities } = storeToRefs(activitiesStore);
+const { categories } = storeToRefs(categoriesStore);
 
-// todo: categories are not implemented yet
-const MOCK_CATEGORIES = [
-  { id: '0ec862e8-b478-4711-864a-2878b5faac93', name: 'Personal', color: '#388E3C' },
-  { id: '5e219548-2cbd-498d-b96e-2c0da35ce60a', name: 'Projects', color: '#7B1FA2' },
-  { id: '5ff2e7bc-82a9-4a3d-8a1c-9686155129f2', name: 'Work', color: '#D32F2F' },
-];
-function getMockCategory(categoryId: string | null): { name: string; color: string } {
-  if (!categoryId) {
-    return { name: t('app.module.activities_history.uncategorized'), color: 'var(--color-muted-foreground)' };
-  }
-  return (
-    MOCK_CATEGORIES.find((c) => c.id === categoryId) ?? {
-      name: t('app.module.activities_history.uncategorized'),
-      color: 'var(--color-muted-foreground)',
-    }
-  );
+function getCategory(categoryId: string | null): { name: string; color: string } {
+  const fallback = { name: t('app.module.activities_history.uncategorized'), color: 'var(--color-muted-foreground)' };
+  if (!categoryId) return fallback;
+  const found = categories.value.find((c) => c.id === categoryId);
+  return found ? { name: found.name, color: found.color } : fallback;
 }
 
 // todo: fetch current today activities per request
@@ -63,7 +53,7 @@ const categorySummary = computed(() => {
     if (durationInSec > 0) {
       const categoryId = activity.category_id ?? 'uncategorized';
       totalDuration += durationInSec;
-      const category = getMockCategory(activity.category_id);
+      const category = getCategory(activity.category_id);
 
       if (!summary[categoryId]) {
         summary[categoryId] = { duration: 0, name: category.name, color: category.color };
@@ -85,21 +75,17 @@ const categorySummary = computed(() => {
     totalDurationSeconds: totalDuration,
   };
 });
-
-onMounted(async () => {
-  await activitiesStore.getActivities();
-});
 </script>
 
 <template>
-  <Card class="p-8 rounded-2xl border-border/40 h-full flex flex-col shadow-none">
-    <CardHeader class="flex flex-row items-center justify-between mb-6 flex-shrink-0 p-0 gap-0">
-      <CardTitle class="text-xl">{{ t('app.module.overview.time_summary.title') }}</CardTitle>
-      <Loader2 v-if="loading && !isInitialLoading" class="w-4 h-4 animate-spin text-muted-foreground" />
-    </CardHeader>
+  <Card class="p-4 flex flex-col gap-4 rounded-2xl border border-border/40 h-full shadow-none">
+    <div class="flex items-center justify-between flex-shrink-0">
+      <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.overview.time_summary.title') }}</p>
+      <LoadingSpinner v-if="loading && !isInitialLoading" size="sm" class="text-muted-foreground" />
+    </div>
 
     <div v-if="isInitialLoading" class="flex-1 flex justify-center items-center">
-      <Loader2 class="w-8 h-8 animate-spin text-primary" />
+      <LoadingSpinner />
     </div>
 
     <ErrorMessage
@@ -108,9 +94,9 @@ onMounted(async () => {
       :title="t('app.module.overview.time_summary.no_time_tracked_today')"
     />
 
-    <CardContent
+    <div
       v-else
-      class="p-0 flex flex-col gap-5 flex-1 min-h-0 overflow-auto transition-opacity duration-200"
+      class="flex-1 flex flex-col gap-4 min-h-0 overflow-auto transition-opacity duration-200"
       :class="{ 'opacity-50 pointer-events-none': loading }"
     >
       <div>
@@ -123,7 +109,7 @@ onMounted(async () => {
       </div>
 
       <div class="grid grid-cols-3 gap-3">
-        <div class="flex flex-col gap-1.5 rounded-lg border border-border/50 p-3">
+        <div class="flex flex-col gap-1.5 rounded-lg border border-border/40 p-3">
           <div class="flex items-center gap-1.5">
             <Hash class="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
             <p class="text-xs text-muted-foreground truncate">
@@ -132,7 +118,7 @@ onMounted(async () => {
           </div>
           <p class="text-xl tabular-nums leading-none">{{ sessionCount }}</p>
         </div>
-        <div class="flex flex-col gap-1.5 rounded-lg border border-border/50 p-3">
+        <div class="flex flex-col gap-1.5 rounded-lg border border-border/40 p-3">
           <div class="flex items-center gap-1.5">
             <Hourglass class="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
             <p class="text-xs text-muted-foreground truncate">
@@ -141,7 +127,7 @@ onMounted(async () => {
           </div>
           <p class="text-base tabular-nums font-mono leading-none">{{ formatTotalDuration(longestSessionSeconds) }}</p>
         </div>
-        <div class="flex flex-col gap-1.5 rounded-lg border border-border/50 p-3">
+        <div class="flex flex-col gap-1.5 rounded-lg border border-border/40 p-3">
           <div class="flex items-center gap-1.5">
             <TrendingUp class="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
             <p class="text-xs text-muted-foreground truncate">
@@ -170,12 +156,17 @@ onMounted(async () => {
             <div class="w-full bg-muted rounded-full h-1.5">
               <div
                 class="h-1.5 rounded-full transition-all duration-500"
+                role="progressbar"
+                :aria-valuenow="Math.round(item.percentage)"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                :aria-label="item.name"
                 :style="{ width: item.percentage + '%', backgroundColor: item.color }"
               ></div>
             </div>
           </div>
         </div>
       </div>
-    </CardContent>
+    </div>
   </Card>
 </template>

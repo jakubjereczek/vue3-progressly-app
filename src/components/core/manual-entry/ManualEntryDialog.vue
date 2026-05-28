@@ -12,9 +12,10 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select';
-import { useTranslation } from '@/composables';
+import { useTranslation, useCategoryName } from '@/composables';
 import { useActivitiesStore, useCategoriesStore } from '@/stores';
 import { splitAndTrim } from '@/utils/string';
+import { localDateToString } from '@/utils/time';
 import Input from '@/components/ui/input/Input.vue';
 import Textarea from '@/components/ui/textarea/Textarea.vue';
 import Label from '@/components/ui/label/Label.vue';
@@ -27,11 +28,14 @@ defineProps<Props>();
 const emit = defineEmits<{ 'update:open': [boolean] }>();
 
 const { t } = useTranslation();
+const { resolveCategoryName } = useCategoryName();
 const activitiesStore = useActivitiesStore();
 const { actionLoading } = storeToRefs(activitiesStore);
-const { categories } = storeToRefs(useCategoriesStore());
+const { activePrivateCategories, publicCategories } = storeToRefs(useCategoriesStore());
+const categories = computed(() => [...activePrivateCategories.value, ...publicCategories.value]);
 
-const todayDate = new Date().toISOString().split('T')[0]!;
+const todayDate = localDateToString(new Date());
+const minDate = (() => { const d = new Date(); d.setFullYear(d.getFullYear() - 2); return localDateToString(d); })();
 const nowTime = new Date().toTimeString().slice(0, 5);
 const oneHourAgoTime = (() => {
   const d = new Date();
@@ -70,7 +74,7 @@ async function handleSubmit() {
   if (!isValid.value) return;
   const startedAt = new Date(`${date.value}T${startTime.value}`).toISOString();
   const finishedAt = new Date(`${date.value}T${endTime.value}`).toISOString();
-  const { success } = await activitiesStore.insertManualActivity({
+  const { success, limitReached } = await activitiesStore.insertManualActivity({
     description: description.value.trim(),
     category_id: category.value || null,
     tags: splitAndTrim(tagsInput.value),
@@ -81,6 +85,8 @@ async function handleSubmit() {
     toast.success(t('app.toast_notification.activity.created_success'));
     emit('update:open', false);
     reset();
+  } else if (limitReached) {
+    toast.error(t('app.api_error.daily_limit_reached'));
   } else {
     toast.error(t('app.toast_notification.activity.create_error'));
   }
@@ -101,8 +107,9 @@ function handleOpenChange(open: boolean) {
       </DialogHeader>
       <div class="flex flex-col gap-4 py-2">
         <div class="flex flex-col gap-1.5">
-          <Label>{{ t('app.module.manual_entry.description_label') }}</Label>
+          <Label for="me-description">{{ t('app.module.manual_entry.description_label') }}</Label>
           <Textarea
+            id="me-description"
             v-model="description"
             :placeholder="t('app.module.manual_entry.description_placeholder')"
             rows="3"
@@ -110,26 +117,38 @@ function handleOpenChange(open: boolean) {
         </div>
         <div class="grid grid-cols-3 gap-3">
           <div class="flex flex-col gap-1.5">
-            <Label>{{ t('app.module.manual_entry.date_label') }}</Label>
-            <Input v-model="date" type="date" :max="todayDate" />
+            <Label for="me-date">{{ t('app.module.manual_entry.date_label') }}</Label>
+            <Input id="me-date" v-model="date" type="date" :min="minDate" :max="todayDate" />
           </div>
           <div class="flex flex-col gap-1.5">
-            <Label>{{ t('app.module.manual_entry.start_time_label') }}</Label>
-            <Input v-model="startTime" type="time" />
+            <Label for="me-start-time">{{ t('app.module.manual_entry.start_time_label') }}</Label>
+            <Input id="me-start-time" v-model="startTime" type="time" />
           </div>
           <div class="flex flex-col gap-1.5">
-            <Label>{{ t('app.module.manual_entry.end_time_label') }}</Label>
-            <Input v-model="endTime" type="time" :class="timeError ? 'border-destructive' : ''" />
+            <Label for="me-end-time">{{ t('app.module.manual_entry.end_time_label') }}</Label>
+            <Input
+              id="me-end-time"
+              v-model="endTime"
+              type="time"
+              :class="timeError ? 'border-destructive' : ''"
+              :aria-invalid="timeError || undefined"
+              aria-describedby="me-time-error"
+            />
           </div>
         </div>
-        <p v-if="timeError" class="text-xs text-destructive -mt-2">
+        <p
+          v-if="timeError"
+          id="me-time-error"
+          role="alert"
+          class="text-xs text-destructive -mt-2"
+        >
           {{ t('app.module.manual_entry.time_error') }}
         </p>
         <div class="grid grid-cols-2 gap-3">
           <div class="flex flex-col gap-1.5">
-            <Label>{{ t('app.module.manual_entry.category_label') }}</Label>
+            <Label for="me-category">{{ t('app.module.manual_entry.category_label') }}</Label>
             <Select v-model="category">
-              <SelectTrigger class="w-full">
+              <SelectTrigger id="me-category" class="w-full">
                 <SelectValue :placeholder="t('app.module.manual_entry.category_placeholder')" />
               </SelectTrigger>
               <SelectContent>
@@ -144,7 +163,7 @@ function handleOpenChange(open: boolean) {
                         class="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-border/40"
                         :style="{ backgroundColor: cat.color }"
                       />
-                      {{ cat.name }}
+                      {{ resolveCategoryName(cat.name) }}
                     </div>
                   </SelectItem>
                 </SelectGroup>
@@ -152,8 +171,9 @@ function handleOpenChange(open: boolean) {
             </Select>
           </div>
           <div class="flex flex-col gap-1.5">
-            <Label>{{ t('app.module.manual_entry.tags_label') }}</Label>
+            <Label for="me-tags">{{ t('app.module.manual_entry.tags_label') }}</Label>
             <Input
+              id="me-tags"
               v-model="tagsInput"
               :placeholder="t('app.module.manual_entry.tags_placeholder')"
             />

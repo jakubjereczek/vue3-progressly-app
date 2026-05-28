@@ -1,18 +1,30 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { RotateCcw, Clock } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
+import { RotateCcw, Clock, Timer, Trash2 } from 'lucide-vue-next';
 import { RouterLink } from 'vue-router';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useTranslation } from '@/composables';
 import { useRestartActivity } from '@/composables/useRestartActivity';
 import { useOverviewData } from './useOverviewData';
-import { formatTotalDuration, getDuration } from '@/utils/time';
+import { useActivitiesStore } from '@/stores';
+import { formatTotalDuration, getDuration, localDateToString, formatISOTime } from '@/utils/time';
+import { addDays } from '@/utils/date';
 import type { TableRow } from '@/api/supabase';
 
 const { t } = useTranslation();
-const { weekActivities, categories, loading, todayString } = useOverviewData();
+const { rangeActivities, categories, loading, todayString, selectedRange } = useOverviewData();
 const { requestRestart } = useRestartActivity();
+const activitiesStore = useActivitiesStore();
 
 interface DayGroup {
   dateStr: string;
@@ -21,25 +33,28 @@ interface DayGroup {
   activities: TableRow<'activities'>[];
 }
 
-function localDateStr(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
+const rangeSubtitle = computed(() => {
+  if (selectedRange.value === 'today') return t('app.module.overview.week_activities.subtitle_today');
+  if (selectedRange.value === 'month') return t('app.module.overview.week_activities.subtitle_month');
+  return t('app.module.overview.week_activities.subtitle');
+});
+
+const rangeEmpty = computed(() => {
+  if (selectedRange.value === 'today') return t('app.module.overview.week_activities.empty_today');
+  if (selectedRange.value === 'month') return t('app.module.overview.week_activities.empty_month');
+  return t('app.module.overview.week_activities.empty');
+});
 
 const groupedByDay = computed<DayGroup[]>(() => {
   const groups = new Map<string, TableRow<'activities'>[]>();
-  for (const a of weekActivities.value) {
-    const dateStr = localDateStr(new Date(a.started_at));
-    if (!groups.has(dateStr)) {
-      groups.set(dateStr, []);
-    }
+  for (const a of rangeActivities.value) {
+    const dateStr = localDateToString(new Date(a.started_at));
+    if (!groups.has(dateStr)) groups.set(dateStr, []);
     groups.get(dateStr)!.push(a);
   }
 
   const today = todayString.value;
-  const yesterday = localDateStr(new Date(new Date().setDate(new Date().getDate() - 1)));
+  const yesterday = localDateToString(addDays(new Date(), -1));
 
   return Array.from(groups.entries())
     .map(([dateStr, acts]) => {
@@ -55,32 +70,31 @@ const groupedByDay = computed<DayGroup[]>(() => {
           month: 'short',
         });
       }
-
       const totalSeconds = acts.reduce((sum, a) => sum + getDuration(a.started_at, a.finished_at) / 1000, 0);
-
       return { dateStr, label, totalSeconds, activities: acts };
     })
     .sort((a, b) => b.dateStr.localeCompare(a.dateStr));
 });
 
-function formatTime(dateString: string): string {
-  return new Date(dateString).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
-}
-
 function formatTimeRange(activity: TableRow<'activities'>): string {
-  const start = formatTime(activity.started_at);
-  if (!activity.finished_at) {return start;}
-  return `${start} – ${formatTime(activity.finished_at)}`;
+  const start = formatISOTime(activity.started_at);
+  if (!activity.finished_at) return start;
+  return `${start} – ${formatISOTime(activity.finished_at)}`;
 }
 
 function getCategory(categoryId: string | null): { name: string; color: string } | null {
-  if (!categoryId) {return null;}
+  if (!categoryId) return null;
   return categories.value.find((c) => c.id === categoryId) ?? null;
 }
 
 function getDurationSeconds(activity: TableRow<'activities'>): number {
   return getDuration(activity.started_at, activity.finished_at) / 1000;
 }
+
+const pendingDeleteActivity = ref<TableRow<'activities'> | null>(null);
+const isDeleteRunning = computed(
+  () => pendingDeleteActivity.value !== null && !pendingDeleteActivity.value.finished_at,
+);
 
 function handleRestart(activity: TableRow<'activities'>) {
   requestRestart({
@@ -89,90 +103,127 @@ function handleRestart(activity: TableRow<'activities'>) {
     tags: (activity.tags as string[]) ?? [],
   });
 }
+
+function confirmDelete() {
+  if (!pendingDeleteActivity.value) return;
+  activitiesStore.deleteActivityById(pendingDeleteActivity.value.id);
+  pendingDeleteActivity.value = null;
+}
 </script>
 
 <template>
-  <Card class="p-8 rounded-2xl border border-border/40 flex flex-col gap-6 shadow-none h-full">
-    <div class="flex items-center justify-between flex-shrink-0">
+  <Card class="p-5 rounded-2xl border border-border/40 flex flex-col gap-4 shadow-none h-full bg-card">
+    <div class="flex items-center justify-between flex-shrink-0 border-b border-border/40 pb-3">
       <div>
-        <h2 class="text-xl font-semibold">{{ t('app.module.overview.week_activities.title') }}</h2>
-        <p class="text-sm text-muted-foreground mt-0.5">{{ t('app.module.overview.week_activities.subtitle') }}</p>
+        <h3 class="text-sm font-semibold tracking-tight text-foreground">
+          {{ t('app.module.overview.week_activities.title') }}
+        </h3>
+        <p class="text-xs text-muted-foreground/70 mt-0.5">{{ rangeSubtitle }}</p>
       </div>
       <RouterLink
         to="/dashboard/timesheet"
-        class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+        class="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-150"
       >
         {{ t('app.module.overview.today_activities.view_all') }} →
       </RouterLink>
     </div>
+
     <div
-      class="flex-1 min-h-0 border border-border/40 rounded-xl overflow-hidden transition-opacity duration-200"
+      class="flex-1 min-h-0 overflow-hidden transition-opacity duration-200"
       :class="{ 'opacity-50 pointer-events-none': loading }"
     >
       <div
         v-if="groupedByDay.length === 0 && !loading"
         class="flex flex-col items-center justify-center h-full gap-2 text-center"
       >
-        <Clock class="w-8 h-8 text-muted-foreground/25" />
-        <p class="text-sm text-muted-foreground">{{ t('app.module.overview.week_activities.empty') }}</p>
+        <Clock class="w-6 h-6 text-muted-foreground/25" />
+        <p class="text-xs text-muted-foreground">{{ rangeEmpty }}</p>
       </div>
-      <div v-else class="flex flex-col overflow-y-auto h-full p-4 gap-4">
-        <div v-for="group in groupedByDay" :key="group.dateStr" class="flex flex-col gap-1">
-          <div class="flex items-center justify-between mb-1">
+
+      <div v-else class="flex flex-col overflow-y-auto h-full pr-1 space-y-4">
+        <div v-for="group in groupedByDay" :key="group.dateStr" class="flex flex-col">
+          <div
+            class="sticky top-0 z-10 flex items-center justify-between gap-3 py-2 bg-card/95 backdrop-blur-sm border-b border-border/10 mb-2"
+          >
             <span
-              class="text-[11px] font-semibold uppercase tracking-widest"
-              :class="group.dateStr === todayString ? 'text-primary' : 'text-muted-foreground'"
+              class="text-xs font-bold uppercase tracking-wider"
+              :class="group.dateStr === todayString ? 'text-primary' : 'text-muted-foreground/70'"
             >
               {{ group.label }}
             </span>
-            <span class="text-[11px] font-mono tabular-nums text-muted-foreground/60">
+            <span
+              class="text-xs font-mono font-medium text-muted-foreground/50 bg-muted/40 px-2 py-0.5 rounded-md border border-border/30"
+            >
               {{ formatTotalDuration(group.totalSeconds) }}
             </span>
           </div>
-          <ul class="flex flex-col">
-            <li v-for="activity in group.activities" :key="activity.id" class="flex items-start gap-3 py-2.5 group/row">
-              <span
-                class="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-[5px]"
-                :class="activity.finished_at ? 'bg-success' : 'bg-chart-3 animate-pulse'"
-              />
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium truncate leading-snug">
-                  {{ activity.description || t('app.module.activities_history.no_description') }}
-                </p>
-                <div class="flex items-center gap-1.5 mt-0.5">
-                  <span
-                    v-if="getCategory(activity.category_id)"
-                    class="inline-flex items-center px-1.5 py-px rounded text-[11px] font-medium leading-tight"
-                    :style="{
-                      backgroundColor: getCategory(activity.category_id)!.color + '20',
-                      color: getCategory(activity.category_id)!.color,
-                    }"
-                  >
-                    {{ getCategory(activity.category_id)!.name }}
+
+          <ul class="flex flex-col gap-1">
+            <li
+              v-for="activity in group.activities"
+              :key="activity.id"
+              class="group/row flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-150 hover:bg-muted/50"
+            >
+              <div class="flex items-center gap-3 min-w-0 flex-1">
+                <div
+                  class="w-1 h-8 rounded-full shrink-0"
+                  :style="{ backgroundColor: getCategory(activity.category_id)?.color ?? 'var(--border)' }"
+                />
+
+                <div class="flex flex-col min-w-0">
+                  <span class="text-sm font-semibold tracking-tight text-foreground truncate leading-none mb-1">
+                    {{ activity.description || t('app.module.activities_history.no_description') }}
                   </span>
-                  <span class="text-[11px] text-muted-foreground/50 tabular-nums">
-                    {{ formatTimeRange(activity) }}
-                  </span>
+                  <div class="flex items-center gap-1.5 text-xs text-muted-foreground/80 truncate">
+                    <span
+                      v-if="getCategory(activity.category_id)"
+                      class="font-medium"
+                      :style="{ color: getCategory(activity.category_id)!.color }"
+                    >
+                      {{ getCategory(activity.category_id)!.name }}
+                    </span>
+                    <span v-if="getCategory(activity.category_id)" class="text-muted-foreground/30">·</span>
+                    <span class="font-mono text-muted-foreground/60">{{ formatTimeRange(activity) }}</span>
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center gap-1 flex-shrink-0 mt-0.5">
-                <span
-                  class="text-xs font-mono tabular-nums font-semibold"
-                  :class="activity.finished_at ? 'text-muted-foreground' : 'text-chart-3'"
-                >
-                  {{ formatTotalDuration(getDurationSeconds(activity)) }}
-                </span>
-                <Button
-                  v-if="activity.finished_at"
-                  variant="ghost"
-                  size="sm"
-                  class="h-6 w-6 p-0 opacity-0 group-hover/row:opacity-100 transition-opacity flex-shrink-0 ml-0.5"
-                  :title="t('app.module.overview.today_activities.restart')"
-                  @click="handleRestart(activity)"
-                >
-                  <RotateCcw class="w-3 h-3" />
-                </Button>
-                <div v-else class="w-6 ml-0.5 flex-shrink-0" />
+
+              <div class="flex items-center gap-4 shrink-0 pl-4">
+                <div class="text-right flex flex-col justify-center">
+                  <span class="text-sm font-bold font-mono tabular-nums text-foreground">
+                    {{ formatTotalDuration(getDurationSeconds(activity)) }}
+                  </span>
+                </div>
+
+                <div class="w-20 flex justify-end items-center">
+                  <span
+                    v-if="!activity.finished_at"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-2xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 animate-pulse"
+                  >
+                    <Timer class="w-2.5 h-2.5" />
+                    {{ t('app.module.overview.week_activities.status.running') }}
+                  </span>
+
+                  <div
+                    v-else
+                    class="flex items-center gap-0.5 opacity-0 group-hover/row:opacity-100 transition-opacity duration-150"
+                  >
+                    <button
+                      class="rounded-md p-1 hover:bg-muted border border-transparent hover:border-border/60 transition-all text-muted-foreground hover:text-foreground"
+                      :aria-label="t('app.module.overview.today_activities.restart')"
+                      @click="handleRestart(activity)"
+                    >
+                      <RotateCcw class="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      class="rounded-md p-1 hover:bg-destructive/10 border border-transparent hover:border-destructive/20 transition-all text-destructive/60 hover:text-destructive"
+                      :aria-label="t('app.module.overview.today_activities.delete')"
+                      @click="pendingDeleteActivity = activity"
+                    >
+                      <Trash2 class="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </li>
           </ul>
@@ -180,4 +231,34 @@ function handleRestart(activity: TableRow<'activities'>) {
       </div>
     </div>
   </Card>
+
+  <AlertDialog
+    :open="pendingDeleteActivity !== null"
+    @update:open="
+      (v) => {
+        if (!v) pendingDeleteActivity = null;
+      }
+    "
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>{{ t('app.module.activities_history.delete_dialog.title') }}</AlertDialogTitle>
+        <AlertDialogDescription>
+          <span v-if="isDeleteRunning" class="text-warning font-medium">
+            {{ t('app.module.overview.today_activities.delete_running_description') }}
+          </span>
+          <span v-else>{{ t('app.module.activities_history.delete_dialog.description') }}</span>
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel>{{ t('app.action.cancel') }}</AlertDialogCancel>
+        <AlertDialogAction
+          class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+          @click="confirmDelete"
+        >
+          {{ t('app.action.delete') }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>

@@ -1,10 +1,12 @@
 import { ref, computed, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useActivitiesStore, useCategoriesStore } from '@/stores';
-import { getDuration, formatTotalDuration } from '@/utils/time';
+import { useCategoryName } from '@/composables';
+import { getDuration, formatTotalDuration, localDateToString, MS_PER_DAY } from '@/utils/time';
+import { parseLocalDate, parseLocalDateEnd, endOfDay, startOfDay } from '@/utils/date';
 import type { TableRow } from '@/api/supabase';
 
-export type ExportPreset = 'last7' | 'last30' | 'thisMonth' | 'last90' | 'thisYear' | 'allTime';
+export type ExportPreset = 'last7' | 'last30' | 'thisMonth' | 'last90' | 'thisYear' | 'allTime' | 'custom';
 
 export interface EnrichedActivity {
   id: string;
@@ -18,16 +20,24 @@ export interface EnrichedActivity {
   durationFormatted: string;
 }
 
-function getDateRange(preset: ExportPreset): { from: Date | null; to: Date | null } {
+function getDateRange(
+  preset: ExportPreset,
+  customFrom?: string,
+  customTo?: string,
+): { from: Date | null; to: Date | null } {
   if (preset === 'allTime') {
     return { from: null, to: null };
   }
 
-  const to = new Date();
-  to.setHours(23, 59, 59, 999);
+  if (preset === 'custom') {
+    if (!customFrom || !customTo) return { from: null, to: null };
+    const from = parseLocalDate(customFrom);
+    const to = parseLocalDateEnd(customTo);
+    return { from, to };
+  }
 
-  const from = new Date();
-  from.setHours(0, 0, 0, 0);
+  const to = endOfDay(new Date());
+  const from = startOfDay(new Date());
 
   switch (preset) {
     case 'last7':
@@ -55,14 +65,21 @@ export function useExportData() {
   const categoriesStore = useCategoriesStore();
   const { activities, loading } = storeToRefs(activitiesStore);
   const { categories } = storeToRefs(categoriesStore);
+  const { resolveCategoryName } = useCategoryName();
 
   const selectedPreset = ref<ExportPreset>('thisMonth');
   const selectedCategoryIds = ref<Set<string>>(new Set());
 
+  // Custom range dates (YYYY-MM-DD strings)
+  const today = localDateToString(new Date());
+  const thirtyDaysAgo = localDateToString(new Date(Date.now() - 29 * MS_PER_DAY));
+  const customFrom = ref<string>(thirtyDaysAgo);
+  const customTo = ref<string>(today);
+
   const categoryMap = computed(() => {
     const map = new Map<string, string>();
     for (const cat of categories.value) {
-      map.set(cat.id, cat.name);
+      map.set(cat.id, resolveCategoryName(cat.name));
     }
     return map;
   });
@@ -93,6 +110,14 @@ export function useExportData() {
     );
   });
 
+  const countByCategory = computed(() => {
+    const map = new Map<string, number>();
+    for (const a of allEnrichedActivities.value) {
+      if (a.categoryId) map.set(a.categoryId, (map.get(a.categoryId) ?? 0) + 1);
+    }
+    return map;
+  });
+
   function toggleCategory(id: string) {
     const next = new Set(selectedCategoryIds.value);
     if (next.has(id)) next.delete(id);
@@ -107,7 +132,10 @@ export function useExportData() {
   );
 
   async function fetchData() {
-    const { from, to } = getDateRange(selectedPreset.value);
+    // For custom range, only fetch when both dates are set
+    if (selectedPreset.value === 'custom' && (!customFrom.value || !customTo.value)) return;
+
+    const { from, to } = getDateRange(selectedPreset.value, customFrom.value, customTo.value);
     await categoriesStore.getCategories();
     if (from === null) {
       await activitiesStore.getActivities();
@@ -117,14 +145,20 @@ export function useExportData() {
   }
 
   watch(selectedPreset, fetchData, { immediate: true });
+  watch([customFrom, customTo], () => {
+    if (selectedPreset.value === 'custom') fetchData();
+  });
 
   return {
     selectedPreset,
     selectedCategoryIds,
+    customFrom,
+    customTo,
     toggleCategory,
     categories,
     loading,
     enrichedActivities,
+    countByCategory,
     totalSeconds,
     uniqueCategoryCount,
   };

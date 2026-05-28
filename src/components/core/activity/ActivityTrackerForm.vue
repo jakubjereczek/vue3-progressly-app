@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { useTranslation } from '@/composables';
+import { useTranslation, useCategoryName } from '@/composables';
 import type { TableRow } from '@/api/supabase';
 
 export type TimerState = 'playing' | 'ready' | 'loading' | 'disabled';
@@ -27,6 +27,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useTranslation();
+const { resolveCategoryName } = useCategoryName();
 
 const localDescription = computed({
   get: () => props.description,
@@ -48,12 +49,21 @@ const isDisabled = computed(() => props.state === 'playing' || props.state === '
 
 <template>
   <form @submit.prevent="$emit('submitForm')" class="flex flex-col flex-1 min-h-0 gap-3" id="activityForm">
-    <Textarea
-      v-model="localDescription"
-      :placeholder="t('app.module.overview.activity_tracker.start_placeholder')"
-      :disabled="isDisabled"
-      class="min-h-[100px] max-h-[160px] resize-none text-base placeholder:text-muted-foreground/40 border-border/60 focus-visible:ring-primary/20 leading-relaxed"
-    />
+    <div class="relative flex flex-col">
+      <Textarea
+        v-model="localDescription"
+        :placeholder="t('app.module.overview.activity_tracker.start_placeholder')"
+        :disabled="isDisabled"
+        maxlength="500"
+        class="min-h-[100px] max-h-[160px] resize-none text-base placeholder:text-muted-foreground/40 border-border/60 focus-visible:ring-primary/20 leading-relaxed pb-6"
+      />
+      <span
+        class="absolute bottom-2 right-2.5 text-2xs tabular-nums pointer-events-none select-none leading-none transition-colors duration-150"
+        :class="localDescription.length >= 450 ? 'text-warning' : 'text-muted-foreground/35'"
+      >
+        {{ localDescription.length }}/500
+      </span>
+    </div>
     <div class="flex gap-3 flex-shrink-0">
       <Select v-model="localCategory" :disabled="isDisabled">
         <SelectTrigger class="flex-1 min-w-0">
@@ -64,7 +74,7 @@ const isDisabled = computed(() => props.state === 'playing' || props.state === '
             <SelectItem v-for="cat in categories" :key="cat.id" :value="cat.id">
               <div class="flex items-center gap-2">
                 <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" :style="{ backgroundColor: cat.color }" />
-                {{ cat.name }}
+                {{ resolveCategoryName(cat.name) }}
               </div>
             </SelectItem>
           </SelectGroup>
