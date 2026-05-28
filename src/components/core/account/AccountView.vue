@@ -19,7 +19,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import LoadingSpinner from '@/components/ui/loading-spinner/LoadingSpinner.vue';
 import {
   AlertDialog,
   AlertDialogTrigger,

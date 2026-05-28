@@ -16,24 +16,16 @@ const categoriesStore = useCategoriesStore();
 
 function injectDemoData() {
   const { activities, categories, runningActivity } = getDemoData(locale.value);
-  // @ts-expect-error direct store state patch
   activitiesStore.demoMode = true;
-  // @ts-expect-error direct store state patch
   categoriesStore.demoMode = true;
-  // @ts-expect-error direct store state patch
   activitiesStore.activities = activities;
-  // @ts-expect-error direct store state patch
   activitiesStore.trackingActivity = runningActivity;
-  // @ts-expect-error direct store state patch
   categoriesStore.categories = categories;
 }
 
 function clearDemoData() {
-  // @ts-expect-error direct store state patch
   activitiesStore.demoMode = false;
-  // @ts-expect-error direct store state patch
   categoriesStore.demoMode = false;
-  // @ts-expect-error direct store state patch
   activitiesStore.trackingActivity = undefined;
   activitiesStore.getActivities();
   categoriesStore.getCategories();

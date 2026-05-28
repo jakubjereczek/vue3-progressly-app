@@ -20,6 +20,7 @@ function getCategories(locale: string): TableRow<'categories'>[] {
     color: CATEGORY_COLORS[i]!,
     user_id: DEMO_USER_ID,
     created_at: '2024-01-01T00:00:00Z',
+    archived_at: null,
   }));
 }
 

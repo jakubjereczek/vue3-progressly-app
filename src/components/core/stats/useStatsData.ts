@@ -154,8 +154,6 @@ export function useStatsData(
     return { tagMap, catMap, untagged, totalSec, finishedCount };
   });
 
-  const totalFilteredSeconds = computed(() => statsCore.value.totalSec);
-
   const tagStats = computed<TagStat[]>(() => {
     const { tagMap, totalSec } = statsCore.value;
     return Array.from(tagMap.entries())

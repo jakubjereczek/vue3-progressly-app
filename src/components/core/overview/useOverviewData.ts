@@ -183,7 +183,7 @@ export function useOverviewData() {
       for (const a of todayActivities.value) {
         if (!a.finished_at) continue;
         const h = new Date(a.started_at).getHours();
-        buckets[h] += getDuration(a.started_at, a.finished_at) / 1000;
+        buckets[h]! += getDuration(a.started_at, a.finished_at) / 1000;
       }
       return buckets.map(
         (seconds, hour): BarItem => ({

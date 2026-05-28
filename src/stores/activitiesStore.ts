@@ -147,7 +147,6 @@ export const useActivitiesStore = defineStore('activities', () => {
         }
         const index = activities.value.findIndex((a) => a.id === activityId);
         if (index !== -1) {
-          // @ts-expect-error Type instantiation is excessively deep and possibly infinite.
           activities.value[index] = updatedActivity;
         }
         return updatedActivity;
@@ -279,7 +278,6 @@ export const useActivitiesStore = defineStore('activities', () => {
       });
       if (!activity) return { success: false };
       // Re-sort the whole array after insert — avoids fragile index-calculation logic.
-      // @ts-expect-error Type instantiation is excessively deep and possibly infinite.
       activities.value = sortedByStartDesc([...activities.value, activity]);
       return { success: true };
     } catch (err: unknown) {
@@ -310,7 +308,6 @@ export const useActivitiesStore = defineStore('activities', () => {
       return { success: true };
     } catch (err: unknown) {
       error.value = getFriendlyErrorTranslationLabel(err);
-      // @ts-expect-error Type instantiation is excessively deep and possibly infinite.
       activities.value = sortedByStartDesc([...activities.value, ...snapshot]);
       return { success: false };
     }

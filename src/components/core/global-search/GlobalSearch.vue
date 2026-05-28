@@ -28,7 +28,6 @@ const {
   activityResults,
   categoryResults,
   goalResults,
-  allResults,
   hasResults,
   hasQuery,
   navigateDown,
@@ -85,8 +84,6 @@ function setActive(type: SearchResultType, id: string) {
   activeIndex.value = getResultIndex(type, id);
 }
 
-// Icon helpers per type
-const typeIcon = { activity: Clock, category: Tag, goal: Target };
 </script>
 
 <template>

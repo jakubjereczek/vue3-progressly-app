@@ -5,7 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useGoalsStore } from '@/stores/goalsStore';
 import { useActivitiesStore, useCategoriesStore } from '@/stores';
 import { useTranslation } from '@/composables';
-import { localDateToString, formatDurationCompact } from '@/utils/time';
+import { formatDurationCompact } from '@/utils/time';
 import { useGoalsAnalytics, type AnalyticsRange } from './useGoalsAnalytics';
 import { getGoalFirstPeriodKey } from './useGoalDetail';
 import { parseLocalDate } from '@/utils/date';

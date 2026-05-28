@@ -1,4 +1,5 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+// export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json = string[]
 
 export type Database = {
   // Allows to automatically instantiate createClient with right options

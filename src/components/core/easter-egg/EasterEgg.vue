@@ -42,9 +42,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeyDown));
 // ─── Fake mode toggle ─────────────────────────────────────────────────────────
 
 function applyFakeData() {
-  // @ts-expect-error direct store state patch
   activitiesStore.activities = [...FAKE_ACTIVITIES];
-  // @ts-expect-error direct store state patch
   categoriesStore.categories = [...FAKE_CATEGORIES];
 }
 

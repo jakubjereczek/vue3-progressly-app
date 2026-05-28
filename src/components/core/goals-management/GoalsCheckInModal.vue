@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue';
-import { Flame, TrendingUp, Zap, CheckCircle2, X, ChevronRight } from 'lucide-vue-next';
+import { TrendingUp, Zap, CheckCircle2, X, ChevronRight } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 import { useGoalsStore } from '@/stores/goalsStore';
 import { useActivitiesStore } from '@/stores';

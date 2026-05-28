@@ -18,7 +18,7 @@ export function useMonthNavigation() {
 
   function changeMonth(direction: 'prev' | 'next') {
     const [year, month] = currentMonth.value.split('-').map(Number);
-    const date = new Date(year, month - 1, 1);
+    const date = new Date(year!, month! - 1, 1);
     date.setMonth(date.getMonth() + (direction === 'next' ? 1 : -1));
     currentMonth.value = toYearMonth(date);
     router.replace({ query: { ...route.query, month: currentMonth.value } });

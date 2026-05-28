@@ -20,7 +20,7 @@ interface Props {
   searchQuery: string;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
   toggle: [string];

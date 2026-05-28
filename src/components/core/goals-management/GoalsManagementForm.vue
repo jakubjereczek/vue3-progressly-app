@@ -226,9 +226,9 @@ const publicCategories = computed(() => props.categories.filter((c) => c.user_id
           <Label>{{ t('app.module.goals.form.category_label') }}</Label>
           <Select
             :model-value="draft.category_id ?? '__all__'"
-            @update:model-value="update('category_id', $event === '__all__' ? null : $event)"
+            @update:model-value="update('category_id', $event === '__all__' ? null : String($event))"
           >
-            <SelectTrigger>
+            <SelectTrigger> 
               <SelectValue :placeholder="t('app.module.goals.form.category_all')" />
             </SelectTrigger>
             <SelectContent>

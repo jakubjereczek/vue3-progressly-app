@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { Pencil, Archive, Trash2, ArchiveRestore } from 'lucide-vue-next';
 import type { TableRow } from '@/api/supabase';
 import { useTranslation } from '@/composables';
-import { formatTotalDuration, MS_PER_DAY } from '@/utils/time';
+import { formatTotalDuration } from '@/utils/time';
 import { parseLocalDate } from '@/utils/date';
 import { computeGoalCurrentSeconds, computeGoalCurrentCount, getGoalStatus, getGoalTarget, getGoalExpectedPct } from './useGoalProgress';
 import { cn } from '@/lib/utils';

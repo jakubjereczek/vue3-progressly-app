@@ -210,9 +210,9 @@ export function useGoalDetail(
       : 0,
   );
 
-  const totalSeconds = computed(() =>
-    relevant.value.reduce((s, a) => s + getActivityDurationSeconds(a), 0),
-  );
+  // const totalSeconds = computed(() =>
+  //   relevant.value.reduce((s, a) => s + getActivityDurationSeconds(a), 0),
+  // );
 
   const totalSessions = computed(() => relevant.value.length);
 
