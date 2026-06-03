@@ -12,6 +12,7 @@ import {
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu';
 import type { Column } from './config';
+import CommonHeader from '@/components/CommonHeader.vue';
 
 interface Props {
   currentMonth: string;
@@ -43,10 +44,8 @@ function formatMonthDisplay(dateString: string): string {
 <template>
   <div class="flex flex-col gap-3">
     <div class="flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.activities_history.title') }}</p>
-        <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.activities_history.description') }}</p>
-      </div>
+      <CommonHeader :title="t('app.module.activities_history.title')" :desc="t('app.module.activities_history.description')" />
+
       <div class="flex items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
@@ -81,7 +80,7 @@ function formatMonthDisplay(dateString: string): string {
           >
             <ChevronLeft class="w-5 h-5" />
           </Button>
-          <span class="text-sm font-medium text-center min-w-[120px] text-center">
+          <span class="text-sm font-medium text-center">
             {{ formatMonthDisplay(currentMonth) }}
           </span>
           <Button

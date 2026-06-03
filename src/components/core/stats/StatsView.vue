@@ -22,6 +22,7 @@ import { useTranslation } from '@/composables';
 import { useStatsData, getDateRangeBounds, type DateRangePreset } from './useStatsData';
 import type { TagStat, CategoryStat } from './useStatsData';
 import { cn } from '@/lib/utils';
+import CommonHeader from '@/components/CommonHeader.vue';
 
 const { t } = useTranslation();
 const activitiesStore = useActivitiesStore();
@@ -161,10 +162,7 @@ onMounted(() => categoriesStore.getCategories());
 <template>
   <Card data-tour="stats" class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden">
     <div class="flex items-start justify-between gap-4 flex-shrink-0">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.stats.title') }}</p>
-        <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.stats.description') }}</p>
-      </div>
+      <CommonHeader :title="t('app.module.stats.title')" :desc="t('app.module.stats.description')" />
 
       <div class="flex items-center bg-muted/40 rounded-lg p-0.5 gap-0.5 border border-border/40 flex-shrink-0">
         <button

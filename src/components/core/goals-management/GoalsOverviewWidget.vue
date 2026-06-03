@@ -16,6 +16,7 @@ import {
   getGoalExpectedPct,
 } from './useGoalProgress';
 import { cn } from '@/lib/utils';
+import CommonHeader from '@/components/CommonHeader.vue';
 
 const { t } = useTranslation();
 const goalsStore = useGoalsStore();
@@ -64,11 +65,9 @@ function progressColor(pct: number, goalColor: string): string {
 <template>
   <Card class="p-5 rounded-2xl border border-border/40 flex flex-col gap-4 shadow-none h-full bg-card">
     <!-- Header -->
-    <div class="flex items-center justify-between flex-shrink-0 border-b border-border/40 pb-3">
-      <div>
-        <h3 class="text-sm font-semibold tracking-tight text-foreground">{{ t('app.module.goals.widget.title') }}</h3>
-        <p class="text-xs text-muted-foreground/70 mt-0.5">{{ t('app.module.goals.widget.subtitle') }}</p>
-      </div>
+    <div class="flex items-center justify-between flex-shrink-0">
+      <CommonHeader :title="t('app.module.goals.widget.title')" :desc="t('app.module.goals.widget.subtitle')" />
+
       <RouterLink
         to="/dashboard/goals"
         class="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors duration-150"

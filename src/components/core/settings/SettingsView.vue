@@ -11,6 +11,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import CommonHeader from '@/components/CommonHeader.vue';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 const { t } = useTranslation();
 const { locale, setLocale } = useLocale();
@@ -104,10 +106,9 @@ const themeOptions: { value: ThemeMode; labelKey: string; icon: unknown }[] = [
 <template>
   <Card class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden">
     <div class="flex-shrink-0">
-      <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.settings.title') }}</p>
-      <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.settings.description') }}</p>
+      <CommonHeader :title="t('app.module.settings.title')" :desc="t('app.module.settings.description')" />
 
-      <div class="flex items-center gap-1 mt-5 border-b border-border/40 -mx-5 px-5">
+      <div class="flex items-center gap-1 mt-4 border-b border-border/40 -mx-5 px-5">
         <button
           @click="activeTab = 'account'"
           :class="
@@ -142,10 +143,11 @@ const themeOptions: { value: ThemeMode; labelKey: string; icon: unknown }[] = [
       <div v-if="activeTab === 'account'" class="flex flex-col gap-6 max-w-lg">
         <div class="flex flex-col gap-3">
           <div>
-            <div class="flex items-center gap-2 text-sm font-medium">
-              <UserRound class="w-4 h-4 text-muted-foreground" />
-              {{ t('app.module.settings.display_name.label') }}
-            </div>
+            <CommonLabel :label="t('app.module.settings.display_name.label')">
+              <template #before>
+                <UserRound class="w-4 h-4 text-muted-foreground" />
+              </template>
+            </CommonLabel>
             <p class="text-xs text-muted-foreground mt-0.5">{{ t('app.module.settings.display_name.hint') }}</p>
           </div>
           <div class="flex flex-col gap-2">
@@ -166,21 +168,25 @@ const themeOptions: { value: ThemeMode; labelKey: string; icon: unknown }[] = [
             </Button>
           </div>
         </div>
+
         <div class="flex flex-col gap-2">
-          <div class="flex items-center gap-2 text-sm font-medium">
-            <Mail class="w-4 h-4 text-muted-foreground" />
-            {{ t('app.module.settings.email.label') }}
-          </div>
+          <CommonLabel :label="t('app.module.settings.email.label')">
+            <template #before>
+              <Mail class="w-4 h-4 text-muted-foreground" />
+            </template>
+          </CommonLabel>
           <div class="flex items-center gap-3 px-3 py-3 rounded-lg bg-muted/40 border border-border/50">
             <span class="text-sm text-foreground">{{ email }}</span>
           </div>
           <p class="text-xs text-muted-foreground">{{ t('app.module.settings.email.hint') }}</p>
         </div>
+
         <div class="flex flex-col gap-3">
-          <div class="flex items-center gap-2 text-sm font-medium">
-            <KeyRound class="w-4 h-4 text-muted-foreground" />
-            {{ t('app.module.settings.password.label') }}
-          </div>
+          <CommonLabel :label="t('app.module.settings.password.label')">
+            <template #before>
+              <KeyRound class="w-4 h-4 text-muted-foreground" />
+            </template>
+          </CommonLabel>
           <div class="flex flex-col gap-2">
             <Input v-model="currentPassword" type="password" :placeholder="t('app.module.settings.password.current')" />
             <Input v-model="newPassword" type="password" :placeholder="t('app.module.settings.password.new')" />
@@ -203,13 +209,15 @@ const themeOptions: { value: ThemeMode; labelKey: string; icon: unknown }[] = [
           </div>
         </div>
       </div>
+
       <div v-else class="flex flex-col gap-6 max-w-lg">
         <div class="flex flex-col gap-3">
           <div>
-            <div class="flex items-center gap-2 text-sm font-medium">
-              <Globe class="w-4 h-4 text-muted-foreground" />
-              {{ t('app.module.settings.language.label') }}
-            </div>
+            <CommonLabel :label="t('app.module.settings.language.label')">
+              <template #before>
+                <Globe class="w-4 h-4 text-muted-foreground" />
+              </template>
+            </CommonLabel>
             <p class="text-xs text-muted-foreground mt-0.5">{{ t('app.module.settings.language.hint') }}</p>
           </div>
           <div class="flex gap-2">
@@ -228,12 +236,14 @@ const themeOptions: { value: ThemeMode; labelKey: string; icon: unknown }[] = [
             </button>
           </div>
         </div>
+
         <div class="flex flex-col gap-3">
           <div>
-            <div class="flex items-center gap-2 text-sm font-medium">
-              <Sun class="w-4 h-4 text-muted-foreground" />
-              {{ t('app.module.settings.theme.label') }}
-            </div>
+            <CommonLabel :label="t('app.module.settings.theme.label')">
+              <template #before>
+                <Monitor class="w-4 h-4 text-muted-foreground" />
+              </template>
+            </CommonLabel>
             <p class="text-xs text-muted-foreground mt-0.5">{{ t('app.module.settings.theme.hint') }}</p>
           </div>
           <div class="flex gap-2">

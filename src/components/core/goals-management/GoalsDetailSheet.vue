@@ -202,9 +202,8 @@ const kpiItems = computed(() => {
         <div class="flex-1 overflow-y-auto px-6 py-5 flex flex-col gap-6">
           <!-- Current progress -->
           <div class="flex flex-col gap-2">
-            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              {{ t('app.module.goals.detail.current_progress') }}
-            </span>
+            <CommonLabel :label="t('app.module.goals.detail.current_progress')" />
+
             <div class="bg-muted/30 rounded-xl border border-border/40 p-4 flex flex-col gap-3">
               <div class="flex items-end justify-between gap-4">
                 <div>
@@ -252,9 +251,8 @@ const kpiItems = computed(() => {
 
           <!-- KPI stats -->
           <div class="flex flex-col gap-2">
-            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              {{ t('app.module.goals.detail.stats') }}
-            </span>
+            <CommonLabel :label="t('app.module.goals.detail.stats')" />
+
             <div class="grid grid-cols-2 gap-2 sm:grid-cols-4" :class="kpiItems.length === 3 ? 'sm:grid-cols-3' : ''">
               <div
                 v-for="kpi in kpiItems"
@@ -274,9 +272,8 @@ const kpiItems = computed(() => {
 
           <!-- History chart -->
           <div v-if="detail" class="flex flex-col gap-2">
-            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              {{ t('app.module.goals.detail.history') }}
-            </span>
+            <CommonLabel :label="t('app.module.goals.detail.history')" />
+
             <div
               v-if="detail.bars.value.length <= 1"
               class="bg-card border border-border/40 rounded-xl px-4 py-6 text-center"
@@ -384,9 +381,8 @@ const kpiItems = computed(() => {
 
           <!-- Recent activities -->
           <div v-if="detail && detail.recentActivities.value.length > 0" class="flex flex-col gap-2">
-            <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              {{ t('app.module.goals.detail.recent_activities') }}
-            </span>
+            <CommonLabel :label="t('app.module.goals.detail.recent_activities')" />
+
             <div class="flex flex-col divide-y divide-border/30">
               <div
                 v-for="activity in detail.recentActivities.value"

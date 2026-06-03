@@ -32,6 +32,8 @@ import {
 } from './useExportDownload';
 import { formatTotalDuration, localDateToString } from '@/utils/time';
 import { cn } from '@/lib/utils';
+import CommonHeader from '@/components/CommonHeader.vue';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 const { t } = useTranslation();
 const { resolveCategoryName } = useCategoryName();
@@ -102,13 +104,9 @@ async function handleExport() {
 
 <template>
   <Card data-tour="export" class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden">
-    <!-- Header -->
     <div class="flex items-start justify-between gap-4 flex-shrink-0">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.export.title') }}</p>
-        <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.export.description') }}</p>
-      </div>
-      <!-- Format tabs -->
+      <CommonHeader :title="t('app.module.export.title')" :desc="t('app.module.export.description')" />
+
       <div class="flex items-center bg-muted/40 rounded-lg p-0.5 gap-0.5 border border-border/40 flex-shrink-0">
         <button
           v-for="fmt in formats"
@@ -150,9 +148,7 @@ async function handleExport() {
 
     <!-- ── DATE RANGE ──────────────────────────────────────────────── -->
     <div class="flex-shrink-0">
-      <p class="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-widest">
-        {{ t('app.module.export.range.label') }}
-      </p>
+      <CommonLabel :label="t('app.module.export.range.label')" /> 
       <div class="flex flex-wrap gap-2">
         <button
           v-for="preset in presets"
@@ -192,9 +188,7 @@ async function handleExport() {
 
     <!-- ── CATEGORY FILTER ────────────────────────────────────────── -->
     <div v-if="categories.length > 0" class="flex-shrink-0">
-      <p class="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-widest">
-        {{ t('app.module.export.category_filter.label') }}
-      </p>
+      <CommonLabel :label="t('app.module.export.category_filter.label')" /> 
       <div class="flex flex-wrap gap-2">
         <button
           v-for="cat in categories"
@@ -229,9 +223,7 @@ async function handleExport() {
 
     <!-- ── CSV OPTIONS ────────────────────────────────────────────── -->
     <div v-if="selectedFormat === 'csv'" class="flex-shrink-0">
-      <p class="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-widest">
-        {{ t('app.module.export.csv_options.label') }}
-      </p>
+      <CommonLabel :label="t('app.module.export.csv_options.label')" /> 
       <div class="flex items-center gap-4 flex-wrap">
         <div class="flex items-center gap-2">
           <span class="text-xs text-muted-foreground flex-shrink-0">{{
@@ -263,9 +255,7 @@ async function handleExport() {
 
     <!-- ── JSON STRUCTURE ─────────────────────────────────────────── -->
     <div v-if="selectedFormat === 'json'" class="flex-shrink-0">
-      <p class="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-widest">
-        {{ t('app.module.export.json_options.label') }}
-      </p>
+      <CommonLabel :label="t('app.module.export.json_options.structure_label')" />
       <div class="flex items-center gap-0.5 bg-muted/40 rounded-lg p-0.5 border border-border/40 w-fit">
         <button
           v-for="opt in [
@@ -346,9 +336,7 @@ async function handleExport() {
 
       <!-- ── DATA PREVIEW TABLE ─────────────────────────────────── -->
       <div class="flex flex-col gap-2 flex-1 min-h-0">
-        <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest flex-shrink-0">
-          {{ t('app.module.export.preview.table_label', { count: enrichedActivities.length }) }}
-        </p>
+        <CommonLabel :label="t('app.module.export.preview.table_label', { count: enrichedActivties.length })" />
         <div class="rounded-xl border border-border/40 overflow-hidden flex-1 min-h-0 flex flex-col">
           <div class="overflow-auto flex-1 min-h-0 touch-pan-x">
             <table class="w-full text-xs">

@@ -29,6 +29,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import type { TableRow } from '@/api/supabase';
+import CommonHeader from '@/components/CommonHeader.vue';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 const { t } = useTranslation();
 const route = useRoute();
@@ -250,10 +252,7 @@ onMounted(async () => {
   <Card data-tour="goals" class="p-6 flex flex-col gap-4 rounded-2xl border border-border/40 h-full overflow-hidden">
     <!-- Page header -->
     <div class="flex items-start justify-between gap-4 flex-shrink-0">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.goals.title') }}</p>
-        <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.goals.description') }}</p>
-      </div>
+      <CommonHeader :title="t('app.module.goals.title')" :desc="t('app.module.goals.description')" />
       <Button size="sm" class="flex items-center gap-1.5 flex-shrink-0" @click="openCreate">
         <Plus class="w-4 h-4" />
         {{ t('app.module.goals.add_goal') }}
@@ -371,14 +370,15 @@ onMounted(async () => {
           <div v-for="group in groupedGoals" :key="group.category?.id ?? '__none__'" class="flex flex-col gap-3">
             <!-- Group header (only when multiple groups) -->
             <div v-if="groupedGoals.length > 1" class="flex items-center gap-2">
-              <span
-                v-if="group.category"
-                class="w-2 h-2 rounded-full flex-shrink-0"
-                :style="{ backgroundColor: group.category.color }"
-              />
-              <span class="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                {{ group.category ? group.category.name : t('app.module.goals.card.all_categories') }}
-              </span>
+              <CommonLabel :label="group.category ? group.category.name : t('app.module.goals.card.all_categories')" >
+                <template #before>
+                  <span
+                    v-if="group.category"
+                    class="w-2 h-2 rounded-full flex-shrink-0"
+                    :style="{ backgroundColor: group.category.color }"
+                  />
+                </template>
+              </CommonLabel>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <GoalsManagementCard

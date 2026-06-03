@@ -13,6 +13,7 @@ import { useRestartActivity } from '@/composables/useRestartActivity';
 import ManualEntryDialog from '@/components/core/manual-entry/ManualEntryDialog.vue';
 import { PencilLine, RotateCcw } from 'lucide-vue-next';
 import InfoTooltip from '@/components/ui/info-tooltip/InfoTooltip.vue';
+import CommonHeader from '@/components/CommonHeader.vue'; 
 
 const { t } = useTranslation();
 const { pendingRestart, consumeRestart } = useRestartActivity();
@@ -196,14 +197,13 @@ function toggleTimer() {
       :class="isRunning ? 'bg-gradient-to-r from-primary via-chart-3 to-primary/50' : 'bg-transparent'"
     />
 
-    <div class="p-4 flex flex-col gap-4 md:flex-row md:gap-0 h-full">
+    <div class="p-6 flex flex-col gap-4 md:flex-row md:gap-0 h-full">
       <div class="md:flex-grow md:pr-6 flex flex-col gap-4 min-h-0">
         <div class="flex items-start justify-between">
           <div>
             <div class="flex items-center gap-2.5">
-              <h2 class="text-sm font-medium text-muted-foreground">
-                {{ t('app.module.overview.activity_tracker.title') }}
-              </h2>
+              <!-- TODO: add desc translation label -->
+              <CommonHeader :title="t('app.module.overview.activity_tracker.title')" :desc="t('app.module.overview.activity_tracker.description')" />
               <span
                 v-if="isRunning"
                 class="inline-flex items-center gap-1 text-2xs font-medium px-1.5 py-0.5 rounded-full bg-chart-3/15 text-chart-3 border border-chart-3/25 leading-none"

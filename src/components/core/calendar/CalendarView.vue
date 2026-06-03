@@ -12,6 +12,8 @@ import { cn } from '@/lib/utils';
 import LoadingSpinner from '@/components/ui/loading-spinner/LoadingSpinner.vue';
 import ErrorMessage from '@/components/error-message/ErrorMessage.vue';
 import ManualEntryDialog from '@/components/core/manual-entry/ManualEntryDialog.vue';
+import CommonHeader from '@/components/CommonHeader.vue';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 const { t } = useTranslation();
 const { locale } = useLocale();
@@ -193,12 +195,11 @@ const manualEntryOpen = ref(false);
 <template>
   <Card data-tour="calendar" class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full">
     <div class="flex items-center justify-between flex-shrink-0">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.calendar.title') }}</p>
-        <p v-if="monthTotalSeconds > 0" class="text-xs text-muted-foreground/60 mt-0.5">
-          {{ formattedMonthTotal }} {{ t('app.module.calendar.tracked_this_month') }}
-        </p>
-      </div>
+      <CommonHeader
+        :title="t('app.module.calendar.title')"
+        :desc="formattedMonthTotal + ' ' + t('app.module.calendar.tracked_this_month')"
+      />
+
       <div class="flex items-center gap-2">
         <span class="text-sm font-medium capitalize mr-1">{{ monthLabel }}</span>
         <Button
@@ -376,9 +377,7 @@ const manualEntryOpen = ref(false);
           </div>
           <div v-if="selectedDay.activities.length > 0" class="px-4 py-3 border-b border-border/40">
             <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                {{ t('app.module.calendar.timeline') }}
-              </p>
+              <CommonLabel :label="t('app.module.calendar.timeline')" />
               <button
                 class="text-2xs text-muted-foreground hover:text-foreground transition-colors px-1.5 py-0.5 rounded border border-border/40 hover:bg-muted"
                 @click="timelineHour12 = !timelineHour12"
@@ -488,9 +487,7 @@ const manualEntryOpen = ref(false);
             </div>
           </div>
           <div v-if="selectedDay.categorySlices.length > 0" class="border-t border-border/40 px-4 py-3 flex-shrink-0">
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-              {{ t('app.module.calendar.breakdown') }}
-            </p>
+            <CommonLabel :label="t('app.module.calendar.breakdown')" />
             <div class="flex flex-col gap-2">
               <div
                 v-for="slice in selectedDay.categorySlices"
@@ -587,9 +584,7 @@ const manualEntryOpen = ref(false);
         <!-- Timeline -->
         <div v-if="selectedDay.activities.length > 0" class="px-4 py-3 border-b border-border/40 flex-shrink-0">
           <div class="flex items-center justify-between mb-2">
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              {{ t('app.module.calendar.timeline') }}
-            </p>
+            <CommonLabel :label="t('app.module.calendar.timeline')" />
             <button
               class="text-2xs text-muted-foreground hover:text-foreground transition-colors px-1.5 py-0.5 rounded border border-border/40 hover:bg-muted"
               @click="timelineHour12 = !timelineHour12"
@@ -688,9 +683,7 @@ const manualEntryOpen = ref(false);
 
         <!-- Category breakdown -->
         <div v-if="selectedDay.categorySlices.length > 0" class="border-t border-border/40 px-4 py-3 flex-shrink-0">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-            {{ t('app.module.calendar.breakdown') }}
-          </p>
+          <CommonLabel :label="t('app.module.calendar.breakdown')" /> 
           <div class="flex flex-col gap-2">
             <div
               v-for="slice in selectedDay.categorySlices"

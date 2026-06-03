@@ -32,6 +32,7 @@ import AnalyticsBarChart from './AnalyticsBarChart.vue';
 import AnalyticsLineChart from './AnalyticsLineChart.vue';
 import InfoTooltip from '@/components/ui/info-tooltip/InfoTooltip.vue';
 import { cn } from '@/lib/utils';
+import CommonHeader from '@/components/CommonHeader.vue';
 
 const { t } = useTranslation();
 const { resolveCategoryName } = useCategoryName();
@@ -177,10 +178,7 @@ onMounted(() => categoriesStore.getCategories());
     class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden"
   >
     <div class="flex items-start justify-between gap-4 flex-shrink-0">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.analytics.title') }}</p>
-        <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.analytics.description') }}</p>
-      </div>
+      <CommonHeader :title="t('app.module.analytics.title')" :desc="t('app.module.analytics.description')" />
 
       <div v-if="isPremium" class="flex items-center bg-muted rounded-lg p-1 gap-0.5 flex-shrink-0">
         <button

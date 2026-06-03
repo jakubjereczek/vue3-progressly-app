@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { formatISOTime } from '@/utils/time';
 import { startOfDay, endOfDay } from '@/utils/date';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 const { t } = useTranslation();
 const { locale } = useLocale();
@@ -536,9 +537,8 @@ const isMonthMode = computed(() => mode.value === 'month');
               </div>
             </div>
             <div v-if="selectedBar.categoryName" class="px-4 py-3 border-b border-border/40">
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-                {{ t('app.module.gantt.detail.category') }}
-              </p>
+              <CommonLabel :icon="Layers" :label="t('app.module.gantt.detail.category')" />
+
               <div class="flex items-center gap-2">
                 <span
                   class="w-3 h-3 rounded-full flex-shrink-0 ring-1 ring-border/40"
@@ -548,9 +548,8 @@ const isMonthMode = computed(() => mode.value === 'month');
               </div>
             </div>
             <div v-if="selectedBar.tags.length > 0" class="px-4 py-3 border-b border-border/40">
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-                <Layers class="w-3 h-3 inline mr-1" />{{ t('app.module.gantt.detail.tags') }}
-              </p>
+              <CommonLabel :label="t('app.module.gantt.detail.tags')" />
+
               <div class="flex flex-wrap gap-1.5">
                 <span
                   v-for="tag in selectedBar.tags"
@@ -648,9 +647,8 @@ const isMonthMode = computed(() => mode.value === 'month');
 
         <!-- Category -->
         <div v-if="selectedBar.categoryName" class="px-4 py-3 border-b border-border/40 flex-shrink-0">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-            {{ t('app.module.gantt.detail.category') }}
-          </p>
+          <CommonLabel :label="t('app.module.gantt.detail.category')" />
+
           <div class="flex items-center gap-2">
             <span
               class="w-3 h-3 rounded-full flex-shrink-0 ring-1 ring-border/40"
@@ -662,9 +660,8 @@ const isMonthMode = computed(() => mode.value === 'month');
 
         <!-- Tags -->
         <div v-if="selectedBar.tags.length > 0" class="px-4 py-3 border-b border-border/40 flex-shrink-0">
-          <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-            <Layers class="w-3 h-3 inline mr-1" />{{ t('app.module.gantt.detail.tags') }}
-          </p>
+          <CommonLabel :label="t('app.module.gantt.detail.tags')" />
+
           <div class="flex flex-wrap gap-1.5">
             <span
               v-for="tag in selectedBar.tags"

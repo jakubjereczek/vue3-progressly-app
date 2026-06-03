@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/composables';
 import { cn } from '@/lib/utils';
+import CommonHeader from '@/components/CommonHeader.vue';
 
 export type GanttMode = 'week' | 'month';
 
@@ -39,10 +40,7 @@ function stepZoom(direction: 'in' | 'out') {
 
 <template>
   <div class="flex flex-wrap justify-between gap-4">
-    <div>
-      <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.gantt.title') }}</p>
-      <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.gantt.description') }}</p>
-    </div>
+    <CommonHeader :title="t('app.module.gantt.title')" :desc="t('app.module.gantt.description')" />
 
     <div class="flex items-center gap-3 flex-wrap">
       <!-- Mode tabs -->
@@ -109,7 +107,7 @@ function stepZoom(direction: 'in' | 'out') {
         >
           <ChevronLeft class="w-5 h-5" />
         </Button>
-        <span class="text-sm font-medium text-center min-w-[180px] text-center">
+        <span class="text-sm font-medium text-center text-center">
           {{ rangeLabel }}
         </span>
         <Button

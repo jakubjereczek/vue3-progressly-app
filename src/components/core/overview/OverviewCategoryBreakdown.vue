@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { useTranslation } from '@/composables';
 import { useOverviewData } from './useOverviewData';
 import { formatTotalDuration, getDuration } from '@/utils/time';
+import CommonHeader from '@/components/CommonHeader.vue';
 
 const { t } = useTranslation();
 const { rangeActivities, categories, loading, rangeTotalSeconds, selectedRange } = useOverviewData();
@@ -81,13 +82,10 @@ const donutGradient = computed(() => {
 </script>
 
 <template>
-  <Card class="p-4 rounded-2xl border border-border/40 flex flex-col gap-4 shadow-none">
+  <Card class="p-6 rounded-2xl border border-border/40 flex flex-col gap-4 shadow-none">
     <!-- Header -->
     <div class="flex items-start justify-between flex-shrink-0">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.overview.category_breakdown.title') }}</p>
-        <p class="text-xs text-muted-foreground/60 mt-0.5">{{ rangeSubtitle }}</p>
-      </div>
+      <CommonHeader :title="t('app.module.overview.category_breakdown.title')" :desc="rangeSubtitle" />
       <span v-if="rangeTotalSeconds > 0" class="text-xs font-mono tabular-nums text-muted-foreground">
         {{ formatTotalDuration(rangeTotalSeconds) }}
       </span>

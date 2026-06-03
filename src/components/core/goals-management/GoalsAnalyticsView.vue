@@ -531,7 +531,7 @@ function insightText(insight: Insight): string {
                     <TooltipContent
                       side="top"
                       :hide-arrow="true"
-                      class="bg-card border border-border shadow-lg p-2.5 rounded-lg min-w-[120px]"
+                      class="bg-card border border-border shadow-lg p-2.5 rounded-lg"
                     >
                       <p class="text-2xs font-semibold">{{ dot.label }}</p>
                       <p class="text-2xs text-muted-foreground mt-0.5 tabular-nums">
@@ -549,7 +549,7 @@ function insightText(insight: Insight): string {
             <!-- Contextual insight banner -->
             <div
               v-if="getInsight(item)"
-              class="mx-5 mb-4 px-3 py-3 rounded-lg flex items-center gap-2.5 text-2xs font-medium"
+              class="mx-5 pb-4 px-3 py-3 rounded-lg flex items-center gap-2.5 text-2xs font-medium"
               :style="{
                 backgroundColor: `${item.goal.color}0e`,
                 border: `1px solid ${item.goal.color}28`,

@@ -34,6 +34,8 @@ import { useTranslation } from '@/composables';
 import { useUserStore } from '@/stores';
 import { useAccountData } from './useAccountData';
 import defaultAvatar from '@/assets/default-avatar.svg';
+import CommonHeader from '@/components/CommonHeader.vue';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 const { t } = useTranslation();
 const router = useRouter();
@@ -74,12 +76,7 @@ async function handleDeleteAccount() {
 
 <template>
   <Card class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-y-auto">
-    <div>
-      <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.account.title') }}</p>
-      <p class="text-xs text-muted-foreground/60 mt-0.5">{{ t('app.module.account.description') }}</p>
-    </div>
-
-    <template>
+    <CommonHeader :title="t('app.module.account.title')" :desc="t('app.module.account.description')" />
       <div class="flex items-center gap-4">
         <Avatar class="h-20 w-20 rounded-2xl ring-2 ring-border/50 flex-shrink-0">
           <AvatarImage :src="avatarUrl" :alt="displayName" />
@@ -110,9 +107,7 @@ async function handleDeleteAccount() {
 
       <div class="flex flex-col gap-4">
         <div class="flex items-center justify-between gap-3">
-          <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-            {{ t('app.module.account.plan.title') }}
-          </span>
+          <CommonLabel :label="t('app.module.account.plan.title')" />
         </div>
 
         <div v-if="plan" class="flex flex-col gap-3">
@@ -196,9 +191,7 @@ async function handleDeleteAccount() {
       <Separator />
 
       <div class="flex flex-col gap-4">
-        <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-          {{ t('app.module.account.stats.title') }}
-        </span>
+        <CommonLabel :label="t('app.module.account.stats.title')" />  
 
         <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           <div class="flex flex-col gap-2 rounded-xl border border-border/50 bg-card p-4">
@@ -247,9 +240,7 @@ async function handleDeleteAccount() {
       <Separator />
 
       <div class="flex flex-col gap-3">
-        <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-          {{ t('app.module.account.actions.title') }}
-        </span>
+        <CommonLabel :label="t('app.module.account.actions.title')" /> 
         <div class="flex items-center gap-3 flex-wrap">
           <RouterLink to="/dashboard/settings">
             <Button variant="outline" class="gap-2">
@@ -297,6 +288,5 @@ async function handleDeleteAccount() {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-    </template>
   </Card>
 </template>

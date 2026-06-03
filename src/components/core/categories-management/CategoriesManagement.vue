@@ -33,6 +33,8 @@ import AlertDialogDescription from '@/components/ui/alert-dialog/AlertDialogDesc
 import AlertDialogFooter from '@/components/ui/alert-dialog/AlertDialogFooter.vue';
 import AlertDialogCancel from '@/components/ui/alert-dialog/AlertDialogCancel.vue';
 import AlertDialogAction from '@/components/ui/alert-dialog/AlertDialogAction.vue';
+import CommonHeader from '@/components/CommonHeader.vue';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 const { t } = useTranslation();
 const { resolveCategoryName } = useCategoryName();
@@ -217,18 +219,14 @@ async function confirmDelete() {
 <template>
   <Card
     data-tour="categories-management"
-    class="p-6 flex flex-col gap-6 rounded-2xl border border-border/40 h-full overflow-hidden"
+    class="p-6 flex flex-col gap-4 rounded-2xl border border-border/40 h-full overflow-hidden"
   >
-    <!-- Header -->
     <div class="flex items-start justify-between gap-4 flex-shrink-0">
-      <div>
-        <p class="text-sm font-medium text-muted-foreground">
-          {{ activeTab === 'categories' ? t('app.module.categories.title') : t('app.module.tags.title') }}
-        </p>
-        <p class="text-xs text-muted-foreground/60 mt-0.5">
-          {{ activeTab === 'categories' ? t('app.module.categories.description') : t('app.module.tags.description') }}
-        </p>
-      </div>
+      <CommonHeader
+        :title="activeTab === 'categories' ? t('app.module.categories.title') : t('app.module.tags.title')"
+        :desc="activeTab === 'categories' ? t('app.module.categories.description') : t('app.module.tags.description')"
+      />
+
       <Button
         v-if="activeTab === 'categories' && !isAdding"
         size="sm"
@@ -243,7 +241,7 @@ async function confirmDelete() {
     </div>
 
     <!-- Tab switcher -->
-    <div role="tablist" class="flex items-center gap-1 flex-shrink-0 border-b border-border/40 -mb-2">
+    <div role="tablist" class="flex items-center gap-1 border-b border-border/40 -mx-5 px-5">
       <button
         role="tab"
         :aria-selected="activeTab === 'categories'"
@@ -283,12 +281,13 @@ async function confirmDelete() {
       <!-- My Categories (active) -->
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-            {{ t('app.module.categories.my_categories') }}
-          </span>
-          <Badge variant="secondary" class="text-xs px-1.5 py-0 h-4 font-normal">
-            {{ activePrivateCategories.length }}
-          </Badge>
+          <CommonLabel :label="t('app.module.categories.my_categories')">
+            <template #after>
+              <Badge variant="secondary" class="text-xs px-1.5 py-0 h-4 font-normal">
+                {{ activePrivateCategories.length }}
+              </Badge>
+            </template>
+          </CommonLabel>
         </div>
 
         <!-- Loading -->
@@ -327,7 +326,7 @@ async function confirmDelete() {
               @dragend="onDragEnd"
               :class="[
                 'transition-all duration-150',
-                dragOverIndex === catIndex && dragFromIndex !== catIndex && 'border-t-2 border-primary/50',
+                dragOverIndex === catIndex && dragFromIndex !== catIndex && 'border-t33-2 border-primary/50',
               ]"
             >
               <!-- View mode -->
@@ -448,20 +447,21 @@ async function confirmDelete() {
           @click="archivedExpanded = !archivedExpanded"
           :aria-expanded="archivedExpanded"
         >
-          <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-            {{ t('app.module.categories.archived_categories') }}
-          </span>
-          <Badge variant="secondary" class="text-xs px-1.5 py-0 h-4 font-normal">
-            {{ archivedCategories.length }}
-          </Badge>
-          <ChevronDown
-            :class="
-              cn(
-                'w-3.5 h-3.5 text-muted-foreground transition-transform duration-200',
-                archivedExpanded && 'rotate-180',
-              )
-            "
-          />
+          <CommonLabel :label="t('app.module.categories.archived_categories')">
+            <template #after>
+              <Badge variant="secondary" class="text-xs px-1.5 py-0 h-4 font-normal">
+                {{ archivedCategories.length }}
+              </Badge>
+              <ChevronDown
+                :class="
+                  cn(
+                    'w-3.5 h-3.5 text-muted-foreground transition-transform duration-200',
+                    archivedExpanded && 'rotate-180',
+                  )
+                "
+              />
+            </template>
+          </CommonLabel>
         </button>
 
         <template v-if="archivedExpanded">
@@ -517,12 +517,13 @@ async function confirmDelete() {
       <!-- Public Categories -->
       <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-            {{ t('app.module.categories.public_categories') }}
-          </span>
-          <Badge variant="secondary" class="text-xs px-1.5 py-0 h-4 font-normal">
-            {{ publicCategories.length }}
-          </Badge>
+          <CommonLabel :label="t('app.module.categories.public_categories')">
+            <template #after>
+              <Badge variant="secondary" class="text-xs px-1.5 py-0 h-4 font-normal">
+                {{ publicCategories.length }}
+              </Badge>
+            </template>
+          </CommonLabel>
         </div>
         <p class="text-xs text-muted-foreground -mt-1">{{ t('app.module.categories.public_description') }}</p>
 

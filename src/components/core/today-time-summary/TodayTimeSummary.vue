@@ -78,7 +78,7 @@ const categorySummary = computed(() => {
 </script>
 
 <template>
-  <Card class="p-4 flex flex-col gap-4 rounded-2xl border border-border/40 h-full shadow-none">
+  <Card class="p-6 flex flex-col gap-4 rounded-2xl border border-border/40 h-full shadow-none">
     <div class="flex items-center justify-between flex-shrink-0">
       <p class="text-sm font-medium text-muted-foreground">{{ t('app.module.overview.time_summary.title') }}</p>
       <LoadingSpinner v-if="loading && !isInitialLoading" size="sm" class="text-muted-foreground" />

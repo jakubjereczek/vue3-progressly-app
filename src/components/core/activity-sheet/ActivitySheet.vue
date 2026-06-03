@@ -26,6 +26,7 @@ import AlertDialogDescription from '@/components/ui/alert-dialog/AlertDialogDesc
 import AlertDialogFooter from '@/components/ui/alert-dialog/AlertDialogFooter.vue';
 import AlertDialogCancel from '@/components/ui/alert-dialog/AlertDialogCancel.vue';
 import AlertDialogAction from '@/components/ui/alert-dialog/AlertDialogAction.vue';
+import CommonLabel from '@/components/CommonLabel.vue';
 
 interface Props {
   activity: ITableRow<'activities'> | undefined;
@@ -213,9 +214,7 @@ function handleSave() {
         <template v-if="sheetMode === 'view'">
           <div class="px-6 py-4 border-b border-border/40 flex flex-col gap-4">
             <div>
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-                {{ t('app.module.activities_history.category.category') }}
-              </p>
+              <CommonLabel :label="t('app.module.activities_history.category.category')" />
               <div v-if="currentCategory" class="flex items-center gap-2">
                 <span
                   class="w-2.5 h-2.5 rounded-full flex-shrink-0 ring-1 ring-border/40"
@@ -228,9 +227,7 @@ function handleSave() {
               </p>
             </div>
             <div v-if="currentTags.length > 0">
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest mb-2">
-                {{ t('app.module.activities_history.category.tags') }}
-              </p>
+              <CommonLabel :label="t('app.module.activities_history.category.tags')" />
               <div class="flex flex-wrap gap-1.5">
                 <span
                   v-for="tag in currentTags"
@@ -243,9 +240,7 @@ function handleSave() {
             </div>
           </div>
           <div class="px-6 py-4 flex flex-col gap-3">
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-              {{ t('app.module.activities_history.category.duration') }}
-            </p>
+            <CommonLabel :label="t('app.module.activities_history.category.duration')" />
             <div class="grid grid-cols-2 gap-3">
               <div class="bg-muted/50 rounded-xl p-3">
                 <p class="text-2xs text-muted-foreground mb-1">
@@ -267,14 +262,14 @@ function handleSave() {
         <template v-else>
           <div class="px-6 py-5 flex flex-col gap-6">
             <div class="flex flex-col gap-1.5">
-              <Label for="as-description" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                {{ t('app.module.activities_history.category.description') }}
+              <Label for="as-description">
+                <CommonLabel :label="t('app.module.activities_history.category.description')" />
               </Label>
               <Textarea id="as-description" v-model="activityDescription" class="min-h-[100px] resize-none" />
             </div>
             <div class="flex flex-col gap-1.5">
-              <Label for="as-category" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                {{ t('app.module.activities_history.category.category') }}
+              <Label for="as-category">
+                <CommonLabel :label="t('app.module.activities_history.category.category')" />
               </Label>
               <Select v-model="activityCategoryId">
                 <SelectTrigger id="as-category" class="w-full">
@@ -296,8 +291,8 @@ function handleSave() {
               </Select>
             </div>
             <div class="flex flex-col gap-1.5">
-              <Label for="as-tags" class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                {{ t('app.module.activities_history.category.tags') }}
+              <Label for="as-tags">
+                <CommonLabel :label="t('app.module.activities_history.category.tags')" />
               </Label>
               <Input id="as-tags" v-model="activityTags" placeholder="tag1, tag2, tag3" />
               <p class="text-xs text-muted-foreground">
@@ -305,9 +300,7 @@ function handleSave() {
               </p>
             </div>
             <div class="flex flex-col gap-2">
-              <p class="text-xs font-semibold text-muted-foreground uppercase tracking-widest">
-                {{ t('app.module.activities_history.category.duration') }}
-              </p>
+              <CommonLabel :label="t('app.module.activities_history.category.duration')" />
               <p class="text-xs text-muted-foreground -mt-1">
                 {{ t('app.module.activities_history.edit.time_hint') }}
               </p>
