@@ -336,7 +336,7 @@ async function handleExport() {
 
       <!-- ── DATA PREVIEW TABLE ─────────────────────────────────── -->
       <div class="flex flex-col gap-2 flex-1 min-h-0">
-        <CommonLabel :label="t('app.module.export.preview.table_label', { count: enrichedActivties.length })" />
+        <CommonLabel :label="t('app.module.export.preview.table_label', { count: enrichedActivities.length })" />
         <div class="rounded-xl border border-border/40 overflow-hidden flex-1 min-h-0 flex flex-col">
           <div class="overflow-auto flex-1 min-h-0 touch-pan-x">
             <table class="w-full text-xs">

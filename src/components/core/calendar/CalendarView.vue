@@ -44,12 +44,7 @@ watch([year, month], ([y, m]) => {
   router.replace({ query: { ...route.query, year: y, month: m + 1 } });
 });
 
-const { weeks, formattedMonthTotal, monthTotalSeconds, bestDateStr, calendarRange } = useCalendarData(
-  activities,
-  categories,
-  year,
-  month,
-);
+const { weeks, formattedMonthTotal, bestDateStr, calendarRange } = useCalendarData(activities, categories, year, month);
 
 watch(
   calendarRange,
@@ -683,7 +678,7 @@ const manualEntryOpen = ref(false);
 
         <!-- Category breakdown -->
         <div v-if="selectedDay.categorySlices.length > 0" class="border-t border-border/40 px-4 py-3 flex-shrink-0">
-          <CommonLabel :label="t('app.module.calendar.breakdown')" /> 
+          <CommonLabel :label="t('app.module.calendar.breakdown')" />
           <div class="flex flex-col gap-2">
             <div
               v-for="slice in selectedDay.categorySlices"
