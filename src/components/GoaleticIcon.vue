@@ -1,5 +1,5 @@
 <!--
-  Progressly logomark — "Progress Ring"
+  Goaletic logomark — "Progress Ring"
 
   Design rationale:
   - 300° arc with a gap at the bottom — "always room to grow"

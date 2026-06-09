@@ -11,9 +11,9 @@
         <div
           class="w-9 h-9 rounded-xl bg-primary-foreground/10 border border-primary-foreground/20 flex items-center justify-center"
         >
-          <ProgresslyIcon class="w-5 h-5" />
+          <GoaleticIcon class="w-5 h-5" />
         </div>
-        <span class="font-semibold text-xl tracking-tight">Progressly</span>
+        <span class="font-semibold text-xl tracking-tight">Goaletic</span>
       </div>
 
       <div class="relative z-10 space-y-10">
@@ -25,15 +25,15 @@
         </div>
       </div>
 
-      <div class="relative z-10 text-primary-foreground/30 text-xs">&copy; 2026 Progressly</div>
+      <div class="relative z-10 text-primary-foreground/30 text-xs">&copy; 2026 Goaletic</div>
     </div>
 
     <div class="flex flex-col items-center justify-center p-8 lg:p-16 bg-background">
       <div class="lg:hidden flex items-center gap-2 mb-10">
         <div class="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
-          <ProgresslyIcon class="w-4 h-4 text-primary-foreground" />
+          <GoaleticIcon class="w-4 h-4 text-primary-foreground" />
         </div>
-        <span class="font-semibold text-lg tracking-tight">Progressly</span>
+        <span class="font-semibold text-lg tracking-tight">Goaletic</span>
       </div>
 
       <div class="w-full max-w-sm">
@@ -101,7 +101,7 @@ import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useUserStore } from '@/stores';
 import { useTranslation } from '@/composables/useTranslation';
-import ProgresslyIcon from '@/components/ProgresslyIcon.vue';
+import GoaleticIcon from '@/components/GoaleticIcon.vue';
 
 const { t } = useTranslation();
 

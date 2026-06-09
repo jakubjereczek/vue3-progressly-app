@@ -2,7 +2,7 @@ import { computed, ref, watch } from 'vue';
 import { useTranslation } from '@/composables';
 import { getColumnDefinitions } from '@/components/core/activities-history-list/config';
 
-const STORAGE_KEY = 'progressly:column-visibility';
+const STORAGE_KEY = 'goaletic:column-visibility';
 
 function loadSaved(defaults: Record<string, boolean>): Record<string, boolean> {
   try {

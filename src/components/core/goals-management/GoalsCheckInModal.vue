@@ -33,7 +33,7 @@ const RING_SIZE_LG = 108; // px — hero ring in check-in modal
 const CHECKIN_SHOW_DELAY_MS = 1200;
 
 // ── LocalStorage state ──────────────────────────────────────────────
-const STORAGE_KEY = 'progressly_goals_checkin';
+const STORAGE_KEY = 'goaletic_goals_checkin';
 
 interface CheckInState {
   daily: string; // ISO date "YYYY-MM-DD"

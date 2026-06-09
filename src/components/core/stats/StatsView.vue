@@ -30,8 +30,8 @@ const categoriesStore = useCategoriesStore();
 const { activities, loading, error } = storeToRefs(activitiesStore);
 const { categories } = storeToRefs(categoriesStore);
 
-const STORAGE_RANGE_KEY = 'progressly:stats:range';
-const STORAGE_TAB_KEY = 'progressly:stats:tab';
+const STORAGE_RANGE_KEY = 'goaletic:stats:range';
+const STORAGE_TAB_KEY = 'goaletic:stats:tab';
 const dateRangePreset = ref<DateRangePreset>(
   (localStorage.getItem(STORAGE_RANGE_KEY) as DateRangePreset | null) ?? '30d',
 );

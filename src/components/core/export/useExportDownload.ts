@@ -178,15 +178,15 @@ export function useExportDownload() {
     const date = localDateToString(new Date());
     if (format === 'csv') {
       const options: CsvOptions = csvOptions ?? { separator: 'comma', encoding: 'utf8-bom' };
-      triggerDownload(generateCsv(rows, options), `progressly-export-${date}.csv`, 'text/csv;charset=utf-8;');
+      triggerDownload(generateCsv(rows, options), `goaletic-export-${date}.csv`, 'text/csv;charset=utf-8;');
     } else if (format === 'json') {
       triggerDownload(
         generateJson(rows, jsonOptions),
-        `progressly-export-${date}.json`,
+        `goaletic-export-${date}.json`,
         'application/json;charset=utf-8;',
       );
     } else if (format === 'xlsx') {
-      triggerDownload(generateXls(rows), `progressly-export-${date}.xls`, 'application/vnd.ms-excel;charset=utf-8;');
+      triggerDownload(generateXls(rows), `goaletic-export-${date}.xls`, 'application/vnd.ms-excel;charset=utf-8;');
     }
   }
 

@@ -104,7 +104,7 @@ const DESCRIPTIONS: Record<string, string[]> = {
     'Tax documents sorting',
   ],
   'fcat-5': [
-    'Progressly — gantt zoom feature',
+    'Goaletic — gantt zoom feature',
     'CLI tool — config parser',
     'Open source — fix issue #88',
     'Portfolio redesign',

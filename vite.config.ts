@@ -5,7 +5,7 @@ import path from 'node:path';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/vue3-progressly-app/',
+  base: '/vue3-goaletic-app/',
   plugins: [vue(), tailwindcss()],
   resolve: {
     alias: {

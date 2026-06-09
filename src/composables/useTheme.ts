@@ -2,7 +2,7 @@ import { ref, computed } from 'vue';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 
-const STORAGE_KEY = 'progressly-theme';
+const STORAGE_KEY = 'goaletic-theme';
 const TRANSITION_DURATION = 300;
 
 function readStoredTheme(): ThemeMode {

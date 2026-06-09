@@ -1,6 +1,6 @@
 {
-  "name": "Progressly",
-  "short_name": "Progressly",
+  "name": "Goaletic",
+  "short_name": "Goaletic",
   "description": "Track your time. Own your day.",
   "start_url": "/",
   "display": "standalone",

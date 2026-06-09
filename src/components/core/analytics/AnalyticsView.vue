@@ -42,9 +42,9 @@ const categoriesStore = useCategoriesStore();
 const { activities, loading, error } = storeToRefs(activitiesStore);
 const { categories } = storeToRefs(categoriesStore);
 
-const STORAGE_PERIOD_KEY = 'progressly:analytics:period';
-const STORAGE_CHART_KEY = 'progressly:analytics:chartType';
-const STORAGE_SHOW_PREV_KEY = 'progressly:analytics:showPrevious';
+const STORAGE_PERIOD_KEY = 'goaletic:analytics:period';
+const STORAGE_CHART_KEY = 'goaletic:analytics:chartType';
+const STORAGE_SHOW_PREV_KEY = 'goaletic:analytics:showPrevious';
 
 const period = ref<AnalyticsPeriod>((localStorage.getItem(STORAGE_PERIOD_KEY) as AnalyticsPeriod | null) ?? 'week');
 const offset = ref(0);
